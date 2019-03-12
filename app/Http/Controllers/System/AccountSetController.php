@@ -5,7 +5,7 @@
  */
 namespace App\Http\Controllers\System;
 
-use App\Http\Services\System\AccountService;
+use App\Services\System\AccountService;
 use App\Models\System\AccountSetModel;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
