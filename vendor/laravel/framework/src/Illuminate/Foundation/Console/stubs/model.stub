@@ -1,0 +1,13 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * Author: huxinlu
+ */
+namespace DummyNamespace;
+
+use App\Models\BaseModel;
+
+class DummyClass extends BaseModel
+{
+    //
+}
