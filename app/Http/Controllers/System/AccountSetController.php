@@ -5,8 +5,8 @@
  */
 namespace App\Http\Controllers\System;
 
-use App\Services\System\AccountService;
-use App\Models\System\AccountSetModel;
+use App\Services\AccountService;
+use App\Models\AccountSetModel;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;

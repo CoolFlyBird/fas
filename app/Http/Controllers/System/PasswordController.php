@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\System;
 
-use App\Models\System\EmployeeModel;
+use App\Models\EmployeeModel;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;

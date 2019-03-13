@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * Author: huxinlu
  */
-namespace App\Models\System;
+namespace App\Models;
 
 use Illuminate\Foundation\Auth\User;
 use Illuminate\Support\Facades\Hash;

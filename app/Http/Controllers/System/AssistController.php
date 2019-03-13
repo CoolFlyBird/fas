@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\System;
 
-use App\Models\System\ClientModel;
-use App\Models\System\ProjectModel;
-use App\Models\System\StockModel;
-use App\Models\System\SupplierModel;
+use App\Models\ClientModel;
+use App\Models\ProjectModel;
+use App\Models\StockModel;
+use App\Models\SupplierModel;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;

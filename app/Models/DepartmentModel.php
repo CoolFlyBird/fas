@@ -3,9 +3,7 @@
  * Created by PhpStorm.
  * Author: huxinlu
  */
-namespace App\Models\System;
-
-use App\Models\BaseModel;
+namespace App\Models;
 
 class DepartmentModel extends BaseModel
 {

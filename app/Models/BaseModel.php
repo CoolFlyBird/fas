@@ -70,7 +70,7 @@ class BaseModel extends Model
      */
     public function getDetail(int $id)
     {
-        return $this->query()->where('id', $id)->get()->first();
+        return $this->query()->where('id', $id)->get()->first()->toArray();
     }
 
     /**
@@ -81,7 +81,7 @@ class BaseModel extends Model
      */
     public function getList(array $where = [])
     {
-        return $this->query()->where($where)->get();
+        return $this->query()->where($where)->get()->toArray();
     }
 
     /**
@@ -92,6 +92,6 @@ class BaseModel extends Model
      */
     public function getPageList(array $where = [])
     {
-        return $this->query()->where($where)->paginate(20);
+        return $this->query()->where($where)->paginate(20)->toArray();
     }
 }

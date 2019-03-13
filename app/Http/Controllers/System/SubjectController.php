@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\System;
 
-use App\Models\System\SubjectModel;
-use App\Services\System\SubjectService;
+use App\Models\SubjectModel;
+use App\Services\SubjectService;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
@@ -122,24 +122,25 @@ class SubjectController extends Controller
      * 科目列表
      * @author huxinlu
      * @param int $type 科目类型：1-资产，2-负债，3-共同，4-权益，5-成本，6-损益
-     * @param string $parentCode 父级code
      * @return \Illuminate\Http\JsonResponse
      */
-    public function getList(int $type, string $parentCode = '')
+    public function getList(int $type = 0)
     {
-        $validator = Validator::make(['type' => $type], [
-            'type' => 'required|between:1,6',
-        ], [
-            'type.required' => '科目类型不能为空不能为空',
-            'type.between'  => '该科目类型不存在',
-        ]);
+        if ($type != 0) {
+            $validator = Validator::make(['type' => $type], [
+                'type' => 'required|between:1,6',
+            ], [
+                'type.required' => '科目类型不能为空不能为空',
+                'type.between'  => '该科目类型不存在',
+            ]);
 
-        if ($validator->fails()) {
-            return $this->fail($validator->errors()->first(), 2001);
+            if ($validator->fails()) {
+                return $this->fail($validator->errors()->first(), 2001);
+            }
         }
 
-        $subjectModel = new SubjectModel();
-        $list = $subjectModel->getList(['type' => $type, 'parentSubjectCode' => $parentCode]);
+        $service = new SubjectService();
+        $list = $service->getList($type);
 
         return $this->success($list);
     }

@@ -2,8 +2,8 @@
 
 namespace App\Http\Middleware;
 
-use App\Models\System\PermissionModel;
-use App\Models\System\RolePermissionModel;
+use App\Models\PermissionModel;
+use App\Models\RolePermissionModel;
 use Illuminate\Auth\Middleware\Authenticate as Middleware;
 use Illuminate\Support\Facades\Auth;
 

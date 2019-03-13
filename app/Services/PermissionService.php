@@ -3,10 +3,10 @@
  * Created by PhpStorm.
  * Author: huxinlu
  */
-namespace App\Services\System;
+namespace App\Services;
 
-use App\Models\System\PermissionModel;
-use App\Models\System\RolePermissionModel;
+use App\Models\PermissionModel;
+use App\Models\RolePermissionModel;
 
 class PermissionService
 {

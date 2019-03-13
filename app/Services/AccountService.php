@@ -5,9 +5,9 @@
  * Date: 2019/2/28
  * Time: 11:21
  */
-namespace App\Services\System;
+namespace App\Services;
 
-use App\Models\System\AccountSetModel;
+use App\Models\AccountSetModel;
 
 class AccountService
 {
