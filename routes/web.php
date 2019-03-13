@@ -1,7 +1,5 @@
 <?php
 
-Auth::routes();
-Route::get('home', 'HomeController@index')->name('home');
 Route::post('login', 'Auth\LoginController@login')->name('login');
 
 //不需要验证
