@@ -10,6 +10,11 @@ use Illuminate\Support\Facades\Validator;
 
 class PasswordController extends Controller
 {
+    public function __construct(EmployeeModel $employeeModel)
+    {
+        $this->employeeModel = $employeeModel;
+    }
+
     /**
      * 修改密码
      * @author huxinlu
@@ -35,8 +40,7 @@ class PasswordController extends Controller
             return $this->fail($validator->errors()->first(), 2001);
         }
 
-        $employeeModel = new EmployeeModel();
-        $res           = $employeeModel->editPassword(Auth::user()->id, $params['confirmPassword']);
+        $res = $this->employeeModel->editPassword(Auth::user()->id, $params['confirmPassword']);
         if ($res) {
             Auth::logout();
             return $this->success();

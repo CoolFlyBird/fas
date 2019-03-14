@@ -9,6 +9,11 @@ use Illuminate\Support\Facades\Auth;
 
 class PermissionController extends Controller
 {
+    public function __construct(PermissionService $permissionService)
+    {
+        $this->permissionService = $permissionService;
+    }
+
     /**
      * 权限列表
      * @author huxinlu
@@ -16,8 +21,7 @@ class PermissionController extends Controller
      */
     public function getList()
     {
-        $service = new PermissionService();
-        $list = $service->getPermission(Auth::user()->rid, session('accountSetId'));
+        $list = $this->permissionService->getPermission(Auth::user()->rid, session('accountSetId'));
 
         return $this->success($list);
     }

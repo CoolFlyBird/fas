@@ -2,7 +2,7 @@
 Route::post('login', 'Auth\LoginController@login')->name('login');
 
 //不需要验证
-Route::get('account/set', 'System\AccountSetController@getList');//账套列表
+Route::get('account', 'System\AccountSetController@getList');//账套列表
 
 //需要验证登录权限
 Route::group(['middleware' => 'login'], function () {
@@ -88,5 +88,9 @@ Route::group(['middleware' => 'auth'], function () {
         Route::put('', 'Finance\InitialBalanceController@editInitialBalance');//编辑期初余额
         Route::put('amount', 'Finance\InitialBalanceController@editAmount');//编辑期初余额
         Route::post('calculate', 'Finance\InitialBalanceController@calculate');//试算平衡
+    });
+    //财务处理-录入凭证
+    Route::group(['prefix' => 'voucher'], function () {
+        Route::post('create', 'Finance\VoucherController@createVoucher');//创建凭证
     });
 });

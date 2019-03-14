@@ -10,6 +10,12 @@ use Illuminate\Support\Facades\Validator;
 
 class EmployeeController extends Controller
 {
+    public function __construct(DepartmentModel $departmentModel, EmployeeModel $employeeModel)
+    {
+        $this->departmentModel = $departmentModel;
+        $this->employeeModel   = $employeeModel;
+    }
+
     /**
      * 创建职员
      * @author huxinlu
@@ -57,10 +63,9 @@ class EmployeeController extends Controller
             return $this->fail($validate->errors()->first(), 2001);
         }
 
-        $employeeModel = new EmployeeModel();
-        $employeeModel->create($params);
+        $res = $this->employeeModel->create($params);
 
-        return $this->success();
+        return $res ? $this->success() : $this->fail('添加职员失败');
     }
 
     /**
@@ -115,15 +120,13 @@ class EmployeeController extends Controller
             return $this->fail($validate->errors()->first(), 2001);
         }
 
-        $employeeModel = new EmployeeModel();
-
         //在职员工不能禁用
         if (isset($params['status']) && isset($params['isDisable']) && $params['status'] == $employeeModel::STATUS_ON && $params['isDisable'] == $employeeModel::DISABLED) {
             return $this->fail('在职员工不能禁用', 2001);
         }
-        $employeeModel->edit($params);
+        $res = $this->employeeModel->edit($params);
 
-        return $this->success();
+        return $res ? $this->success() : $this->fail('职员编辑失败');
     }
 
     /**
@@ -134,8 +137,7 @@ class EmployeeController extends Controller
      */
     public function getEmployeeDetail(int $id)
     {
-        $employeeModel = new EmployeeModel();
-        $detail        = $employeeModel->getDetail($id);
+        $detail = $this->employeeModel->getDetail($id);
 
         return $this->success($detail);
     }
@@ -148,8 +150,7 @@ class EmployeeController extends Controller
      */
     public function delEmployee(int $id)
     {
-        $employeeModel = new EmployeeModel();
-        $res           = $employeeModel->del($id);
+        $res = $this->employeeModel->del($id);
 
         return $res ? $this->success() : $this->fail();
     }
@@ -161,8 +162,7 @@ class EmployeeController extends Controller
      */
     public function getEmployeeList()
     {
-        $employeeModel = new EmployeeModel();
-        $list          = $employeeModel->getList();
+        $list = $this->employeeModel->getList();
 
         return $this->success(['data' => $list->items(), 'totalCount' => $list->total()]);
     }
@@ -193,8 +193,7 @@ class EmployeeController extends Controller
             return $this->fail($validator->errors()->first(), 2001);
         }
 
-        $model = new DepartmentModel();
-        $res   = $model->create($params);
+        $res = $this->departmentModel->create($params);
 
         return $res ? $this->success() : $this->fail('部门添加失败');
     }
@@ -228,8 +227,7 @@ class EmployeeController extends Controller
             return $this->fail($validator->errors()->first(), 2001);
         }
 
-        $model = new DepartmentModel();
-        $res   = $model->edit($params);
+        $res = $this->departmentModel->edit($params);
 
         return $res ? $this->success() : $this->fail('部门编辑失败');
     }
@@ -242,8 +240,7 @@ class EmployeeController extends Controller
      */
     public function delDepartment(int $id)
     {
-        $model = new DepartmentModel();
-        $res   = $model->del($id);
+        $res = $this->departmentModel->del($id);
 
         return $res ? $this->success() : $this->fail();
     }
@@ -255,8 +252,7 @@ class EmployeeController extends Controller
      */
     public function getDepartmentList()
     {
-        $model = new DepartmentModel();
-        $list  = $model->getList();
+        $list = $this->departmentModel->getList();
 
         return $this->success($list);
     }

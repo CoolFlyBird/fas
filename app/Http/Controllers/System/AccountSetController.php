@@ -5,7 +5,6 @@
  */
 namespace App\Http\Controllers\System;
 
-use App\Services\AccountService;
 use App\Models\AccountSetModel;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -13,6 +12,11 @@ use Illuminate\Support\Facades\Validator;
 
 class AccountSetController extends Controller
 {
+    public function __construct(AccountSetModel $accountSetModel)
+    {
+        $this->accountSetModel = $accountSetModel;
+    }
+
     /**
      * 创建账套
      * @author huxinlu
@@ -26,7 +30,7 @@ class AccountSetController extends Controller
      */
     public function create(Request $request)
     {
-        $params = $request->only(['name', 'companyName', 'standardMoneyType', 'institution', 'date']);
+        $params    = $request->only(['name', 'companyName', 'standardMoneyType', 'institution', 'date']);
         $validator = Validator::make($params, [
             'name'              => 'required|unique:account_set|max:20',
             'companyName'       => 'required|max:30',
@@ -52,8 +56,7 @@ class AccountSetController extends Controller
             return $this->fail($error, 2001);
         }
 
-        $accountService = new AccountService();
-        $res = $accountService->createAccountSet($params);
+        $res = $this->accountSetModel->add($params);
 
         return $res ? $this->success() : $this->fail('创建失败');
     }
@@ -69,19 +72,19 @@ class AccountSetController extends Controller
      */
     public function edit(Request $request)
     {
-        $params = $request->only(['id', 'name', 'companyName']);
+        $params    = $request->only(['id', 'name', 'companyName']);
         $validator = Validator::make($params, [
-            'id'                => 'required|integer',
-            'name'              => 'required|max:20',
-            'companyName'       => 'required|max:30',
+            'id'          => 'required|integer',
+            'name'        => 'required|max:20',
+            'companyName' => 'required|max:30',
         ], [
-            'id.require'                => '账套ID不能为空',
-            'id.integer'                => '账套ID只能是整数',
-            'name.require'              => '账套名称不能为空',
-            'name.unique'               => '账套名称不能重复',
-            'name.max'                  => '账套名称不能超过20个字符',
-            'companyName.require'       => '企业名称不能为空',
-            'companyName.max'           => '企业名称不能超过30个字符',
+            'id.require'          => '账套ID不能为空',
+            'id.integer'          => '账套ID只能是整数',
+            'name.require'        => '账套名称不能为空',
+            'name.unique'         => '账套名称不能重复',
+            'name.max'            => '账套名称不能超过20个字符',
+            'companyName.require' => '企业名称不能为空',
+            'companyName.max'     => '企业名称不能超过30个字符',
         ]);
 
         if ($validator->fails()) {
@@ -89,8 +92,7 @@ class AccountSetController extends Controller
             return $this->fail($error, 2001);
         }
 
-        $accountService = new AccountService();
-        $res = $accountService->editAccountSet($params);
+        $res = $this->accountSetModel->edit($params);
 
         return $res ? $this->success() : $this->fail('编辑失败');
     }
@@ -103,8 +105,7 @@ class AccountSetController extends Controller
      */
     public function getDetail(int $id)
     {
-        $accountSetModel = new AccountSetModel();
-        $detail = $accountSetModel->getAccountSetDetail($id);
+        $detail = $this->accountSetModel->getDetail($id);
 
         return $this->success($detail);
     }
@@ -116,8 +117,7 @@ class AccountSetController extends Controller
      */
     public function getList()
     {
-        $accountSetModel = new AccountSetModel();
-        $detail = $accountSetModel->getAccountSetList();
+        $detail = $this->accountSetModel->getList();
 
         return $this->success($detail);
     }
@@ -130,7 +130,7 @@ class AccountSetController extends Controller
      */
     public function del(int $id)
     {
-        $validator =Validator::make(['id' => $id], [
+        $validator = Validator::make(['id' => $id], [
             'id' => 'exists:account_set',
         ], [
             'id.exists' => '该账套不存在'
@@ -141,8 +141,7 @@ class AccountSetController extends Controller
             return $this->fail($error, 2001);
         }
 
-        $accountSetModel = new AccountSetModel();
-        $res = $accountSetModel->delAccountSet($id);
+        $res = $this->accountSetModel->del($id);
 
         return $res ? $this->success() : $this->fail();
     }

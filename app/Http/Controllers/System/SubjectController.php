@@ -10,6 +10,12 @@ use Illuminate\Support\Facades\Validator;
 
 class SubjectController extends Controller
 {
+    public function __construct(SubjectService $subjectService, SubjectModel $subjectModel)
+    {
+        $this->subjectService = $subjectService;
+        $this->subjectModel   = $subjectModel;
+    }
+
     /**
      * 添加科目
      * @author huxinlu
@@ -48,8 +54,7 @@ class SubjectController extends Controller
 
         $params['parentSubjectCode'] = $params['parentSubjectCode'] ?? '';
 
-        $service = new SubjectService();
-        $res     = $service->create($params);
+        $res = $this->subjectService->create($params);
 
         return $res['res'] ? $this->success() : $this->fail($res['msg']);
     }
@@ -87,8 +92,7 @@ class SubjectController extends Controller
             return $this->fail($validator->errors()->first(), 2001);
         }
 
-        $model = new SubjectModel();
-        $res   = $model->edit($params);
+        $res = $this->subjectModel->edit($params);
 
         return $res ? $this->success() : $this->fail('编辑科目失败');
     }
@@ -112,8 +116,7 @@ class SubjectController extends Controller
             return $this->fail($validator->errors()->first(), 2001);
         }
 
-        $model = new SubjectModel();
-        $res   = $model->del($id);
+        $res = $this->subjectModel->del($id);
 
         return $res ? $this->success() : $this->fail('删除科目失败');
     }
@@ -139,8 +142,7 @@ class SubjectController extends Controller
             }
         }
 
-        $service = new SubjectService();
-        $list = $service->getList($type);
+        $list = $this->subjectService->getList($type);
 
         return $this->success($list);
     }
@@ -164,8 +166,7 @@ class SubjectController extends Controller
             return $this->fail($validator->errors()->first(), 2001);
         }
 
-        $model  = new SubjectModel();
-        $detail = $model->getDetail($id);
+        $detail = $this->subjectModel->getDetail($id);
 
         return $this->success($detail);
     }
@@ -189,8 +190,7 @@ class SubjectController extends Controller
             return $this->fail($validator->errors()->first(), 2001);
         }
 
-        $service  = new SubjectService();
-        $res = $service->start($id);
+        $res = $this->subjectService->start($id);
 
         return $res['res'] ? $this->success() : $this->fail($res['msg']);
     }

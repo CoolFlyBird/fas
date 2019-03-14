@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Finance;
 
-use App\Models\SubjectModel;
 use App\Services\SubjectService;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -29,13 +28,13 @@ class InitialBalanceController extends Controller
      */
     public function editInitialBalance(Request $request)
     {
-        $params = $request->only(['id', 'initialBalance']);
+        $params    = $request->only(['id', 'initialBalance']);
         $validator = Validator::make($params, [
-            'id' => 'required|exists:subject',
+            'id'             => 'required|exists:subject',
             'initialBalance' => 'numeric'
         ], [
-            'id.required' => '科目ID不能为空',
-            'id.exists' => '该科目不存在',
+            'id.required'            => '科目ID不能为空',
+            'id.exists'              => '该科目不存在',
             'initialBalance.numeric' => '期初余额只能是数字',
         ]);
         if ($validator->fails()) {
@@ -45,7 +44,7 @@ class InitialBalanceController extends Controller
         $params['initialBalance'] = $params['initialBalance'] ?? 0.00;
 
         $service = new SubjectService();
-        $res = $service->editInitialBalance((int)$params['id'], (float)$params['initialBalance']);
+        $res     = $service->editInitialBalance((int)$params['id'], (float)$params['initialBalance']);
 
         return $res['res'] ? $this->success() : $this->fail($res['msg']);
     }
@@ -58,13 +57,13 @@ class InitialBalanceController extends Controller
      */
     public function editAmount(Request $request)
     {
-        $params = $request->only(['id', 'amount']);
+        $params    = $request->only(['id', 'amount']);
         $validator = Validator::make($params, [
-            'id' => 'required|exists:subject',
+            'id'     => 'required|exists:subject',
             'amount' => 'numeric'
         ], [
-            'id.required' => '科目ID不能为空',
-            'id.exists' => '该科目不存在',
+            'id.required'    => '科目ID不能为空',
+            'id.exists'      => '该科目不存在',
             'amount.numeric' => '数量只能是数字',
         ]);
         if ($validator->fails()) {
@@ -74,7 +73,7 @@ class InitialBalanceController extends Controller
         $params['amount'] = $params['amount'] ?? 0.00;
 
         $service = new SubjectService();
-        $res = $service->editAmount((int)$params['id'], (float)$params['initialBalance']);
+        $res     = $service->editAmount((int)$params['id'], (float)$params['initialBalance']);
 
         return $res['res'] ? $this->success() : $this->fail($res['msg']);
     }
@@ -87,7 +86,7 @@ class InitialBalanceController extends Controller
     public function calculate()
     {
         $service = new SubjectService();
-        $list = $service->calculateBalance();
+        $list    = $service->calculateBalance();
 
         return $this->success($list);
     }

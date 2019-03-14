@@ -1,13 +1,10 @@
 <?php
-/**
- * Created by PhpStorm.
- * Author: huxinlu
- */
+
 namespace DummyNamespace;
 
-use App\Models\BaseModel;
+use Illuminate\Database\Eloquent\Model;
 
-class DummyClass extends BaseModel
+class DummyClass extends Model
 {
     //
 }

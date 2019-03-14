@@ -5,6 +5,7 @@ namespace App\Http\Controllers\System;
 use App\Models\ClientModel;
 use App\Models\ProjectModel;
 use App\Models\StockModel;
+use App\Models\SubjectModel;
 use App\Models\SupplierModel;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -12,6 +13,15 @@ use Illuminate\Support\Facades\Validator;
 
 class AssistController extends Controller
 {
+    public function __construct(ClientModel $clientModel, ProjectModel $projectModel, StockModel $stockModel,
+                                SubjectModel $subjectModel, SupplierModel $supplierModel)
+    {
+        $this->clientModel  = $clientModel;
+        $this->projectModel = $projectModel;
+        $this->stockModel   = $stockModel;
+        $this->subjectModel = $subjectModel;
+    }
+
     /**
      * 创建客户
      * @author huxinlu
@@ -33,8 +43,7 @@ class AssistController extends Controller
             return $this->fail($validator->errors()->first(), 2001);
         }
 
-        $model = new ClientModel();
-        $res   = $model->create($params);
+        $res = $this->clientModel->create($params);
 
         return $res ? $this->success() : $this->fail('客户添加失败');
     }
@@ -63,8 +72,7 @@ class AssistController extends Controller
             return $this->fail($validator->errors()->first(), 2001);
         }
 
-        $model = new ClientModel();
-        $res   = $model->edit($params);
+        $res = $this->clientModel->edit($params);
 
         return $res ? $this->success() : $this->fail('客户编辑失败');
     }
@@ -88,8 +96,7 @@ class AssistController extends Controller
             return $this->fail($validator->errors()->first(), 2001);
         }
 
-        $model = new ClientModel();
-        $res   = $model->del($id);
+        $res = $this->clientModel->del($id);
 
         return $res ? $this->success() : $this->fail('客户删除失败');
     }
@@ -101,8 +108,7 @@ class AssistController extends Controller
      */
     public function getClientList()
     {
-        $model = new ClientModel();
-        $list  = $model->getList();
+        $list = $this->clientModel->getList();
 
         return $this->success($list);
     }
@@ -126,8 +132,7 @@ class AssistController extends Controller
             return $this->fail($validator->errors()->first(), 2001);
         }
 
-        $model = new ClientModel();
-        $detail  = $model->getDetail($id);
+        $detail = $this->clientModel->getDetail($id);
 
         return $this->success($detail);
     }
@@ -164,8 +169,7 @@ class AssistController extends Controller
             return $this->fail($validator->errors()->first(), 2001);
         }
 
-        $model = new SupplierModel();
-        $res   = $model->create($params);
+        $res = $this->subjectModel->create($params);
 
         return $res ? $this->success() : $this->fail('供应商添加失败');
     }
@@ -205,8 +209,7 @@ class AssistController extends Controller
             return $this->fail($validator->errors()->first(), 2001);
         }
 
-        $model = new SupplierModel();
-        $res   = $model->edit($params);
+        $res = $this->subjectModel->edit($params);
 
         return $res ? $this->success() : $this->fail('供应商编辑失败');
     }
@@ -230,8 +233,7 @@ class AssistController extends Controller
             return $this->fail($validator->errors()->first(), 2001);
         }
 
-        $model = new SupplierModel();
-        $res   = $model->del($id);
+        $res = $this->subjectModel->del($id);
 
         return $res ? $this->success() : $this->fail('供应商删除失败');
     }
@@ -243,8 +245,7 @@ class AssistController extends Controller
      */
     public function getSupplierList()
     {
-        $model = new ClientModel();
-        $list  = $model->getList();
+        $list = $this->subjectModel->getList();
 
         return $this->success($list);
     }
@@ -268,8 +269,7 @@ class AssistController extends Controller
             return $this->fail($validator->errors()->first(), 2001);
         }
 
-        $model = new SupplierModel();
-        $detail  = $model->getDetail($id);
+        $detail = $this->subjectModel->getDetail($id);
 
         return $this->success($detail);
     }
@@ -295,8 +295,7 @@ class AssistController extends Controller
             return $this->fail($validator->errors()->first(), 2001);
         }
 
-        $model = new ProjectModel();
-        $res   = $model->create($params);
+        $res = $this->projectModel->create($params);
 
         return $res ? $this->success() : $this->fail('项目添加失败');
     }
@@ -325,8 +324,7 @@ class AssistController extends Controller
             return $this->fail($validator->errors()->first(), 2001);
         }
 
-        $model = new ProjectModel();
-        $res   = $model->edit($params);
+        $res = $this->projectModel->edit($params);
 
         return $res ? $this->success() : $this->fail('项目编辑失败');
     }
@@ -350,8 +348,7 @@ class AssistController extends Controller
             return $this->fail($validator->errors()->first(), 2001);
         }
 
-        $model = new ProjectModel();
-        $res   = $model->del($id);
+        $res = $this->projectModel->del($id);
 
         return $res ? $this->success() : $this->fail('删除项目失败');
     }
@@ -363,8 +360,7 @@ class AssistController extends Controller
      */
     public function getProjectList()
     {
-        $model = new ProjectModel();
-        $list  = $model->getList();
+        $list = $this->projectModel->getList();
 
         return $this->success($list);
     }
@@ -388,8 +384,7 @@ class AssistController extends Controller
             return $this->fail($validator->errors()->first(), 2001);
         }
 
-        $model = new ProjectModel();
-        $detail  = $model->getDetail($id);
+        $detail = $this->projectModel->getDetail($id);
 
         return $this->success($detail);
     }
@@ -415,8 +410,7 @@ class AssistController extends Controller
             return $this->fail($validator->errors()->first(), 2001);
         }
 
-        $model = new StockModel();
-        $res   = $model->create($params);
+        $res = $this->stockModel->create($params);
 
         return $res ? $this->success() : $this->fail('存货添加失败');
     }
@@ -445,8 +439,7 @@ class AssistController extends Controller
             return $this->fail($validator->errors()->first(), 2001);
         }
 
-        $model = new StockModel();
-        $res   = $model->edit($params);
+        $res = $this->stockModel->edit($params);
 
         return $res ? $this->success() : $this->fail('存货编辑失败');
     }
@@ -470,8 +463,7 @@ class AssistController extends Controller
             return $this->fail($validator->errors()->first(), 2001);
         }
 
-        $model = new StockModel();
-        $res   = $model->del($id);
+        $res = $this->stockModel->del($id);
 
         return $res ? $this->success() : $this->fail('删除存货失败');
     }
@@ -483,8 +475,7 @@ class AssistController extends Controller
      */
     public function getStockList()
     {
-        $model = new StockModel();
-        $list  = $model->getList();
+        $list = $this->stockModel->getList();
 
         return $this->success($list);
     }
@@ -508,8 +499,7 @@ class AssistController extends Controller
             return $this->fail($validator->errors()->first(), 2001);
         }
 
-        $model = new StockModel();
-        $detail  = $model->getDetail($id);
+        $detail = $this->stockModel->getDetail($id);
 
         return $this->success($detail);
     }

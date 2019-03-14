@@ -10,6 +10,12 @@ use App\Models\RolePermissionModel;
 
 class PermissionService
 {
+    public function __construct(PermissionModel $permissionModel, RolePermissionModel $rolePermissionModel)
+    {
+        $this->permissionModel     = $permissionModel;
+        $this->rolePermissionModel = $rolePermissionModel;
+    }
+
     /**
      * 权限列表
      * @author huxinlu
@@ -19,14 +25,11 @@ class PermissionService
      */
     public function getPermission(int $rid, int $accountSetId)
     {
-        $rolePermissionModel = new RolePermissionModel();
-        $permissionModel = new PermissionModel();
-
         //获取权限ID
-        $pidArr = $rolePermissionModel->getPermissionId($rid, $accountSetId);
+        $pidArr = $this->rolePermissionModel->getPermissionId($rid, $accountSetId);
 
         //权限列表
-        $list = $permissionModel->getPermissionList($pidArr);
+        $list = $this->permissionModel->getPermissionList($pidArr);
 
         $data = [];
         foreach ($list as $k => $v) {

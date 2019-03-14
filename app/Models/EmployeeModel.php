@@ -111,7 +111,7 @@ class EmployeeModel extends User
      */
     public function editPassword(int $id, string $password)
     {
-        $query = $this->query()->find($id);
+        $query           = $this->query()->find($id);
         $query->password = Hash::make($password);
         return $query->save();
     }
