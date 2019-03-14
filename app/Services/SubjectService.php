@@ -191,6 +191,11 @@ class SubjectService
         }
     }
 
+    /**
+     * 试算平衡
+     * @author huxinlu
+     * @return array
+     */
     public function calculateBalance()
     {
         $subjectModel = new SubjectModel();
