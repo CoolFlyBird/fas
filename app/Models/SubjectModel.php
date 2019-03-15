@@ -50,7 +50,7 @@ class SubjectModel extends BaseModel
      */
     public function getAllDebitBalance()
     {
-        return self::where('direction', self::DIRECTION_DEBIT)->sum('initialBalance');
+        return self::where('direction', self::DIRECTION_DEBIT)->sum('balance');
     }
 
     /**
@@ -60,7 +60,7 @@ class SubjectModel extends BaseModel
      */
     public function getAllCreditBalance()
     {
-        return self::where('direction', self::DIRECTION_CREDIT)->sum('initialBalance');
+        return self::where('direction', self::DIRECTION_CREDIT)->sum('balance');
     }
 
     /**
@@ -70,7 +70,7 @@ class SubjectModel extends BaseModel
      */
     public function getCurrentYearDebitBalance()
     {
-        return self::where('direction', self::DIRECTION_DEBIT)->whereYear('createTime', date('Y'))->sum('initialBalance');
+        return self::where('direction', self::DIRECTION_DEBIT)->whereYear('createTime', date('Y'))->sum('balance');
     }
 
     /**
@@ -80,6 +80,6 @@ class SubjectModel extends BaseModel
      */
     public function getCurrentYearCreditBalance()
     {
-        return self::where('direction', self::DIRECTION_CREDIT)->whereYear('createTime', date('Y'))->sum('initialBalance');
+        return self::where('direction', self::DIRECTION_CREDIT)->whereYear('createTime', date('Y'))->sum('balance');
     }
 }

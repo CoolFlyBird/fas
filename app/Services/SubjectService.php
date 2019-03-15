@@ -33,29 +33,29 @@ class SubjectService
                 }
                 break;
             //类型=负债
-            case $this->subjectModel->TYPE_DEBT:
+            case $this->subjectModel::TYPE_DEBT:
                 $firstDefaultCode = '2000';
                 if (!($params['classes'] == '流动负债' || $params['classes'] == '非流动负债')) {
                     $msg = '负债类别不正确';
                 }
                 break;
             //类型=共同
-            case $this->subjectModel->TYPE_COMMON:
+            case $this->subjectModel::TYPE_COMMON:
                 $firstDefaultCode  = '3000';
                 $params['classes'] = '共同';
                 break;
             //类型=权益
-            case $this->subjectModel->TYPE_EQUITY:
+            case $this->subjectModel::TYPE_EQUITY:
                 $firstDefaultCode  = '4000';
                 $params['classes'] = '所有者权益';
                 break;
             //类型=成本
-            case $this->subjectModel->TYPE_COST:
+            case $this->subjectModel::TYPE_COST:
                 $firstDefaultCode  = '5000';
                 $params['classes'] = '成本';
                 break;
             //类型=损益
-            case $this->subjectModel->TYPE_PROFIT:
+            case $this->subjectModel::TYPE_PROFIT:
                 $firstDefaultCode = '6000';
                 if (!($params['classes'] == '营业收入' || $params['classes'] == '其他收益' || $params['classes'] == '营业成本及税金' ||
                     $params['classes'] == '其他损失' || $params['classes'] == '期间费用' || $params['classes'] == '所得税' ||
@@ -138,8 +138,8 @@ class SubjectService
     {
         //科目详情
         $detail = $this->subjectModel->getDetail($id);
-        if ($detail['status'] == $this->subjectModel->STATUS_NOT_START) {
-            $res = $this->subjectModel->edit(['id' => $id, 'status' => $this->subjectModel->STATUS_START]);
+        if ($detail['status'] == $this->subjectModel::STATUS_NOT_START) {
+            $res = $this->subjectModel->edit(['id' => $id, 'status' => $this->subjectModel::STATUS_START]);
             return $res ? ['res' => true] : ['res' => false, 'msg' => '启用科目失败'];
         } else {
             return ['res' => false, 'msg' => '该状态下无法启用'];
@@ -159,7 +159,7 @@ class SubjectService
         $isExist = $this->subjectModel->isExistStartSubject($id);
         if ($isExist) {
             //编辑期初余额
-            $res = $this->subjectModel->edit(['id' => $id, 'initialBalance' => $initialBalance]);
+            $res = $this->subjectModel->edit(['id' => $id, 'balance' => $initialBalance]);
             return $res ? ['res' => true] : ['res' => false, 'msg' => '编辑期初余额失败'];
         } else {
             return ['res' => false, 'msg' => '该科目不存在或未启用'];

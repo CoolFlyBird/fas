@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class BaseModel extends Model
 {
@@ -93,5 +94,28 @@ class BaseModel extends Model
     public function getPageList(array $where = [])
     {
         return $this->query()->where($where)->paginate(20)->toArray();
+    }
+
+    /**
+     * 添加并获取主键
+     * @author huxinlu
+     * @param array $option
+     * @return mixed
+     */
+    public function insertGetId(array $option = [])
+    {
+        $this->insertAndSetId($this->query(), $option);
+        return $this->id;
+    }
+
+    /**
+     * 批量添加
+     * @author huxinlu
+     * @param array $option
+     * @return bool
+     */
+    public function addAll(array $option = [])
+    {
+        return DB::table($this->table)->insert($option);
     }
 }

@@ -5,9 +5,7 @@
  */
 namespace App\Models;
 
-use App\Models\BaseModel;
-
 class VoucherDetailModel extends BaseModel
 {
-    //
+    protected $table = 'voucher_detail';
 }

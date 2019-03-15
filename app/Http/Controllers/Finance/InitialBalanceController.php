@@ -10,6 +10,11 @@ use Illuminate\Support\Facades\Validator;
 
 class InitialBalanceController extends Controller
 {
+    public function __construct(SubjectService $subjectService)
+    {
+        $this->subjectService = $subjectService;
+    }
+
     /**
      * 期初余额录入列表
      * @author huxinlu
@@ -43,8 +48,7 @@ class InitialBalanceController extends Controller
 
         $params['initialBalance'] = $params['initialBalance'] ?? 0.00;
 
-        $service = new SubjectService();
-        $res     = $service->editInitialBalance((int)$params['id'], (float)$params['initialBalance']);
+        $res     = $this->subjectService->editInitialBalance((int)$params['id'], (float)$params['initialBalance']);
 
         return $res['res'] ? $this->success() : $this->fail($res['msg']);
     }
@@ -72,8 +76,7 @@ class InitialBalanceController extends Controller
 
         $params['amount'] = $params['amount'] ?? 0.00;
 
-        $service = new SubjectService();
-        $res     = $service->editAmount((int)$params['id'], (float)$params['initialBalance']);
+        $res     = $this->subjectService->editAmount((int)$params['id'], (float)$params['initialBalance']);
 
         return $res['res'] ? $this->success() : $this->fail($res['msg']);
     }
@@ -85,8 +88,7 @@ class InitialBalanceController extends Controller
      */
     public function calculate()
     {
-        $service = new SubjectService();
-        $list    = $service->calculateBalance();
+        $list    = $this->subjectService->calculateBalance();
 
         return $this->success($list);
     }
