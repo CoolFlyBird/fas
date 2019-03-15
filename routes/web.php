@@ -92,5 +92,8 @@ Route::group(['middleware' => 'auth'], function () {
     //财务处理-录入凭证
     Route::group(['prefix' => 'voucher'], function () {
         Route::post('create', 'Finance\VoucherController@createVoucher');//创建凭证
+        Route::put('edit', 'Finance\VoucherController@editVoucher');//编辑凭证
+        Route::get('{id}', 'Finance\VoucherController@getVoucherDetail');//凭证详情
+        Route::get('', 'Finance\VoucherController@getVoucherList');//凭证列表
     });
 });

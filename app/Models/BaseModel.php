@@ -118,4 +118,15 @@ class BaseModel extends Model
     {
         return DB::table($this->table)->insert($option);
     }
+
+    /**
+     * 条件批量删除
+     * @author huxinlu
+     * @param array $where
+     * @return mixed
+     */
+    public function delAll(array $where)
+    {
+        return $this->query()->where($where)->delete();
+    }
 }
