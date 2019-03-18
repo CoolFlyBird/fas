@@ -15,4 +15,6 @@ use Illuminate\Http\Request;
 //用法和web.php一模一样，访问时多个api
 Route::middleware('auth:api')->get('/user', 'Auth\LoginController@test');
 
-Route::get('/report/balance', 'report\BalanceController@balanceSheet');
+Route::get('/report/balance', 'report\SheetController@balanceSheet');
+
+Route::get('/report/income', 'report\SheetController@incomeSheet');

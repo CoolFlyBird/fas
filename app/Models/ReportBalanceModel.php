@@ -6,7 +6,7 @@
 
 namespace App\Models;
 
-class BalanceModel extends BaseModel
+class ReportBalanceModel extends BaseModel
 {
     public $timestamps = false;
 

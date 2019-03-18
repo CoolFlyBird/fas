@@ -1,6 +1,8 @@
 <?php
 Route::post('login', 'Auth\LoginController@login')->name('login');
 
+Route::get('/report/income', 'report\SheetController@incomeSheet');
+
 //不需要验证
 Route::get('account', 'System\AccountSetController@getList');//账套列表
 
