@@ -9,6 +9,7 @@ namespace App\Services;
 use App\Models\BalanceModel;
 use App\Models\SubjectModel;
 use App\Subject;
+use Illuminate\Support\Facades\Log;
 
 class ReportBalanceService
 {
@@ -30,8 +31,11 @@ class ReportBalanceService
 
     /**
      * 结算时候需要计算报表
+     * @param $year 年度
+     * @param $period 周期
+     * @return bool
      */
-    public function settleAccounts($year, $period)
+    public function settleBalance($year, $period)
     {
         $begin = $this->getBalanceArray($year, $period, 2);
         $end = $this->getBalanceArray($year, $period, 1);
@@ -49,7 +53,7 @@ class ReportBalanceService
      * @param int $type 1:期末,2:年初
      * @return array
      */
-    private function getBalanceArray($year, $period, $type = 1)
+    private function getBalanceArray($year, $period, $type)
     {
         //货币资金
         $bs1 = $this->calculateArray($year, $period, $type, [Subject::库存现金, Subject::银行存款, Subject::其他货币资金]);
@@ -201,7 +205,11 @@ class ReportBalanceService
         $total = 0.0;
         foreach ($array as $value) {
             $sign = $this->sign($value);
-            $balance = $this->getBalanceById(abs($value));
+            if ($type == 2) {//年初数额
+                $total = $this->getBalanceRecordById($year, abs($value));
+            } else {//期末数额，直接使用科目余额
+                $balance = $this->getBalanceById($year, abs($value));
+            }
             $total = $total + $sign * $balance;
         }
         return $total;
@@ -213,13 +221,26 @@ class ReportBalanceService
     }
 
     /**
+     * 查询年初 取上年12月份的期末
+     * @param $id
+     * @return mixed
+     */
+    private function getBalanceRecordById($year, $id)
+    {
+        //period 00表示年初
+        $value = BalanceModel::where(['year' => $year, 'period' => '00', 'id' => $id])->value("endValue", 0);;
+        Log::error($id . "_" . $value);
+        return $value;
+    }
+
+    /**
      * 查询科目余额
      * @param $id
      * @return mixed
      */
-    private function getBalanceById($id)
+    private function getBalanceById($year, $id)
     {
-        return SubjectModel::where("id", $id)->value("balance");
+        return SubjectModel::where(["id" => $id])->value("balance");
     }
 
 }

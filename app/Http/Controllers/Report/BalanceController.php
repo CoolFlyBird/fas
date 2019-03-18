@@ -11,7 +11,7 @@ class BalanceController extends Controller
 
     public function balanceSheet(ReportBalanceService $service)
     {
-        $result = $service->settleAccounts("2019", "01");
+        $result = $service->settleBalance("2019", "01");
         if ($result) {
             return "success";
         } else {
