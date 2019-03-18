@@ -158,7 +158,7 @@ class VoucherController extends Controller
     {
         $params    = $request->only(['range', 'classes', 'money', 'summary']);
         $validator = Validator::make($params, [
-            'range'   => 'in:-1,1,2,3,4',
+            'range'   => 'in:1,2,3,4',
             'money'   => 'numeric',
             'summary' => 'max:50',
         ], [
@@ -179,13 +179,13 @@ class VoucherController extends Controller
             return $this->fail($validator->errors()->first(), 2001);
         }
 
-        $params['range'] = $params['range'] ?? -1;
+        $params['range'] = $params['range'] ?? 2;
         $params['classes'] = $params['classes'] ?? -1;
         $params['money'] = $params['money'] ?? 0.00;
         $params['summary'] = $params['summary'] ?? '';
 
-        $res = $this->voucherService->getVoucherList($params);
+        $list = $this->voucherService->getVoucherList($params);
 
-        return $res['res'] ? $this->success() : $this->fail($res['msg']);
+        return $this->success($list);
     }
 }

@@ -178,30 +178,9 @@ class VoucherService
 
     public function getVoucherList($params)
     {
-        $where = $whereMonth = $whereYear = $whereBetween = [];
-        if ($params['range'] != -1) {
-            switch ($params['range']) {
-                //未审核
-                case 1:
-                    $where['status'] = $this->voucherModel::STATUS_UNCHECKED;
-                    break;
-                //本期
-                case 2:
-                    $whereMonth = ['date' => $this->currentPeriodModel->getCurrentPeriod()];
-                    break;
-                //本年
-                case 3:
-                    $whereYear = ['date' => date('Y')];
-                    break;
-                //时间段
-                case 4:
-                    $whereBetween = ['date' => [$params['startDate'], $params['endDate']]];
-                    break;
-                default:
-                    break;
-            }
-        }
+        //当前期数
+        $params['period'] = $this->currentPeriodModel->getCurrentPeriod();
 
-        return $this->voucherModel->getVoucherList($where, $whereMonth, $whereYear, $whereBetween);
+        return $this->voucherModel->getVoucherList($params);
     }
 }
