@@ -95,6 +95,22 @@ Route::group(['middleware' => 'auth'], function () {
         Route::put('edit', 'Finance\VoucherController@editVoucher');//编辑凭证
         Route::get('{id}', 'Finance\VoucherController@getVoucherDetail');//凭证详情
         Route::get('', 'Finance\VoucherController@getVoucherList');//凭证列表
+        Route::post('{id}/audit', 'Finance\VoucherController@audit');//审核凭证
+        Route::post('{id}/review', 'Finance\VoucherController@review');//反审核凭证
+    });
+    //财务处理-录入凭证-凭证模板类别
+    Route::group(['prefix' => 'voucher/template/type'], function () {
+        Route::post('create', 'Finance\VoucherController@createVoucherTemplateType');//创建凭证模板类别
+        Route::put('edit', 'Finance\VoucherController@editVoucherTemplateType');//编辑凭证模板类别
+        Route::get('', 'Finance\VoucherController@getVoucherTemplateTypeList');//凭证模板类别列表
+        Route::delete('{id}', 'Finance\VoucherController@delVoucherTemplateType');//删除凭证模板类别
+    });
+    //财务处理-录入凭证-凭证模板
+    Route::group(['prefix' => 'voucher/template'], function () {
+        Route::post('create', 'Finance\VoucherController@createVoucherTemplate');//创建凭证模板
+        Route::get('{id}', 'Finance\VoucherController@getVoucherTemplateDetail');//凭证模板详情
+        Route::get('', 'Finance\VoucherController@getVoucherTemplateList');//凭证模板列表
+        Route::delete('{id}', 'Finance\VoucherController@delVoucherTemplate');//删除凭证模板
     });
 });
 
