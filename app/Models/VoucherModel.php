@@ -12,11 +12,6 @@ class VoucherModel extends BaseModel
     const STATUS_UNCHECKED = 0;//未审核
     const STATUS_PASS = 1;//审核通过
 
-    public function voucherDetail()
-    {
-        return $this->hasMany('App\Models\VoucherDetailModel');
-    }
-
     /**
      * 是否存在相同的凭证号
      * @author huxinlu
@@ -42,44 +37,51 @@ class VoucherModel extends BaseModel
         return self::where(['proofWordId' => $proofWordId, 'voucherNo' => $voucherNo, 'id' => ['<>', $id]])->exists();
     }
 
-    public function getVoucherList($params)
+    /**
+     * 审核通过
+     * @author huxinlu
+     * @param int $id 凭证ID
+     * @param string $auditor 审核人
+     * @return mixed
+     */
+    public function editStatusPass(int $id, string $auditor)
     {
-        switch ($params['range']) {
-            //未审核
-            case 1:
-                $query = self::where('status', self::STATUS_UNCHECKED);
-                break;
-            //本年
-            case 3:
-                $query = self::whereYear('date', date('Y'));
-                break;
-            //时间段
-            case 4:
-                $query = self::whereBetween('date', [$params['startDate'], $params['endDate']]);
-                break;
-            //本期
-            default:
-                $query = self::whereMonth('date', $params['period']);
-                break;
-        }
+        return self::where(['id' => $id, 'status' => self::STATUS_UNCHECKED])
+            ->update(['status' => self::STATUS_PASS, 'auditor' => $auditor, 'auditDate' => date('Y-m-d')]);
+    }
 
-        //凭证类别
-        if ($params['classes'] != -1) {
-            $query = $query->where('proofWordId', $params['classes']);
-        }
+    /**
+     * 是否存在未审核的凭证
+     * @author huxinlu
+     * @param int $id 凭证ID
+     * @return mixed
+     */
+    public function isExistUnchecked(int $id)
+    {
+        return self::where(['id' => $id, 'status' => self::STATUS_UNCHECKED])->exists();
+    }
 
-        //金额
-        if (!empty($params['money'])) {
-            $query = $query->where(function ($query, $params) {
-                $query->where('allDebit', $params['money'])->orWhere('allCredit', $params['money']);
-            });
-        }
+    /**
+     * 审核通过
+     * @author huxinlu
+     * @param int $id 凭证ID
+     * @param string $reviewer 反审核人
+     * @return mixed
+     */
+    public function editStatusReview(int $id, string $reviewer)
+    {
+        return self::where(['id' => $id, 'status' => self::STATUS_PASS])
+            ->update(['status' => self::STATUS_UNCHECKED, 'reviewer' => $reviewer, 'reviewDate' => date('Y-m-d')]);
+    }
 
-        //摘要
-        if (!empty($params['summary'])) {
-            $query = $query->where('');
-        }
-
-        $list = $query->paginate(20);
+    /**
+     * 是否存在审核通过的凭证
+     * @author huxinlu
+     * @param int $id 凭证ID
+     * @return mixed
+     */
+    public function isExistPass(int $id)
+    {
+        return self::where(['id' => $id, 'status' => self::STATUS_PASS])->exists();
     }
 }

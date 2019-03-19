@@ -17,12 +17,11 @@ class Controller extends BaseController
      * @param array $data 返回数据
      * @return \Illuminate\Http\JsonResponse
      */
-    public function success($data = [])
+    public function success($data = null)
     {
-        if (empty($data)) {
-            $data = (object)$data;
+        if ($data === null) {
+            $data = (object)[];
         }
-
         return response()->json([
             'code'    => 1000,
             'message' => config('errorcode.code')[1000],
