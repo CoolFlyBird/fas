@@ -59,11 +59,11 @@ class Subject
     const 长期应收款 = 47;
     const 未实现融资收益 = 48;
     const 固定资产 = 49;
-    const 累计折旧 = 50;
+    const 累计折旧_50 = 50;
     const 固定资产减值准备 = 51;
     const 在建工程 = 52;
     const 建筑工程 = 53;
-    const 职工薪酬 = 54;
+    const 职工薪酬_54 = 54;
     const 安装工程 = 55;
     const 职工薪酬_56 = 56;
     const 技术改造工程 = 57;
@@ -256,7 +256,7 @@ class Subject
     const 其他_244 = 244;
     const 财务费用 = 245;
     const 汇兑损益 = 246;
-    const 利息 = 247;
+    const 利息_247 = 247;
     const 应收票据贴现利息 = 248;
     const 利息_249 = 249;
     const 手续费 = 250;

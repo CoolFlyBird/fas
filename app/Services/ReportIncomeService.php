@@ -13,7 +13,6 @@ use App\Subject;
 
 class ReportIncomeService
 {
-
     /**
      * @var ReportIncomeModel $periodModel
      */
@@ -41,6 +40,7 @@ class ReportIncomeService
     /**
      * 结算时候需要计算报表
      * 调用时间在科目余额计算之后
+     * @return bool
      */
     public function calculateMonthIncome()
     {
@@ -54,6 +54,7 @@ class ReportIncomeService
      * 结算时候需要计算报表
      * 调用时间在12月科目余额计算之后
      * 设置下一年的年初值
+     * @return bool
      */
     public function calculateYearIncome()
     {
@@ -62,6 +63,12 @@ class ReportIncomeService
         return $this->calculateIncome($year, '00');
     }
 
+
+    /**
+     * @param $year
+     * @param $period
+     * @return bool
+     */
     private function calculateIncome($year, $period)
     {
         $total = $this->getIncomeArray();
@@ -69,9 +76,9 @@ class ReportIncomeService
         foreach ($this->keys as $key) {
             $id = str_replace("is", "", $key);
             $all = $total[$key];//所有数额
-            $lastAmount = $this->getLastAmount($year, $period, $id);//截止上月所有数额
-            $yearAmount = $this->getLastAmount($year, '01', $id);//截止去年所有数额
-            array_push($result, ['year' => $year, 'period' => $period, 'id' => $id, 'lastAmount' => $all, 'total' => ($all - $yearAmount), 'amount' => ($all - $lastAmount)]);
+            $yearAmount = $this->getPrePeriodTotalAmount($year, '01', $id);//截止去年所有数额
+            $lastAmount = $this->getPrePeriodTotalAmount($year, $period, $id);//截止上月所有数额
+            array_push($result, ['year' => $year, 'period' => $period, 'id' => $id, 'totalAmount' => $all, 'yearAmount' => ($all - $yearAmount), 'amount' => ($all - $lastAmount)]);
         }
         return $this->incomeModel->addAll($result);
     }
@@ -186,13 +193,13 @@ class ReportIncomeService
      * @param $id
      * @return mixed 返回上个会计期间数额
      */
-    private function getLastAmount($year, $period, $id)
+    private function getPrePeriodTotalAmount($year, $period, $id)
     {
         $p = "" . ((int)$period - 1);
         if (strlen($p) == 1) {
             $p = '0' . $p;
         }
-        $value = ReportIncomeModel::where(['year' => $year, 'period' => $p, 'id' => $id])->value("lastAmount");
+        $value = ReportIncomeModel::where(['year' => $year, 'period' => $p, 'id' => $id])->value("totalAmount");
         if (!$value) {
             $value = 0;
         }
@@ -200,6 +207,11 @@ class ReportIncomeService
     }
 
 
+    /**
+     * 查询正负号
+     * @param $number 数字
+     * @return mixed -1 或者 1
+     */
     private function sign($number)
     {
         return $number < 0 ? -1 : 1;

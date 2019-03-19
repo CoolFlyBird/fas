@@ -1,8 +1,6 @@
 <?php
 Route::post('login', 'Auth\LoginController@login')->name('login');
 
-Route::get('/report/income', 'report\SheetController@incomeSheet');
-
 //不需要验证
 Route::get('account', 'System\AccountSetController@getList');//账套列表
 
@@ -98,4 +96,11 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('{id}', 'Finance\VoucherController@getVoucherDetail');//凭证详情
         Route::get('', 'Finance\VoucherController@getVoucherList');//凭证列表
     });
+});
+
+Route::group(['prefix' => 'report'], function () {//公司报表
+    Route::get('test', 'report\SheetController@reportTest');//测试 事务，报表计算
+    Route::get('balance', 'report\SheetController@balanceSheet');//资产负债表
+    Route::get('income', 'report\SheetController@incomeSheet');//利润表表
+    Route::get('cash', 'report\SheetController@cashFlowSheet');//现金流量表
 });

@@ -45,6 +45,7 @@ class ReportBalanceService
     /**
      * 结算时候需要计算报表
      * 调用时间在科目余额计算之后
+     * @return bool
      */
     public function calculateMonthBalance()
     {
@@ -55,6 +56,7 @@ class ReportBalanceService
      * 结算时候需要计算报表
      * 调用时间在12月科目余额计算之后
      * 设置下一年的年初值
+     * @return bool
      */
     public function calculateYearBalance()
     {
@@ -93,9 +95,9 @@ class ReportBalanceService
         $bs2 = $this->calculateArray([Subject::交易性金融资产]);
         //应收票据
         $bs4 = $this->calculateArray([Subject::应收票据]);
-        //应收账款 = 应收账款(借)（1122）+ 预收账款(借)（2203）- 坏账准备_应收账款坏账准备（123101）
+        //应收账款 = 应收账款(借)（1122）+ 预收账款(借)（2203）- 坏账准备_应收账款坏账准备（123101）TODO:待修改
         $bs5 = $this->calculateArray([]);
-        //预付款项 = 预付账款(借)（1123）+ 应付账款(借)（2202）- 坏账准备_预付账款坏账准备（123102）
+        //预付款项 = 预付账款(借)（1123）+ 应付账款(借)（2202）- 坏账准备_预付账款坏账准备（123102）TODO:待修改
         $bs6 = $this->calculateArray([]);
         //应收利息
         $bs7 = $this->calculateArray([Subject::应收利息]);//
@@ -123,7 +125,7 @@ class ReportBalanceService
         //投资性房地产
         $bs17 = $this->calculateArray([Subject::投资性房地产]);
         //固定资产
-        $bs18 = $this->calculateArray([Subject::固定资产, -Subject::累计折旧, -Subject::固定资产减值准备]);
+        $bs18 = $this->calculateArray([Subject::固定资产, -Subject::累计折旧_50, -Subject::固定资产减值准备]);
         //在建工程
         $bs19 = $this->calculateArray([Subject::在建工程]);
         //工程物资
@@ -157,9 +159,9 @@ class ReportBalanceService
         $bs33 = $this->calculateArray([Subject::交易性金融负债]);
         //应付票据
         $bs34 = $this->calculateArray([Subject::应付票据]);
-        //应付账款 = 预付账款(贷)（1123）+ 应付账款(贷)（2202）
+        //应付账款 = 预付账款(贷)（1123）+ 应付账款(贷)（2202）TODO:待修改
         $bs35 = $this->calculateArray([]);
-        //预收款项 = 应收账款(贷)（1122）+ 预收账款(贷)（2203）
+        //预收款项 = 应收账款(贷)（1122）+ 预收账款(贷)（2203）TODO:待修改
         $bs36 = $this->calculateArray([]);
         //应付职工薪酬
         $bs37 = $this->calculateArray([Subject::应付职工薪酬]);
@@ -283,5 +285,4 @@ class ReportBalanceService
     {
         return SubjectModel::where(["id" => $id])->value("balance");
     }
-
 }
