@@ -71,7 +71,7 @@ class BaseModel extends Model
      */
     public function getDetail(int $id)
     {
-        return $this->query()->where('id', $id)->get()->first()->toArray();
+        return $this->query()->where('id', $id)->get()->first();
     }
 
     /**

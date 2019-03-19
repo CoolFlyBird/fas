@@ -16,10 +16,11 @@ class AssistController extends Controller
     public function __construct(ClientModel $clientModel, ProjectModel $projectModel, StockModel $stockModel,
                                 SubjectModel $subjectModel, SupplierModel $supplierModel)
     {
-        $this->clientModel  = $clientModel;
-        $this->projectModel = $projectModel;
-        $this->stockModel   = $stockModel;
-        $this->subjectModel = $subjectModel;
+        $this->clientModel   = $clientModel;
+        $this->projectModel  = $projectModel;
+        $this->stockModel    = $stockModel;
+        $this->subjectModel  = $subjectModel;
+        $this->supplierModel = $supplierModel;
     }
 
     /**
@@ -169,7 +170,7 @@ class AssistController extends Controller
             return $this->fail($validator->errors()->first(), 2001);
         }
 
-        $res = $this->subjectModel->create($params);
+        $res = $this->supplierModel->create($params);
 
         return $res ? $this->success() : $this->fail('供应商添加失败');
     }
@@ -209,7 +210,7 @@ class AssistController extends Controller
             return $this->fail($validator->errors()->first(), 2001);
         }
 
-        $res = $this->subjectModel->edit($params);
+        $res = $this->supplierModel->edit($params);
 
         return $res ? $this->success() : $this->fail('供应商编辑失败');
     }
@@ -233,7 +234,7 @@ class AssistController extends Controller
             return $this->fail($validator->errors()->first(), 2001);
         }
 
-        $res = $this->subjectModel->del($id);
+        $res = $this->supplierModel->del($id);
 
         return $res ? $this->success() : $this->fail('供应商删除失败');
     }
@@ -245,7 +246,7 @@ class AssistController extends Controller
      */
     public function getSupplierList()
     {
-        $list = $this->subjectModel->getList();
+        $list = $this->supplierModel->getList();
 
         return $this->success($list);
     }
@@ -269,7 +270,7 @@ class AssistController extends Controller
             return $this->fail($validator->errors()->first(), 2001);
         }
 
-        $detail = $this->subjectModel->getDetail($id);
+        $detail = $this->supplierModel->getDetail($id);
 
         return $this->success($detail);
     }

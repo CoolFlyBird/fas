@@ -37,7 +37,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('', 'System\EmployeeController@getDepartmentList');//部门列表
     });
     //系统设置-凭证字
-    Route::group(['prefix' => 'voucher'], function () {
+    Route::group(['prefix' => 'word'], function () {
         Route::post('create', 'System\ProofWordController@create');//添加凭证字
         Route::put('edit', 'System\ProofWordController@edit');//编辑凭证字
         Route::delete('{id}', 'System\ProofWordController@del');//删除凭证字
@@ -80,16 +80,16 @@ Route::group(['middleware' => 'auth'], function () {
         Route::post('create', 'System\SubjectController@create');//添加科目
         Route::put('edit', 'System\SubjectController@edit');//编辑科目
         Route::delete('{id}', 'System\SubjectController@del');//删除科目
-        Route::get('list/{type?}/{parentCode?}', 'System\SubjectController@getList')->name('subjectList');//科目列表
+        Route::get('list/{type?}', 'System\SubjectController@getList')->name('subjectList');//科目列表
         Route::get('{id}', 'System\SubjectController@getDetail');//科目详情
         Route::put('{id}/start', 'System\SubjectController@start');//启用科目
     });
     //财务处理-期初余额录入
     Route::group(['prefix' => 'balance'], function () {
-        Route::get('', 'Finance\InitialBalanceController@getList');//期初余额列表
+        Route::get('{type?}', 'Finance\InitialBalanceController@getList');//期初余额列表
         Route::put('', 'Finance\InitialBalanceController@editInitialBalance');//编辑期初余额
         Route::put('amount', 'Finance\InitialBalanceController@editAmount');//编辑期初余额
-        Route::post('calculate', 'Finance\InitialBalanceController@calculate');//试算平衡
+        Route::get('calculate', 'Finance\InitialBalanceController@calculate');//试算平衡
     });
     //财务处理-录入凭证
     Route::group(['prefix' => 'voucher'], function () {
