@@ -18,11 +18,12 @@ class InitialBalanceController extends Controller
     /**
      * 期初余额录入列表
      * @author huxinlu
+     * @param int $type 科目类型：0-全部，1-资产，2-负债，3-共同，4-权益，5-成本，6-损益
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function getList()
+    public function getList(int $type = 0)
     {
-        return Redirect::route('subjectList');
+        return Redirect::route('subjectList', $type);
     }
 
     /**

@@ -30,25 +30,4 @@ class SupplierModel extends BaseModel
     {
         return $this->query()->max('code');
     }
-
-    /**
-     * 供应商列表
-     * @author huxinlu
-     * @return \Illuminate\Database\Eloquent\Collection|static[]
-     */
-    public function getList()
-    {
-        return $this->query()->get(['id', 'code', 'name']);
-    }
-
-    /**
-     * 供应商详情
-     * @author huxinlu
-     * @param int $id 供应商ID
-     * @return mixed
-     */
-    public function getDetail(int $id)
-    {
-        return self::where('id', $id)->get(['name']);
-    }
 }

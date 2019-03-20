@@ -105,6 +105,16 @@ class AccountSetController extends Controller
      */
     public function getDetail(int $id)
     {
+        $validator = Validator::make(['id' => $id], [
+            'id' => 'exists:account_set',
+        ], [
+            'id.exists' => '该账套不存在'
+        ]);
+
+        if ($validator->fails()) {
+            $error = $validator->errors()->first();
+            return $this->fail($error, 2001);
+        }
         $detail = $this->accountSetModel->getDetail($id);
 
         return $this->success($detail);

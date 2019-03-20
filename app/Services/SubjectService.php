@@ -5,13 +5,15 @@
  */
 namespace App\Services;
 
+use App\Models\AuxiliaryTypeModel;
 use App\Models\SubjectModel;
 
 class SubjectService
 {
-    public function __construct(SubjectModel $subjectModel)
+    public function __construct(SubjectModel $subjectModel, AuxiliaryTypeModel $auxiliaryTypeModel)
     {
-        $this->subjectModel = $subjectModel;
+        $this->subjectModel       = $subjectModel;
+        $this->auxiliaryTypeModel = $auxiliaryTypeModel;
     }
 
     /**
@@ -106,8 +108,12 @@ class SubjectService
         foreach ($list['data'] as $k => $v) {
             $data = array_merge($data, $this->getNextList($v));
         }
+        foreach ($data as $k => $v) {
+            $detail = $this->auxiliaryTypeModel->getDetail($v['auxiliaryTypeId']);
+            $data[$k]['auxiliaryTypeName'] = $detail['name'] ?? '';
+        }
 
-        return $data;
+        return ['data' => $data];
     }
 
     /**

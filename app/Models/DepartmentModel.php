@@ -30,14 +30,4 @@ class DepartmentModel extends BaseModel
     {
         return $this->query()->max('code');
     }
-
-    /**
-     * 部门列表
-     * @author huxinlu
-     * @return array
-     */
-    public function getList()
-    {
-        return $this->query()->get(['id', 'code', 'name'])->toArray();
-    }
 }

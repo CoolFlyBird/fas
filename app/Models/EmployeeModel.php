@@ -78,7 +78,7 @@ class EmployeeModel extends User
      */
     public function getDetail(int $id)
     {
-        return self::where('id', $id)->get();
+        return self::where('id', $id)->get()->first();
     }
 
     /**
