@@ -12,7 +12,7 @@ Route::group(['middleware' => 'login'], function () {
 });
 
 //需要权限验证
-Route::group(['middleware' => 'auth'], function () {
+//Route::group(['middleware' => 'auth'], function () {
     //系统设置-账套
     Route::group(['prefix' => 'account'], function () {
         Route::post('create', 'System\AccountSetController@create');//创建账套
@@ -80,25 +80,20 @@ Route::group(['middleware' => 'auth'], function () {
         Route::post('create', 'System\SubjectController@create');//添加科目
         Route::put('edit', 'System\SubjectController@edit');//编辑科目
         Route::delete('{id}', 'System\SubjectController@del');//删除科目
-        Route::get('list/{type?}', 'System\SubjectController@getList')->name('subjectList');//科目列表
+        Route::get('', 'System\SubjectController@getList');//科目列表
         Route::get('{id}', 'System\SubjectController@getDetail');//科目详情
         Route::put('{id}/start', 'System\SubjectController@start');//启用科目
     });
     //财务处理-期初余额录入
     Route::group(['prefix' => 'balance'], function () {
-        Route::get('{type?}', 'Finance\InitialBalanceController@getList');//期初余额列表
-        Route::put('', 'Finance\InitialBalanceController@editInitialBalance');//编辑期初余额
-        Route::put('amount', 'Finance\InitialBalanceController@editAmount');//编辑期初余额
-        Route::get('calculate', 'Finance\InitialBalanceController@calculate');//试算平衡
+        Route::get('{type?}', 'Finance\BalanceController@getList');//期初余额列表
+        Route::put('', 'Finance\BalanceController@editInitialBalance');//编辑期初余额
+        Route::put('amount', 'Finance\BalanceController@editAmount');//编辑期初余额
+        Route::get('calculate', 'Finance\BalanceController@calculate');//试算平衡
     });
     //财务处理-录入凭证
     Route::group(['prefix' => 'voucher'], function () {
         Route::post('create', 'Finance\VoucherController@createVoucher');//创建凭证
-        Route::put('edit', 'Finance\VoucherController@editVoucher');//编辑凭证
-        Route::get('{id}', 'Finance\VoucherController@getVoucherDetail');//凭证详情
-        Route::get('', 'Finance\VoucherController@getVoucherList');//凭证列表
-        Route::post('{id}/audit', 'Finance\VoucherController@audit');//审核凭证
-        Route::post('{id}/review', 'Finance\VoucherController@review');//反审核凭证
     });
     //财务处理-录入凭证-凭证模板类别
     Route::group(['prefix' => 'voucher/template/type'], function () {
@@ -114,4 +109,12 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('', 'Finance\VoucherController@getVoucherTemplateList');//凭证模板列表
         Route::delete('{id}', 'Finance\VoucherController@delVoucherTemplate');//删除凭证模板
     });
-});
+    //财务处理-凭证管理
+    Route::group(['prefix' => 'voucher/manage'], function () {
+        Route::put('edit', 'Finance\VoucherManageController@editVoucher');//编辑凭证
+        Route::get('{id}', 'Finance\VoucherManageController@getVoucherDetail');//凭证详情
+        Route::get('', 'Finance\VoucherManageController@getVoucherList');//凭证列表
+        Route::post('audit', 'Finance\VoucherManageController@audit');//审核凭证
+        Route::post('review', 'Finance\VoucherManageController@review');//反审核凭证
+    });
+//});

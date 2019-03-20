@@ -185,6 +185,12 @@ class VoucherService
         return $voucherDetail;
     }
 
+    /**
+     * 凭证列表
+     * @author huxinlu
+     * @param $params
+     * @return array
+     */
     public function getVoucherList($params)
     {
         //当前期数
@@ -223,37 +229,77 @@ class VoucherService
     /**
      * 审核
      * @author huxinlu
-     * @param int $id 凭证ID
+     * @param string $ids 凭证ID
      * @return array|mixed
      */
-    public function audit(int $id)
+    public function audit($ids)
     {
-        $isExist = $this->voucherModel->isExistUnchecked($id);
-        if (!$isExist) {
-            return ['res' => false, 'msg' => '该状态下不能审核'];
+        DB::beginTransaction();
+        try {
+            $idArr = explode(',', $ids);
+            $error = '';
+            foreach ($idArr as $id) {
+                $isExist = $this->voucherModel->isExistUnchecked($id);
+                if (!$isExist) {
+                    //凭证详情
+                    $detail = $this->voucherModel->getDetail($id);
+                    //凭证字详情
+                    $wordDetail = $this->proofWordModel->getDetail((int)$detail['proofWordId']);
+                    $error .= $detail['date'] . '-' . $wordDetail['name'] . ',';
+                } else {
+                    $this->voucherModel->editStatusPass($id, Auth::user()->username);
+                }
+            }
+
+
+            DB::commit();
+            if (!empty($error)) {
+                return ['res' => false, 'msg' => '日期凭证号为' . $error . '不能进行审核操作'];
+            }
+            return ['res' => true, 'msg' => '成功'];
+        } catch (\Exception $e) {
+            logger($e);
+            DB::rollBack();
+            return ['res' => false, 'msg' => '审核失败'];
         }
-
-        $res = $this->voucherModel->editStatusPass($id, Auth::user()->username);
-
-        return $res ? ['res' => true, 'msg' => '成功'] : ['res' => false, 'msg' => '审核失败'];
     }
 
     /**
      * 反审核
      * @author huxinlu
-     * @param int $id 凭证ID
+     * @param string $ids 凭证ID
      * @return array|mixed
      */
-    public function review(int $id)
+    public function review($ids)
     {
-        $isExist = $this->voucherModel->isExistPass($id);
-        if (!$isExist) {
-            return ['res' => false, 'msg' => '该状态下不能反审核'];
+        DB::beginTransaction();
+        try {
+            $idArr = explode(',', $ids);
+            $error = '';
+            foreach ($idArr as $id) {
+                $isExist = $this->voucherModel->isExistPass($id);
+                if (!$isExist) {
+                    //凭证详情
+                    $detail = $this->voucherModel->getDetail($id);
+                    //凭证字详情
+                    $wordDetail = $this->proofWordModel->getDetail((int)$detail['proofWordId']);
+                    $error .= $detail['date'] . '-' . $wordDetail['name'] . ',';
+                } else {
+                    $this->voucherModel->editStatusPass($id, Auth::user()->username);
+                }
+            }
+
+
+            DB::commit();
+            if (!empty($error)) {
+                return ['res' => false, 'msg' => '日期凭证号为' . $error . '该状态下不能反审核'];
+            }
+            return ['res' => true, 'msg' => '成功'];
+        } catch (\Exception $e) {
+            logger($e);
+            DB::rollBack();
+            return ['res' => false, 'msg' => '反审核失败'];
         }
-
-        $res = $this->voucherModel->editStatusReview($id, Auth::user()->username);
-
-        return $res ? ['res' => true, 'msg' => '成功'] : ['res' => false, 'msg' => '反审核失败'];
     }
 
     /**

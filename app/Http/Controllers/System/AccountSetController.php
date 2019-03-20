@@ -53,7 +53,7 @@ class AccountSetController extends Controller
 
         if ($validator->fails()) {
             $error = $validator->errors()->first();
-            return $this->fail($error, 2001);
+            return $this->fail($error, 2002);
         }
 
         $res = $this->accountSetModel->add($params);
@@ -89,7 +89,7 @@ class AccountSetController extends Controller
 
         if ($validator->fails()) {
             $error = $validator->errors()->first();
-            return $this->fail($error, 2001);
+            return $this->fail($error, 2002);
         }
 
         $res = $this->accountSetModel->edit($params);
@@ -113,7 +113,7 @@ class AccountSetController extends Controller
 
         if ($validator->fails()) {
             $error = $validator->errors()->first();
-            return $this->fail($error, 2001);
+            return $this->fail($error, 2002);
         }
         $detail = $this->accountSetModel->getDetail($id);
 
@@ -148,7 +148,7 @@ class AccountSetController extends Controller
 
         if ($validator->fails()) {
             $error = $validator->errors()->first();
-            return $this->fail($error, 2001);
+            return $this->fail($error, 2002);
         }
 
         $res = $this->accountSetModel->del($id);

@@ -49,7 +49,7 @@ class SubjectController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return $this->fail($validator->errors()->first(), 2001);
+            return $this->fail($validator->errors()->first(), 2002);
         }
 
         $params['parentSubjectCode'] = $params['parentSubjectCode'] ?? '';
@@ -89,7 +89,7 @@ class SubjectController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return $this->fail($validator->errors()->first(), 2001);
+            return $this->fail($validator->errors()->first(), 2002);
         }
 
         $res = $this->subjectModel->edit($params);
@@ -113,7 +113,7 @@ class SubjectController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return $this->fail($validator->errors()->first(), 2001);
+            return $this->fail($validator->errors()->first(), 2002);
         }
 
         $res = $this->subjectModel->del($id);
@@ -124,25 +124,32 @@ class SubjectController extends Controller
     /**
      * 科目列表
      * @author huxinlu
-     * @param int $type 科目类型：1-资产，2-负债，3-共同，4-权益，5-成本，6-损益
+     * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function getList(int $type = 0)
+    public function getList(Request $request)
     {
-        if ($type != 0) {
-            $validator = Validator::make(['type' => $type], [
-                'type' => 'required|between:1,6',
-            ], [
-                'type.required' => '科目类型不能为空不能为空',
-                'type.between'  => '该科目类型不存在',
-            ]);
+        $params = $request->only(['type', 'limit']);
+        $validator = Validator::make($params, [
+            'type' => 'required|between:1,6'
+        ], [
+            'type.required' => '科目类型不能为空不能为空',
+            'type.between'  => '该科目类型不存在',
+            'limit.integer' => '每页显示数只能是整数',
+            'limit.min'     => '每页显示数最小是1',
+        ]);
+        $validator->sometimes('limit', 'integer|min:1', function ($input) {
+            return isset($input->limit);
+        });
 
-            if ($validator->fails()) {
-                return $this->fail($validator->errors()->first(), 2001);
-            }
+        if ($validator->fails()) {
+            return $this->fail($validator->errors()->first(), 2002);
         }
 
-        $list = $this->subjectService->getList($type);
+        $type = $params['type'] ?? 0;
+        $limit = $params['limit'] ?? 20;
+
+        $list = $this->subjectService->getList($type, $limit);
 
         return $this->success($list);
     }
@@ -163,7 +170,7 @@ class SubjectController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return $this->fail($validator->errors()->first(), 2001);
+            return $this->fail($validator->errors()->first(), 2002);
         }
 
         $detail = $this->subjectModel->getDetail($id);
@@ -187,7 +194,7 @@ class SubjectController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return $this->fail($validator->errors()->first(), 2001);
+            return $this->fail($validator->errors()->first(), 2002);
         }
 
         $res = $this->subjectService->start($id);

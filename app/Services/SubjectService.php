@@ -94,16 +94,17 @@ class SubjectService
      * 科目列表
      * @author huxinlu
      * @param int $type 科目类型
+     * @param int $limit 每页显示数
      * @return array
      */
-    public function getList(int $type)
+    public function getList(int $type, int $limit)
     {
         $where = ['parentSubjectCode' => '', 'status' => $this->subjectModel::STATUS_START];
         if ($type != 0) {
             $where['type'] = $type;
         }
 
-        $list = $this->subjectModel->getPageList($where);
+        $list = $this->subjectModel->getPageList($limit, $where);
         $data = [];
         foreach ($list['data'] as $k => $v) {
             $data = array_merge($data, $this->getNextList($v));

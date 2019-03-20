@@ -32,6 +32,12 @@ class VoucherDetailModel extends BaseModel
         return self::where('debit', $money)->orWhere('credit')->pluck('voucherId')->toArray();
     }
 
+    /**
+     * 凭证列表
+     * @author huxinlu
+     * @param $params
+     * @return mixed
+     */
     public function getVoucherList($params)
     {
         $query = $this->query()->leftjoin('voucher', 'voucher_detail.voucherId', '=', 'voucher.id');
@@ -72,6 +78,6 @@ class VoucherDetailModel extends BaseModel
             });
         }
 
-        return $query->paginate(20)->toArray();
+        return $query->paginate($params['limit'])->toArray();
     }
 }

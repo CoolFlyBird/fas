@@ -58,19 +58,16 @@ class LoginController extends Controller
         $validator = Validator::make($params, [
             'username'   => 'required|max:45',
             'password'   => 'required',
-            'isRemember' => 'required|in:0,1',
             'id'         => 'required|exists:account_set'
         ], [
             'username.required'   => '用户昵称不能为空',
             'username.max'        => '用户昵称字数过长，不能超过45个字符',
             'password.required'   => '密码不能为空',
-            'isRemember.required' => '是否保存密码不能为空',
-            'isRemember.in'       => '是否保存密码类型有误',
             'id.required'         => '请选择账套',
             'id.exists'           => '账套不存在',
         ]);
         if ($validator->fails()) {
-            return $this->fail($validator->errors()->first(), 2001);
+            return $this->fail($validator->errors()->first(), 2002);
         }
 
         $validate = Auth::validate(['username' => $params['username'], 'password' => $params['password']]);

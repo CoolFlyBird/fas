@@ -25,10 +25,10 @@ class Authenticate extends Middleware
         $user = Auth::user();
         if (empty($user)) {
             return response()->json([
-                'code'    => 3001,
+                'code'    => 2001,
                 'message' => '请登录',
                 'data'    => (object)[],
-            ]);
+            ])->setEncodingOptions(JSON_UNESCAPED_UNICODE);
         } else {
             $url        = $request->route()->getActionName();
             $url        = substr($url, 0, strpos($url, '@'));
@@ -51,7 +51,7 @@ class Authenticate extends Middleware
                     'code'    => 3001,
                     'message' => '无访问权限',
                     'data'    => (object)[],
-                ]);
+                ])->setEncodingOptions(JSON_UNESCAPED_UNICODE);
             }
         }
 
