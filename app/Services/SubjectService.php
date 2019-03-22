@@ -6,14 +6,19 @@
 namespace App\Services;
 
 use App\Models\AuxiliaryTypeModel;
+use App\Models\SubjectBalanceModel;
 use App\Models\SubjectModel;
+use App\Models\VoucherDetailModel;
 
 class SubjectService
 {
-    public function __construct(SubjectModel $subjectModel, AuxiliaryTypeModel $auxiliaryTypeModel)
+    public function __construct(SubjectModel $subjectModel, AuxiliaryTypeModel $auxiliaryTypeModel, VoucherDetailModel $voucherDetailModel,
+                                SubjectBalanceModel $subjectBalanceModel)
     {
-        $this->subjectModel       = $subjectModel;
-        $this->auxiliaryTypeModel = $auxiliaryTypeModel;
+        $this->subjectModel        = $subjectModel;
+        $this->auxiliaryTypeModel  = $auxiliaryTypeModel;
+        $this->voucherDetailModel  = $voucherDetailModel;
+        $this->subjectBalanceModel = $subjectBalanceModel;
     }
 
     /**
@@ -110,7 +115,7 @@ class SubjectService
             $data = array_merge($data, $this->getNextList($v));
         }
         foreach ($data as $k => $v) {
-            $detail = $this->auxiliaryTypeModel->getDetail($v['auxiliaryTypeId']);
+            $detail                        = $this->auxiliaryTypeModel->getDetail($v['auxiliaryTypeId']);
             $data[$k]['auxiliaryTypeName'] = $detail['name'] ?? '';
         }
 
@@ -165,9 +170,14 @@ class SubjectService
         //是否存在已启用的科目
         $isExist = $this->subjectModel->isExistStartSubject($id);
         if ($isExist) {
-            //编辑期初余额
-            $res = $this->subjectModel->edit(['id' => $id, 'balance' => $initialBalance]);
-            return $res ? ['res' => true] : ['res' => false, 'msg' => '编辑期初余额失败'];
+            $isExistData = $this->subjectBalanceModel->isExistData();
+            if ($isExistData) {
+                return ['res' => false, 'msg' => '不能编辑期初余额'];
+            } else {
+                //编辑期初余额
+                $res = $this->subjectModel->edit(['id' => $id, 'balance' => $initialBalance]);
+                return $res ? ['res' => true] : ['res' => false, 'msg' => '编辑期初余额失败'];
+            }
         } else {
             return ['res' => false, 'msg' => '该科目不存在或未启用'];
         }
@@ -185,9 +195,14 @@ class SubjectService
         //是否存在已启用的科目
         $isExist = $this->subjectModel->isExistStartSubject($id);
         if ($isExist) {
-            //编辑数量
-            $res = $this->subjectModel->edit(['id' => $id, 'amount' => $amount]);
-            return $res ? ['res' => true] : ['res' => false, 'msg' => '编辑数量失败'];
+            $isExistData = $this->subjectBalanceModel->isExistData();
+            if ($isExistData) {
+                return ['res' => false, 'msg' => '不能编辑期初余额'];
+            } else {
+                //编辑数量
+                $res = $this->subjectModel->edit(['id' => $id, 'amount' => $amount]);
+                return $res ? ['res' => true] : ['res' => false, 'msg' => '编辑数量失败'];
+            }
         } else {
             return ['res' => false, 'msg' => '该科目不存在或未启用'];
         }

@@ -12,7 +12,7 @@ Route::group(['middleware' => 'login'], function () {
 });
 
 //需要权限验证
-//Route::group(['middleware' => 'auth'], function () {
+Route::group(['middleware' => 'auth'], function () {
     //系统设置-账套
     Route::group(['prefix' => 'account'], function () {
         Route::post('create', 'System\AccountSetController@create');//创建账套
@@ -88,7 +88,7 @@ Route::group(['middleware' => 'login'], function () {
     Route::group(['prefix' => 'balance'], function () {
         Route::get('{type?}', 'Finance\BalanceController@getList');//期初余额列表
         Route::put('', 'Finance\BalanceController@editInitialBalance');//编辑期初余额
-        Route::put('amount', 'Finance\BalanceController@editAmount');//编辑期初余额
+        Route::put('amount', 'Finance\BalanceController@editAmount');//编辑计量单位
         Route::get('calculate', 'Finance\BalanceController@calculate');//试算平衡
     });
     //财务处理-录入凭证
@@ -117,4 +117,9 @@ Route::group(['middleware' => 'login'], function () {
         Route::post('audit', 'Finance\VoucherManageController@audit');//审核凭证
         Route::post('review', 'Finance\VoucherManageController@review');//反审核凭证
     });
-//});
+    //财务处理-期末结账
+    Route::group(['prefix' => 'settle'], function () {
+        Route::post('', 'Finance\SettleAccountController@settleAccount');//结账
+        Route::post('checkout', 'Finance\SettleAccountController@checkout');//反结账
+    });
+});

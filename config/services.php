@@ -31,7 +31,7 @@ return [
     ],
 
     'stripe' => [
-        'model' => \App\Models\Account\EmployeeModel::class,
+        'model' => \App\Models\EmployeeModel::class,
         'key' => env('STRIPE_KEY'),
         'secret' => env('STRIPE_SECRET'),
         'webhook' => [
