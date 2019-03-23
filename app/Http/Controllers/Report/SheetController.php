@@ -19,15 +19,22 @@ class SheetController extends Controller
      * @param ReportService $service
      * @return \Illuminate\Http\JsonResponse
      */
-    public function reportTest(ReportService $service)
+    public function reportTest(Request $request)
     {
-        $result = $service->calculateMonth();
-//        $result = $service->calculateYear();
+        $result = ReportBalanceModel::query()
+            ->leftJoin('report_balance_name', 'report_balance_name.id', '=', 'report_balance.id')
+            ->where(["year" => '2019', "period" => '04'])
+            ->get();
         if ($result) {
             return $this->success($result);
         } else {
             return $this->fail($result);
         }
+    }
+
+    public function reportTest1(Request $request)
+    {
+        return 'test1';
     }
 
     /**

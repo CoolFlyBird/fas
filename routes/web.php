@@ -100,6 +100,8 @@ Route::group(['middleware' => 'auth'], function () {
 
 Route::group(['prefix' => 'report'], function () {//公司报表
     Route::get('test', 'report\SheetController@reportTest');//测试 事务，报表计算
+    Route::get('test1', 'report\SheetController@reportTest1');//测试 事务，报表计算
+
     Route::get('balance', 'report\SheetController@balanceSheet');//资产负债表
     Route::get('income', 'report\SheetController@incomeSheet');//利润表表
     Route::get('cash', 'report\SheetController@cashFlowSheet');//现金流量表
