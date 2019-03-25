@@ -88,12 +88,13 @@ class BaseModel extends Model
     /**
      * 分页列表
      * @author huxinlu
+     * @param int $limit 每页显示数
      * @param array $where 查询条件
      * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
      */
-    public function getPageList(array $where = [])
+    public function getPageList($limit, array $where = [])
     {
-        return $this->query()->where($where)->paginate(20)->toArray();
+        return $this->query()->where($where)->paginate($limit)->toArray();
     }
 
     /**

@@ -95,11 +95,12 @@ class EmployeeModel extends User
     /**
      * 职员列表
      * @author huxinlu
+     * @param $limit int 每页显示数
      * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
      */
-    public function getList()
+    public function getList($limit)
     {
-        return $this->query()->paginate(20);
+        return $this->query()->paginate($limit);
     }
 
     /**

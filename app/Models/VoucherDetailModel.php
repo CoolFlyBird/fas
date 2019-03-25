@@ -6,6 +6,8 @@
 namespace App\Models;
 
 
+use Illuminate\Support\Facades\DB;
+
 class VoucherDetailModel extends BaseModel
 {
     protected $table = 'voucher_detail';
@@ -32,6 +34,12 @@ class VoucherDetailModel extends BaseModel
         return self::where('debit', $money)->orWhere('credit')->pluck('voucherId')->toArray();
     }
 
+    /**
+     * 凭证列表
+     * @author huxinlu
+     * @param $params
+     * @return mixed
+     */
     public function getVoucherList($params)
     {
         $query = $this->query()->leftjoin('voucher', 'voucher_detail.voucherId', '=', 'voucher.id');
@@ -72,6 +80,24 @@ class VoucherDetailModel extends BaseModel
             });
         }
 
-        return $query->paginate(20)->toArray();
+        return $query->paginate($params['limit'])->toArray();
+    }
+
+    /**
+     * 当前期的凭证列表
+     * @author huxinlu
+     * @param $year int 年份
+     * @param $month int 月份
+     * @return mixed
+     */
+    public function getCurrentVoucherList($year, $month)
+    {
+        return $this->from('voucher_detail as detail')
+            ->leftJoin('subject', 'detail.subjectId', '=', 'subject.id')
+            ->whereYear('detail.date', $year)
+            ->whereMonth('detail.date', $month)
+            ->groupBy('detail.subjectId')
+            ->get(['detail.subjectId', 'subject', DB::raw('SUM(debit) as debitEndingBalance'), DB::raw('SUM(credit) as creditEndingBalance'), 'subject.direction', 'subject.balance'])
+            ->toArray();
     }
 }

@@ -8,7 +8,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Validator;
 
-class InitialBalanceController extends Controller
+class BalanceController extends Controller
 {
     public function __construct(SubjectService $subjectService)
     {
@@ -18,12 +18,37 @@ class InitialBalanceController extends Controller
     /**
      * 期初余额录入列表
      * @author huxinlu
-     * @param int $type 科目类型：0-全部，1-资产，2-负债，3-共同，4-权益，5-成本，6-损益
+     * @param Request $request
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function getList(int $type = 0)
+    public function getList(Request $request)
     {
-        return Redirect::route('subjectList', $type);
+        $params = $request->only(['type', 'limit']);
+        $validator = Validator::make($params, [], [
+            'type.required' => '科目类型不能为空不能为空',
+            'type.between'  => '该科目类型不存在',
+            'limit.integer' => '每页显示数只能是整数',
+            'limit.min'     => '每页显示数最小是1',
+        ]);
+        $validator->sometimes('type', 'required|between:1,6', function ($input) {
+            if (isset($input->type) && $input->type != 0) {
+                return true;
+            }
+        });
+        $validator->sometimes('limit', 'integer|min:1', function ($input) {
+            return isset($input->limit);
+        });
+
+        if ($validator->fails()) {
+            return $this->fail($validator->errors()->first(), 2002);
+        }
+
+        $type = $params['type'] ?? 0;
+        $limit = $params['limit'] ?? 20;
+
+        $list = $this->subjectService->getList($type, $limit);
+
+        return $this->success($list);
     }
 
     /**
@@ -44,7 +69,7 @@ class InitialBalanceController extends Controller
             'initialBalance.numeric' => '期初余额只能是数字',
         ]);
         if ($validator->fails()) {
-            return $this->fail($validator->errors()->first(), 2001);
+            return $this->fail($validator->errors()->first(), 2002);
         }
 
         $params['initialBalance'] = $params['initialBalance'] ?? 0.00;
@@ -72,7 +97,7 @@ class InitialBalanceController extends Controller
             'amount.numeric' => '数量只能是数字',
         ]);
         if ($validator->fails()) {
-            return $this->fail($validator->errors()->first(), 2001);
+            return $this->fail($validator->errors()->first(), 2002);
         }
 
         $params['amount'] = $params['amount'] ?? 0.00;

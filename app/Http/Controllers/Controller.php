@@ -26,7 +26,7 @@ class Controller extends BaseController
             'code'    => 1000,
             'message' => config('errorcode.code')[1000],
             'data'    => $data,
-        ]);
+        ])->setEncodingOptions(JSON_UNESCAPED_UNICODE);
     }
 
     /**
@@ -46,6 +46,6 @@ class Controller extends BaseController
             'code'    => $code,
             'message' => $msg,
             'data'    => (object)[],
-        ]);
+        ])->setEncodingOptions(JSON_UNESCAPED_UNICODE);
     }
 }

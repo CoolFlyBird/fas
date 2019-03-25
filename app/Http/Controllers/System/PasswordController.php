@@ -37,7 +37,7 @@ class PasswordController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return $this->fail($validator->errors()->first(), 2001);
+            return $this->fail($validator->errors()->first(), 2002);
         }
 
         $res = $this->employeeModel->editPassword(Auth::user()->id, $params['confirmPassword']);

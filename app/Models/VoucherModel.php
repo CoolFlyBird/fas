@@ -11,6 +11,8 @@ class VoucherModel extends BaseModel
 
     const STATUS_UNCHECKED = 0;//未审核
     const STATUS_PASS = 1;//审核通过
+    const DIRECTION_DEBIT = 1;//借
+    const DIRECTION_CREDIT = 2;//贷
 
     /**
      * 是否存在相同的凭证号
@@ -83,5 +85,16 @@ class VoucherModel extends BaseModel
     public function isExistPass(int $id)
     {
         return self::where(['id' => $id, 'status' => self::STATUS_PASS])->exists();
+    }
+
+    /**
+     * 是否本期存在未审核的凭证
+     * @author huxinlu
+     * @param int $period 期数
+     * @return mixed
+     */
+    public function isExistCurrentUnchecked($period)
+    {
+        return self::where('status',  self::STATUS_UNCHECKED)->whereMonth('date', $period)->exists();
     }
 }

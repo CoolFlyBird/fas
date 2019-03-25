@@ -41,7 +41,7 @@ class AssistController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return $this->fail($validator->errors()->first(), 2001);
+            return $this->fail($validator->errors()->first(), 2002);
         }
 
         $res = $this->clientModel->create($params);
@@ -70,7 +70,7 @@ class AssistController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return $this->fail($validator->errors()->first(), 2001);
+            return $this->fail($validator->errors()->first(), 2002);
         }
 
         $res = $this->clientModel->edit($params);
@@ -94,7 +94,7 @@ class AssistController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return $this->fail($validator->errors()->first(), 2001);
+            return $this->fail($validator->errors()->first(), 2002);
         }
 
         $res = $this->clientModel->del($id);
@@ -130,7 +130,7 @@ class AssistController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return $this->fail($validator->errors()->first(), 2001);
+            return $this->fail($validator->errors()->first(), 2002);
         }
 
         $detail = $this->clientModel->getDetail($id);
@@ -167,7 +167,7 @@ class AssistController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return $this->fail($validator->errors()->first(), 2001);
+            return $this->fail($validator->errors()->first(), 2002);
         }
 
         $res = $this->supplierModel->create($params);
@@ -207,7 +207,7 @@ class AssistController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return $this->fail($validator->errors()->first(), 2001);
+            return $this->fail($validator->errors()->first(), 2002);
         }
 
         $res = $this->supplierModel->edit($params);
@@ -231,7 +231,7 @@ class AssistController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return $this->fail($validator->errors()->first(), 2001);
+            return $this->fail($validator->errors()->first(), 2002);
         }
 
         $res = $this->supplierModel->del($id);
@@ -267,7 +267,7 @@ class AssistController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return $this->fail($validator->errors()->first(), 2001);
+            return $this->fail($validator->errors()->first(), 2002);
         }
 
         $detail = $this->supplierModel->getDetail($id);
@@ -293,7 +293,7 @@ class AssistController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return $this->fail($validator->errors()->first(), 2001);
+            return $this->fail($validator->errors()->first(), 2002);
         }
 
         $res = $this->projectModel->create($params);
@@ -322,7 +322,7 @@ class AssistController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return $this->fail($validator->errors()->first(), 2001);
+            return $this->fail($validator->errors()->first(), 2002);
         }
 
         $res = $this->projectModel->edit($params);
@@ -346,7 +346,7 @@ class AssistController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return $this->fail($validator->errors()->first(), 2001);
+            return $this->fail($validator->errors()->first(), 2002);
         }
 
         $res = $this->projectModel->del($id);
@@ -382,7 +382,7 @@ class AssistController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return $this->fail($validator->errors()->first(), 2001);
+            return $this->fail($validator->errors()->first(), 2002);
         }
 
         $detail = $this->projectModel->getDetail($id);
@@ -408,7 +408,7 @@ class AssistController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return $this->fail($validator->errors()->first(), 2001);
+            return $this->fail($validator->errors()->first(), 2002);
         }
 
         $res = $this->stockModel->create($params);
@@ -437,7 +437,7 @@ class AssistController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return $this->fail($validator->errors()->first(), 2001);
+            return $this->fail($validator->errors()->first(), 2002);
         }
 
         $res = $this->stockModel->edit($params);
@@ -461,7 +461,7 @@ class AssistController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return $this->fail($validator->errors()->first(), 2001);
+            return $this->fail($validator->errors()->first(), 2002);
         }
 
         $res = $this->stockModel->del($id);
@@ -497,7 +497,7 @@ class AssistController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return $this->fail($validator->errors()->first(), 2001);
+            return $this->fail($validator->errors()->first(), 2002);
         }
 
         $detail = $this->stockModel->getDetail($id);

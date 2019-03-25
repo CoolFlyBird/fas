@@ -18,10 +18,10 @@ class LoginAuthenticated
     {
         if (!Auth::check()) {
             return response()->json([
-                'code'    => 3001,
+                'code'    => 2001,
                 'message' => '请登录',
                 'data'    => (object)[],
-            ]);
+            ])->setEncodingOptions(JSON_UNESCAPED_UNICODE);
         }
 
         return $next($request);

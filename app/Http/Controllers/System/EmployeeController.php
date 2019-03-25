@@ -60,7 +60,7 @@ class EmployeeController extends Controller
             'bankCard.max'          => '银行卡号不能超过20个字符',
         ]);
         if ($validate->fails()) {
-            return $this->fail($validate->errors()->first(), 2001);
+            return $this->fail($validate->errors()->first(), 2002);
         }
 
         $res = $this->employeeModel->create($params);
@@ -117,12 +117,12 @@ class EmployeeController extends Controller
             'isDisable.in'              => '是否禁用类型不正确',
         ]);
         if ($validate->fails()) {
-            return $this->fail($validate->errors()->first(), 2001);
+            return $this->fail($validate->errors()->first(), 2002);
         }
 
         //在职员工不能禁用
         if (isset($params['status']) && isset($params['isDisable']) && $params['status'] == $employeeModel::STATUS_ON && $params['isDisable'] == $employeeModel::DISABLED) {
-            return $this->fail('在职员工不能禁用', 2001);
+            return $this->fail('在职员工不能禁用', 2002);
         }
         $res = $this->employeeModel->edit($params);
 
@@ -160,9 +160,10 @@ class EmployeeController extends Controller
      * @author huxinlu
      * @return \Illuminate\Http\JsonResponse
      */
-    public function getEmployeeList()
+    public function getEmployeeList(Request $request)
     {
-        $list = $this->employeeModel->getList();
+        $limit = $request->all('limit');
+        $list = $this->employeeModel->getList((int)$limit);
 
         return $this->success(['data' => $list->items(), 'totalCount' => $list->total()]);
     }
@@ -190,7 +191,7 @@ class EmployeeController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return $this->fail($validator->errors()->first(), 2001);
+            return $this->fail($validator->errors()->first(), 2002);
         }
 
         $res = $this->departmentModel->create($params);
@@ -224,7 +225,7 @@ class EmployeeController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return $this->fail($validator->errors()->first(), 2001);
+            return $this->fail($validator->errors()->first(), 2002);
         }
 
         $res = $this->departmentModel->edit($params);

@@ -32,7 +32,7 @@ class ProofWordController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return $this->fail($validator->errors()->first(), 2001);
+            return $this->fail($validator->errors()->first(), 2002);
         }
 
         $res = $this->proofWordModel->add($params);
@@ -61,7 +61,7 @@ class ProofWordController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return $this->fail($validator->errors()->first(), 2001);
+            return $this->fail($validator->errors()->first(), 2002);
         }
 
         $res = $this->proofWordModel->edit($params);
@@ -85,7 +85,7 @@ class ProofWordController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return $this->fail($validator->errors()->first(), 2001);
+            return $this->fail($validator->errors()->first(), 2002);
         }
 
         $res = $this->proofWordModel->del($id);
