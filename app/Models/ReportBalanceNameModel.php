@@ -6,10 +6,10 @@
 
 namespace App\Models;
 
-class ReportBalanceModel extends BaseModel
+class ReportBalanceNameModel extends BaseModel
 {
     public $timestamps = false;
 
-    protected $table = 'report_balance';
+    protected $table = 'report_balance_name';
 
 }
