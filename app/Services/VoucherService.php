@@ -43,6 +43,12 @@ class VoucherService
      */
     public function create($params)
     {
+        ////判断凭证日期是否小于当前期
+        $currentDate = $this->currentPeriodModel->getCurrentYear() . '-' . $this->currentPeriodModel->getCurrentPeriod();
+        if ($params['date'] < $currentDate) {
+            return ['res' => false, 'msg' => '该日期已结账'];
+        }
+
         //判断凭证号是否重复
         $isExist = $this->voucherModel->isExistVoucher((int)$params['proofWordId'], (int)$params['voucherNo']);
         if ($isExist) {

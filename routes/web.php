@@ -118,8 +118,8 @@ Route::group(['middleware' => 'auth'], function () {
         Route::post('review', 'Finance\VoucherManageController@review');//反审核凭证
     });
     //财务处理-期末结账
-    Route::group(['prefix' => 'settle'], function () {
-        Route::post('', 'Finance\SettleAccountController@settleAccount');//结账
+    Route::group(['prefix' => 'final'], function () {
+        Route::post('settle', 'Finance\SettleAccountController@settleAccount');//结账
         Route::post('checkout', 'Finance\SettleAccountController@checkout');//反结账
     });
 });

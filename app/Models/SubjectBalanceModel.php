@@ -34,4 +34,16 @@ class SubjectBalanceModel extends BaseModel
             ->get(['debitEndingBalance', 'creditEndingBalance'])
             ->toArray();
     }
+
+    /**
+     * 获取科目ID
+     * @author huxinlu
+     * @param $year int 年份
+     * @param $month int 月份
+     * @return mixed
+     */
+    public function delSubject($year, $month)
+    {
+        return $this->delAll(['year' => $year, 'month' => $month]);
+    }
 }

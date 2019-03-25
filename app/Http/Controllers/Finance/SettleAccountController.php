@@ -13,6 +13,11 @@ class SettleAccountController extends Controller
         $this->financeService = $financeService;
     }
 
+    /**
+     * 结账
+     * @author huxinlu
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function settleAccount()
     {
         $res = $this->financeService->settleAccount();
@@ -20,8 +25,15 @@ class SettleAccountController extends Controller
         return $res['res'] ? $this->success() : $this->fail($res['msg']);
     }
 
+    /**
+     * 反结账
+     * @author huxinlu
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function checkout()
     {
-        dd(99);
+        $res = $this->financeService->checkout();
+
+        return $res['res'] ? $this->success() : $this->fail($res['msg']);
     }
 }
