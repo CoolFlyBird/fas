@@ -28,11 +28,9 @@ class SubjectBalanceModel extends BaseModel
      * @param $subjectId int 科目ID
      * @return mixed
      */
-    public function getLastPeriodBeginBalance($year, $month, $subjectId)
+    public function getLastPeriodEndingBalance($year, $month, $subjectId)
     {
-        return self::where(['subjectId' => $subjectId, 'year' => $year, 'month' => $month])
-            ->get(['debitEndingBalance', 'creditEndingBalance'])
-            ->toArray();
+        return self::where(['subjectId' => $subjectId, 'year' => $year, 'month' => $month])->value('endingBalance');
     }
 
     /**

@@ -97,7 +97,7 @@ class VoucherDetailModel extends BaseModel
             ->whereYear('detail.date', $year)
             ->whereMonth('detail.date', $month)
             ->groupBy('detail.subjectId')
-            ->get(['detail.subjectId', 'subject', DB::raw('SUM(debit) as debitEndingBalance'), DB::raw('SUM(credit) as creditEndingBalance'), 'subject.direction', 'subject.balance'])
+            ->get(['detail.subjectId', 'subject', DB::raw('SUM(debit) as debitBalance'), DB::raw('SUM(credit) as creditBalance'), 'subject.direction', 'subject.balance'])
             ->toArray();
     }
 }
