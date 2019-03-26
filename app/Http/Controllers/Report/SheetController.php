@@ -6,36 +6,23 @@ use App\Http\Controllers\Controller;
 use App\Models\ReportBalanceModel;
 use App\Models\ReportCashFlowModel;
 use App\Models\ReportIncomeModel;
-use App\Services\ReportBalanceService;
-use App\Services\ReportCashFlowService;
-use App\Services\ReportIncomeService;
-use App\Services\ReportService;
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Request;
 
 class SheetController extends Controller
 {
-    /**
-     * 测试服务 正常运行
-     * @param ReportService $service
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function reportTest(Request $request)
+
+    private $reportBalanceModel;
+    private $reportIncomeModel;
+    private $reportCashFlowModel;
+
+    public function __construct(ReportBalanceModel $reportBalanceModel, ReportIncomeModel $reportIncomeModel, ReportCashFlowModel $reportCashFlowModel)
     {
-        $result = ReportBalanceModel::query()
-            ->leftJoin('report_balance_name', 'report_balance_name.id', '=', 'report_balance.id')
-            ->where(["year" => '2019', "period" => '04'])
-            ->get();
-        if ($result) {
-            return $this->success($result);
-        } else {
-            return $this->fail($result);
-        }
+        $this->reportBalanceModel = $reportBalanceModel;
+        $this->reportIncomeModel = $reportIncomeModel;
+        $this->reportCashFlowModel = $reportCashFlowModel;
     }
 
-    public function reportTest1(Request $request)
-    {
-        return 'test1';
-    }
 
     /**
      * 资产负债表 查询
@@ -44,12 +31,26 @@ class SheetController extends Controller
      */
     public function balanceSheet(Request $request)
     {
-        $year = $request->only('year');
-        $period = $request->only('period');
-        $result = ReportBalanceModel::query()
-            ->leftJoin('report_balance_name', 'report_balance_name.id', '=', 'report_balance.id')
-            ->where(["year" => $year, "period" => $period])
-            ->get();
+        $params = $request->only(['year', 'period']);
+        $validator = Validator::make($params, [
+            'year' => 'required|integer|min:2000',
+            'period' => 'required|integer|min:0',
+        ], [
+            'year.required' => '年份不能为空',
+            'year.integer' => '年份只能是整数',
+            'year.min' => '年份不能小于2000',
+            'period.required' => '会计周期不能为空',
+            'period.integer' => '会计周期只能是整数',
+            'period.min' => '会计周期不能小于0',
+        ]);
+
+        if ($validator->fails()) {
+            return $this->fail($validator->errors()->first(), 2002);
+        }
+        $year = $params['year'] ?? 2000;
+        $period = $params['period'] ?? 1;
+
+        $result = $this->reportBalanceModel->loadResult($year, $period);
         if ($result) {
             return $this->success($result);
         } else {
@@ -64,12 +65,25 @@ class SheetController extends Controller
      */
     public function incomeSheet(Request $request)
     {
-        $year = $request->only('year');
-        $period = $request->only('period');
-        $result = ReportIncomeModel::query()
-            ->leftJoin('report_income_name', 'report_income_name.id', '=', 'report_income.id')
-            ->where(["year" => $year, "period" => $period])
-            ->get();
+        $params = $request->only(['year', 'period']);
+        $validator = Validator::make($params, [
+            'year' => 'required|integer|min:2000',
+            'period' => 'required|integer|min:0',
+        ], [
+            'year.required' => '年份不能为空',
+            'year.integer' => '年份只能是整数',
+            'year.min' => '年份不能小于2000',
+            'period.required' => '会计周期不能为空',
+            'period.integer' => '会计周期只能是整数',
+            'period.min' => '会计周期不能小于0',
+        ]);
+
+        if ($validator->fails()) {
+            return $this->fail($validator->errors()->first(), 2002);
+        }
+        $year = $params['year'] ?? 2000;
+        $period = $params['period'] ?? 1;
+        $result = $this->reportIncomeModel->loadResult($year, $period);
         if ($result) {
             return $this->success($result);
         } else {
@@ -84,12 +98,25 @@ class SheetController extends Controller
      */
     public function cashFlowSheet(Request $request)
     {
-        $year = $request->only('year');
-        $period = $request->only('period');
-        $result = ReportCashFlowModel::query()
-            ->leftJoin('report_cash_flow_name', 'report_cash_flow_name.id', '=', 'report_cash_flow.id')
-            ->where(["year" => $year, "period" => $period])
-            ->get();
+        $params = $request->only(['year', 'period']);
+        $validator = Validator::make($params, [
+            'year' => 'required|integer|min:2000',
+            'period' => 'required|integer|min:0',
+        ], [
+            'year.required' => '年份不能为空',
+            'year.integer' => '年份只能是整数',
+            'year.min' => '年份不能小于2000',
+            'period.required' => '会计周期不能为空',
+            'period.integer' => '会计周期只能是整数',
+            'period.min' => '会计周期不能小于0',
+        ]);
+
+        if ($validator->fails()) {
+            return $this->fail($validator->errors()->first(), 2002);
+        }
+        $year = $params['year'] ?? 2000;
+        $period = $params['period'] ?? 1;
+        $result = $this->reportCashFlowModel->loadResult($year, $period);
         if ($result) {
             return $this->success($result);
         } else {

@@ -122,9 +122,6 @@ Route::group(['middleware' => 'auth'], function () {
     });
     //报表
     Route::group(['prefix' => 'report'], function () {//公司报表
-        Route::get('test', 'Report\SheetController@reportTest');//测试 事务，报表计算
-        Route::get('test1', 'Report\SheetController@reportTest1');//测试 事务，报表计算
-
         Route::get('balance', 'Report\SheetController@balanceSheet');//资产负债表
         Route::get('income', 'Report\SheetController@incomeSheet');//利润表表
         Route::get('cash', 'Report\SheetController@cashFlowSheet');//现金流量表

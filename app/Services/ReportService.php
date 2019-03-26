@@ -6,8 +6,6 @@
 
 namespace App\Services;
 
-use App\Models\SubjectBalanceModel;
-use App\Models\SubjectModel;
 use Illuminate\Support\Facades\DB;
 
 class ReportService
@@ -27,54 +25,108 @@ class ReportService
      */
     private $incomeService;
 
-    public function __construct(ReportBalanceService $balanceService, ReportIncomeService $incomeService,
-                                ReportCashFlowService $cashFlowService, SubjectBalanceModel $subjectBalanceModel,
-                                SubjectModel $subjectModel)
+    /**
+     * @var CurrentPeriodModel $currentPeriodModel
+     */
+    private $currentPeriodModel;
+
+    public function __construct(CurrentPeriodModel $currentPeriodModel, ReportBalanceService $balanceService, ReportIncomeService $incomeService, ReportCashFlowService $cashFlowService)
     {
-        $this->balanceService      = $balanceService;
-        $this->incomeService       = $incomeService;
-        $this->cashFlowService     = $cashFlowService;
-        $this->subjectBalanceModel = $subjectBalanceModel;
-        $this->subjectModel        = $subjectModel;
+        $this->currentPeriodModel = $currentPeriodModel;
+        $this->balanceService = $balanceService;
+        $this->incomeService = $incomeService;
+        $this->cashFlowService = $cashFlowService;
     }
 
     /**
-     * 每月调用一次
-     * @return bool
+     * 结账调用
+     * @param $year
+     * @param $period
+     * @return bool 是否计算成功
      */
-    public function calculateMonth()
+    public function calculateMonth($year, $period)
     {
-        DB::beginTransaction();
-        $result1 = $this->balanceService->calculateMonthBalance();
-        $result2 = $this->incomeService->calculateMonthIncome();
-        $result3 = $this->cashFlowService->calculateMonthCashFlow();
-        if ($result1 && $result2 && $result3) {
-            DB::commit();
-            return true;
-        } else {
-            DB::rollBack();
-            return false;
+        $currentYear = (int)$this->currentPeriodModel->getCurrentPeriod();
+        $currentPeriod = (int)$this->currentPeriodModel->getCurrentYear();
+        if ($currentYear === (int)$year && $currentPeriod === (int)$period) {//如果不是计算本期，则不计算
+            if (((int)$period) === 12) {//12月份 计算年度和月度
+                DB::beginTransaction();
+                $result1 = $this->balanceService->calculateMonthBalance();
+                $result2 = $this->incomeService->calculateMonthIncome();
+                $result3 = $this->cashFlowService->calculateMonthCashFlow();
+
+                $result4 = $this->balanceService->calculateYearBalance();
+                $result5 = $this->incomeService->calculateYearIncome();
+                $result6 = $this->cashFlowService->calculateYearCashFlow();
+                if ($result1 && $result2 && $result3
+                    && $result4 && $result5 && $result6) {
+                    DB::commit();
+                    return true;
+                } else {
+                    DB::rollBack();
+                    return false;
+                }
+            } else {//计算月度
+                DB::beginTransaction();
+                $result1 = $this->balanceService->calculateMonthBalance();
+                $result2 = $this->incomeService->calculateMonthIncome();
+                $result3 = $this->cashFlowService->calculateMonthCashFlow();
+                if ($result1 && $result2 && $result3) {
+                    DB::commit();
+                    return true;
+                } else {
+                    DB::rollBack();
+                    return false;
+                }
+            }
         }
+        return false;
     }
 
     /**
-     *
-     * 每年调用一次
+     * 反结账使用
+     * @param $year
+     * @param $period
      * @return bool
      */
-    public function calculateYear()
+    public function revokeMonth($year, $period)
     {
-        DB::beginTransaction();
-        $result1 = $this->balanceService->calculateYearBalance();
-        $result2 = $this->incomeService->calculateYearIncome();
-        $result3 = $this->cashFlowService->calculateYearCashFlow();
-        if ($result1 && $result2 && $result3) {
-            DB::commit();
-            return true;
-        } else {
-            DB::rollBack();
-            return false;
+        $currentYear = (int)$this->currentPeriodModel->getCurrentPeriod();
+        $currentPeriod = (int)$this->currentPeriodModel->getCurrentYear();
+        if ($currentYear === (int)$year && $currentPeriod === (int)$period) {//如果不是计算本期，则不反结账
+            if (((int)$period) === 1) {//1月份 撤销年度和月度
+                DB::beginTransaction();
+                $result1 = $this->balanceService->revokeMonthBalance();
+                $result2 = $this->incomeService->revokeMonthIncome();
+                $result3 = $this->cashFlowService->revokeMonthCashFlow();
+
+                $result4 = $this->balanceService->revokeYearBalance();
+                $result5 = $this->incomeService->revokeYearIncome();
+                $result6 = $this->cashFlowService->revokeYearCashFlow();
+                if ($result1 && $result2 && $result3
+                    && $result4 && $result5 && $result6) {
+                    DB::commit();
+                    return true;
+                } else {
+                    DB::rollBack();
+                    return false;
+                }
+            } else {//撤销月度
+                DB::beginTransaction();
+                $result1 = $this->balanceService->revokeMonthBalance();
+                $result2 = $this->incomeService->revokeMonthIncome();
+                $result3 = $this->cashFlowService->revokeMonthCashFlow();
+
+                if ($result1 && $result2 && $result3) {
+                    DB::commit();
+                    return true;
+                } else {
+                    DB::rollBack();
+                    return false;
+                }
+            }
         }
+        return false;
     }
 
     /**
