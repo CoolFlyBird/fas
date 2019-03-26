@@ -14,6 +14,12 @@ class RemainController extends Controller
         $this->reportService = $reportService;
     }
 
+    /**
+     * 科目余额表
+     * @author huxinlu
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function getSubjectBalanceList(Request $request)
     {
         $params    = $request->only(['page', 'limit', 'filter', 'grade', 'isDisplay', 'startPeriod', 'endPeriod']);

@@ -77,6 +77,12 @@ class ReportService
         }
     }
 
+    /**
+     * 科目余额表
+     * @author huxinlu
+     * @param $params
+     * @return array
+     */
     public function getSubjectBalanceList($params)
     {
         //科目等级

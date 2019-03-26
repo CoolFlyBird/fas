@@ -47,6 +47,12 @@ class SubjectBalanceModel extends BaseModel
         return $this->delAll(['year' => $year, 'month' => $month]);
     }
 
+    /**
+     * 科目余额列表
+     * @author huxinlu
+     * @param $params
+     * @return mixed
+     */
     public function getSubjectBalanceList($params)
     {
         return $this->from('subject_balance as sb')
