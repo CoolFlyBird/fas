@@ -64,8 +64,17 @@ class FinanceService
                 } else {
                     $data[$k]['endingBalance'] = $beginBalance + ($v['creditBalance'] - $v['debitBalance']);
                 }
+                //本期发生额
                 $data[$k]['debitBalance']  = $v['debitBalance'];
                 $data[$k]['creditBalance'] = $v['creditBalance'];
+
+
+                //年度发生额
+                $yearData = $this->subjectBalanceModel->getYearBalance($year);
+                $data[$k]['yearDebitBalance']  = $v['debitBalance'] + $yearData['yearDebitBalance'];
+                $data[$k]['yearCreditBalance'] = $v['creditBalance'] + $yearData['yearCreditBalance'];
+
+                //会计期间
                 $data[$k]['year']          = $year;
                 $data[$k]['month']         = $month;
             }

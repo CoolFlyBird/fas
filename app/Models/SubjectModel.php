@@ -82,4 +82,15 @@ class SubjectModel extends BaseModel
     {
         return self::where('direction', self::DIRECTION_CREDIT)->whereYear('createTime', date('Y'))->sum('balance');
     }
+
+    /**
+     * 根据编码获取科目方向
+     * @author huxinlu
+     * @param $code string  科目编码
+     * @return mixed
+     */
+    public function getDirectionByCode($code)
+    {
+        return self::where('code', $code)->value('direction');
+    }
 }

@@ -120,13 +120,17 @@ Route::group(['middleware' => 'auth'], function () {
         Route::post('settle', 'Finance\SettleAccountController@settleAccount');//结账
         Route::post('checkout', 'Finance\SettleAccountController@checkout');//反结账
     });
+    //报表
+    Route::group(['prefix' => 'report'], function () {//公司报表
+        Route::get('test', 'Report\SheetController@reportTest');//测试 事务，报表计算
+        Route::get('test1', 'Report\SheetController@reportTest1');//测试 事务，报表计算
+
+        Route::get('balance', 'Report\SheetController@balanceSheet');//资产负债表
+        Route::get('income', 'Report\SheetController@incomeSheet');//利润表表
+        Route::get('cash', 'Report\SheetController@cashFlowSheet');//现金流量表
+        Route::get('remain', 'Report\RemainController@getSubjectBalanceList');//科目余额表
+        Route::get('detail', 'Report\DetailController@getBalanceDetailList');//明细账
+        Route::get('assist', 'Report\AssistController@getAssistSubjectList');//核算项目明细账
+    });
 });
 
-Route::group(['prefix' => 'report'], function () {//公司报表
-    Route::get('test', 'report\SheetController@reportTest');//测试 事务，报表计算
-    Route::get('test1', 'report\SheetController@reportTest1');//测试 事务，报表计算
-
-    Route::get('balance', 'report\SheetController@balanceSheet');//资产负债表
-    Route::get('income', 'report\SheetController@incomeSheet');//利润表表
-    Route::get('cash', 'report\SheetController@cashFlowSheet');//现金流量表
-});
