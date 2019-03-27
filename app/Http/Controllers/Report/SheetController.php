@@ -29,7 +29,7 @@ class SheetController extends Controller
 
     public function test()
     {
-        $result = $this->service->calculateMonth('2019', '04');
+        $result = $this->service->calculateMonth(2019, 4);
         if ($result) {
             return $this->success($result);
         } else {
@@ -39,7 +39,7 @@ class SheetController extends Controller
 
     public function test1()
     {
-        $result = $this->service->revokeMonth('2019', '04');
+        $result = $this->service->revokeMonth(2019, 4);
         if ($result) {
             return $this->success($result);
         } else {

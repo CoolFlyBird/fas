@@ -115,8 +115,8 @@ class ReportIncomeService
             $id = str_replace("is", "", $key);
             $all = $total[$key];//所有数额
 
-            $yearAmount = $temp1[$id];//截止去年所有数额
-            $lastAmount = $temp2[$id];//截止上月所有数额
+            $yearAmount = 0.0;
+            $lastAmount = 0.0;
             try {
                 $yearAmount = $temp1[$id];//截止去年所有数额
                 $lastAmount = $temp2[$id];//截止上月所有数额
