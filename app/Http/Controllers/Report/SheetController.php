@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\ReportBalanceModel;
 use App\Models\ReportCashFlowModel;
 use App\Models\ReportIncomeModel;
+use App\Models\SubjectBalanceModel;
+use App\Services\ReportService;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Request;
 
@@ -15,12 +17,34 @@ class SheetController extends Controller
     private $reportBalanceModel;
     private $reportIncomeModel;
     private $reportCashFlowModel;
+    private $service;
 
-    public function __construct(ReportBalanceModel $reportBalanceModel, ReportIncomeModel $reportIncomeModel, ReportCashFlowModel $reportCashFlowModel)
+    public function __construct(ReportBalanceModel $reportBalanceModel, ReportIncomeModel $reportIncomeModel, ReportCashFlowModel $reportCashFlowModel, ReportService $service)
     {
         $this->reportBalanceModel = $reportBalanceModel;
         $this->reportIncomeModel = $reportIncomeModel;
         $this->reportCashFlowModel = $reportCashFlowModel;
+        $this->service = $service;
+    }
+
+    public function test()
+    {
+        $result = $this->service->calculateMonth('2019', '04');
+        if ($result) {
+            return $this->success($result);
+        } else {
+            return $this->fail($result);
+        }
+    }
+
+    public function test1()
+    {
+        $result = $this->service->revokeMonth('2019', '04');
+        if ($result) {
+            return $this->success($result);
+        } else {
+            return $this->fail($result);
+        }
     }
 
 

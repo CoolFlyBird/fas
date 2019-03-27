@@ -20,4 +20,15 @@ class ReportIncomeModel extends BaseModel
             ->get();
         return $result;
     }
+
+
+    public function getTotalAmountArray($year, $period)
+    {
+        $result = $this->query()
+            ->where(["year" => $year, "period" => $period])
+            ->get(["id", "totalAmount"])
+            ->pluck("totalAmount", "id");
+        return $result;
+    }
+
 }

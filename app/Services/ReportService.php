@@ -6,6 +6,7 @@
 
 namespace App\Services;
 
+use App\Models\CurrentPeriodModel;
 use Illuminate\Support\Facades\DB;
 
 class ReportService
@@ -46,8 +47,8 @@ class ReportService
      */
     public function calculateMonth($year, $period)
     {
-        $currentYear = (int)$this->currentPeriodModel->getCurrentPeriod();
-        $currentPeriod = (int)$this->currentPeriodModel->getCurrentYear();
+        $currentYear = (int)$this->currentPeriodModel->getCurrentYear();
+        $currentPeriod = (int)$this->currentPeriodModel->getCurrentPeriod();
         if ($currentYear === (int)$year && $currentPeriod === (int)$period) {//如果不是计算本期，则不计算
             if (((int)$period) === 12) {//12月份 计算年度和月度
                 DB::beginTransaction();
@@ -91,8 +92,8 @@ class ReportService
      */
     public function revokeMonth($year, $period)
     {
-        $currentYear = (int)$this->currentPeriodModel->getCurrentPeriod();
-        $currentPeriod = (int)$this->currentPeriodModel->getCurrentYear();
+        $currentYear = (int)$this->currentPeriodModel->getCurrentYear();
+        $currentPeriod = (int)$this->currentPeriodModel->getCurrentPeriod();
         if ($currentYear === (int)$year && $currentPeriod === (int)$period) {//如果不是计算本期，则不反结账
             if (((int)$period) === 1) {//1月份 撤销年度和月度
                 DB::beginTransaction();
@@ -166,21 +167,21 @@ class ReportService
             //判断科目属于借还是贷
             $direction = $this->subjectModel->getDirectionByCode($v['code']);
             if ($direction == $this->subjectModel::DIRECTION_DEBIT) {
-                $data[$k]['debitBeginBalance']  = $v['beginBalance'];
+                $data[$k]['debitBeginBalance'] = $v['beginBalance'];
                 $data[$k]['debitEndingBalance'] = $v['endingBalance'];
                 $data[$k]['creditBeginBalance'] = $data[$k]['creditEndingBalance'] = 0.00;
             } else {
-                $data[$k]['debitBeginBalance']   = $data[$k]['debitEndingBalance'] = 0.00;
-                $data[$k]['creditBeginBalance']  = $v['beginBalance'];
+                $data[$k]['debitBeginBalance'] = $data[$k]['debitEndingBalance'] = 0.00;
+                $data[$k]['creditBeginBalance'] = $v['beginBalance'];
                 $data[$k]['creditEndingBalance'] = $v['endingBalance'];
             }
 
             //本期发生额
-            $data[$k]['accrualDebitBalance']  = $v['debitBalance'];
+            $data[$k]['accrualDebitBalance'] = $v['debitBalance'];
             $data[$k]['accrualCreditBalance'] = $v['creditBalance'];
 
             //本年累计发生额
-            $data[$k]['yearDebitBalance']  = $v['yearDebitBalance'];
+            $data[$k]['yearDebitBalance'] = $v['yearDebitBalance'];
             $data[$k]['yearCreditBalance'] = $v['yearCreditBalance'];
         }
 

@@ -14,6 +14,10 @@ use App\Subject;
 class ReportIncomeService
 {
     /**
+     * @var SubjectBalanceModel $subjectBalanceModel
+     */
+    private $subjectBalanceModel;
+    /**
      * @var ReportIncomeModel $periodModel
      */
     private $incomeModel;
@@ -28,8 +32,14 @@ class ReportIncomeService
      */
     private $keys = [];
 
-    public function __construct(ReportIncomeModel $incomeModel, CurrentPeriodModel $periodModel)
+    /**
+     * 科目余额查询缓存
+     */
+    private $temp = [];
+
+    public function __construct(ReportIncomeModel $incomeModel, CurrentPeriodModel $periodModel, SubjectBalanceModel $subjectBalanceModel)
     {
+        $this->subjectBalanceModel = $subjectBalanceModel;
         $this->incomeModel = $incomeModel;
         $this->periodModel = $periodModel;
         for ($i = 1; $i <= 35; $i++) {
@@ -96,11 +106,30 @@ class ReportIncomeService
     {
         $total = $this->getIncomeArray($year, $period);
         $result = [];
+
+        //一次批量查询
+        $temp1 = $this->getPrePeriodTotalArray($year, 1);
+        $temp2 = $this->getPrePeriodTotalArray($year, $period);
+
         foreach ($this->keys as $key) {
             $id = str_replace("is", "", $key);
             $all = $total[$key];//所有数额
-            $yearAmount = $this->getPrePeriodTotalAmount($year, '01', $id);//截止去年所有数额
-            $lastAmount = $this->getPrePeriodTotalAmount($year, $period, $id);//截止上月所有数额
+
+            $yearAmount = $temp1[$id];//截止去年所有数额
+            $lastAmount = $temp2[$id];//截止上月所有数额
+            try {
+                $yearAmount = $temp1[$id];//截止去年所有数额
+                $lastAmount = $temp2[$id];//截止上月所有数额
+            } catch (\Exception $e) {
+
+            } finally {
+                if (!$yearAmount) {
+                    $yearAmount = 0.0;
+                }
+                if (!$lastAmount) {
+                    $lastAmount = 0.0;
+                }
+            }
             array_push($result, ['year' => $year, 'period' => $period, 'id' => $id, 'totalAmount' => $all, 'yearAmount' => ($all - $yearAmount), 'amount' => ($all - $lastAmount)]);
         }
         return $this->incomeModel->addAll($result);
@@ -211,26 +240,18 @@ class ReportIncomeService
         return $total;
     }
 
+
     /**
      * 累计到上月总金额
      * @param $year
      * @param $period 当前会计期间
-     * @param $id
-     * @return mixed 返回上个会计期间数额
+     * @return mixed 返回上个会计期间数组
      */
-    private function getPrePeriodTotalAmount($year, $period, $id)
+    private function getPrePeriodTotalArray($year, $period)
     {
-        $p = "" . ((int)$period - 1);
-        if (strlen($p) == 1) {
-            $p = '0' . $p;
-        }
-        $value = ReportIncomeModel::where(['year' => $year, 'period' => $p, 'id' => $id])->value("totalAmount");
-        if (!$value) {
-            $value = 0;
-        }
-        return $value;
+        $p = (int)$period - 1;
+        return $this->incomeModel->getTotalAmountArray($year, $p);
     }
-
 
     /**
      * 查询正负号
@@ -252,11 +273,27 @@ class ReportIncomeService
      */
     private function getBalanceById($year, $period, $id)
     {
-        $value = SubjectBalanceModel::where(['year' => $year, 'period' => $period, 'subjectId' => $id])->value("endingBalance");
-        if (!$value) {
-            $value = 0;
+        if (!$this->temp) {
+            $this->temp = $this->subjectBalanceModel->getEndingBalanceArray($year, $period);
         }
-        return $value;
+        $value = 0.0;
+        try {
+            $value = $this->temp[$id];
+            //        $this->subjectBalanceModel->getEndingBalanceArray();
+//        $value = SubjectBalanceModel::where(['year' => $year, 'month' => $period, 'subjectId' => $id])->value("endingBalance");
+        } catch (Exception $e) {
+        } finally {
+            if (!$value) {
+                $value = 0;
+            }
+            return $value;
+        }
+
+//        $value = $this->subjectBalanceModel->getLastPeriodEndingBalance($year, $period, $id);
+//        if (!$value) {
+//            $value = 0;
+//        }
+//        return $value;
     }
 
 }

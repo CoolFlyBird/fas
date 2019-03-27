@@ -16,6 +16,18 @@ use App\Subject;
 class ReportCashFlowService
 {
     /**
+     * @var ReportIncomeModel $reportIncomeModel
+     */
+    private $reportIncomeModel;
+    /**
+     * @var ReportBalanceModel $reportBalanceModel
+     */
+    private $reportBalanceModel;
+    /**
+     * @var SubjectBalanceModel $subjectBalanceModel
+     */
+    private $subjectBalanceModel;
+    /**
      * @var ReportCashFlowModel $cashFlowModel
      */
     private $cashFlowModel;
@@ -31,12 +43,35 @@ class ReportCashFlowService
     private $keys = [];
 
     /**
-     * ReportCashFlowService constructor.
-     * @param ReportCashFlowModel $cashFlowModel
-     * @param CurrentPeriodModel $periodModel
+     * 科目余额查询缓存
      */
-    public function __construct(ReportCashFlowModel $cashFlowModel, CurrentPeriodModel $periodModel)
+    private $temp = [];
+
+    /**
+     * 资产负债表查询缓存
+     */
+    private $bstemp = [];
+
+    /**
+     * 利润表查询缓存
+     */
+    private $istemp = [];
+
+    /**
+     * ReportCashFlowService constructor.
+     * @param CurrentPeriodModel $periodModel
+     * @param SubjectBalanceModel $subjectBalanceModel
+     * @param ReportBalanceModel $reportBalanceModel
+     * @param ReportIncomeModel $reportIncomeModel
+     * @param ReportCashFlowModel $cashFlowModel
+     */
+    public function __construct(CurrentPeriodModel $periodModel, SubjectBalanceModel $subjectBalanceModel,
+                                ReportBalanceModel $reportBalanceModel, ReportIncomeModel $reportIncomeModel, ReportCashFlowModel $cashFlowModel)
     {
+        $this->reportIncomeModel = $reportIncomeModel;
+        $this->reportBalanceModel = $reportBalanceModel;
+
+        $this->subjectBalanceModel = $subjectBalanceModel;
         $this->cashFlowModel = $cashFlowModel;
         $this->periodModel = $periodModel;
         for ($i = 1; $i <= 61; $i++) {
@@ -102,11 +137,28 @@ class ReportCashFlowService
     {
         $total = $this->getCashFlowArray($year, $period);
         $result = [];
+
+        //一次批量查询
+        $temp1 = $this->getPrePeriodTotalArray($year, '01');
+        $temp2 = $this->getPrePeriodTotalArray($year, $period);
         foreach ($this->keys as $key) {
             $id = str_replace("cs", "", $key);
             $all = $total[$key];//所有数额
-            $yearAmount = $this->getPrePeriodTotalAmount($year, '01', $id);//截止去年所有数额
-            $lastAmount = $this->getPrePeriodTotalAmount($year, $period, $id);//截止上月所有数额
+
+            $yearAmount = 0.0;
+            $lastAmount = 0.0;
+            try {
+                $yearAmount = $temp1[$id];//截止去年所有数额
+                $lastAmount = $temp2[$id];//截止上月所有数额
+            } catch (\Exception $e) {
+            } finally {
+                if (!$yearAmount) {
+                    $yearAmount = 0.0;
+                }
+                if (!$lastAmount) {
+                    $lastAmount = 0.0;
+                }
+            }
             array_push($result, ['year' => $year, 'period' => $period, 'id' => $id, 'totalAmount' => $all, 'yearAmount' => ($all - $yearAmount), 'amount' => ($all - $lastAmount)]);
         }
         return $this->cashFlowModel->addAll($result);
@@ -115,6 +167,10 @@ class ReportCashFlowService
 
     private function getCashFlowArray($year, $period)
     {
+        //清除缓存，避免不同$period 数据不对
+        $this->temp = [];
+        $this->istemp = [];
+        $this->bstemp = [];
         //销售商品、提供劳务收到的现金
         $cs1 = $this->calculateArray($year, $period, [Subject::outputTax, -Subject::allowanceForBadDebtsInAccountsReceivable, -Subject::discountInterestOnNotesReceivable])
             + $this->calculateISArray($year, $period, [1])
@@ -316,7 +372,6 @@ class ReportCashFlowService
      */
     private function calculateBSArray($year, $period, $array)
     {
-        //TODO:待修改
         $total = 0.0;
         foreach ($array as $value) {
             $sign = $this->sign($value);
@@ -336,7 +391,6 @@ class ReportCashFlowService
      */
     private function calculateISArray($year, $period, $array)
     {
-        //TODO:待修改
         $total = 0.0;
         foreach ($array as $value) {
             $sign = $this->sign($value);
@@ -350,20 +404,12 @@ class ReportCashFlowService
      * 累计到上月总金额
      * @param $year
      * @param $period 当前会计期间
-     * @param $id
-     * @return mixed 返回上个会计期间数额
+     * @return mixed 返回上个会计期间数组
      */
-    private function getPrePeriodTotalAmount($year, $period, $id)
+    private function getPrePeriodTotalArray($year, $period)
     {
-        $p = "" . ((int)$period - 1);
-        if (strlen($p) == 1) {
-            $p = '0' . $p;
-        }
-        $value = ReportCashFlowModel::where(['year' => $year, 'period' => $p, 'id' => $id])->value("totalAmount");
-        if (!$value) {
-            $value = 0;
-        }
-        return $value;
+        $p = (int)$period - 1;
+        return $this->cashFlowModel->getTotalAmountArray($year, $p);
     }
 
 
@@ -387,13 +433,20 @@ class ReportCashFlowService
      */
     private function getBalanceById($year, $period, $id)
     {
-        $value = SubjectBalanceModel::where(['year' => $year, 'period' => $period, 'subjectId' => $id])->value("endingBalance");
-        if (!$value) {
-            $value = 0;
+        if (!$this->temp) {
+            $this->temp = $this->subjectBalanceModel->getEndingBalanceArray($year, $period);
         }
-        return $value;
+        $value = 0.0;
+        try {
+            $value = $this->temp[$id];
+        } catch (Exception $e) {
+        } finally {
+            if (!$value) {
+                $value = 0;
+            }
+            return $value;
+        }
     }
-
 
     /**
      * 查询资产负债表总额
@@ -404,11 +457,19 @@ class ReportCashFlowService
      */
     private function getBSById($year, $period, $id)
     {
-        $value = ReportBalanceModel::where(["year" => $year, "period" => $period, "id" => $id])->value("endValue");
-        if (!$value) {
-            $value = 0;
+        if (!$this->bstemp) {
+            $this->bstemp = $this->reportBalanceModel->getBalanceEndArray($year, $period);
         }
-        return $value;
+        $value = 0.0;
+        try {
+            $value = $this->bstemp[$id];
+        } catch (Exception $e) {
+        } finally {
+            if (!$value) {
+                $value = 0;
+            }
+            return $value;
+        }
     }
 
     /**
@@ -420,11 +481,19 @@ class ReportCashFlowService
      */
     private function getISById($year, $period, $id)
     {
-        $value = ReportIncomeModel::where(["year" => $year, "period" => $period, "id" => $id])->value("totalAmount");
-        if (!$value) {
-            $value = 0;
+        if (!$this->istemp) {
+            $this->istemp = $this->reportIncomeModel->getTotalAmountArray($year, $period);
         }
-        return $value;
+        $value = 0.0;
+        try {
+            $value = $this->istemp[$id];
+        } catch (Exception $e) {
+        } finally {
+            if (!$value) {
+                $value = 0;
+            }
+            return $value;
+        }
     }
 
 }

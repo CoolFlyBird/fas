@@ -11,9 +11,14 @@ use App\Models\CurrentPeriodModel;
 use App\Models\SubjectBalanceModel;
 use App\Models\SubjectModel;
 use App\Subject;
+use mysql_xdevapi\Exception;
 
 class ReportBalanceService
 {
+    /**
+     * @var SubjectBalanceModel $subjectBalanceModel
+     */
+    private $subjectBalanceModel;
     /**
      * @var ReportBalanceModel $balanceModel
      */
@@ -28,12 +33,24 @@ class ReportBalanceService
     private $keys = [];
 
     /**
+     * 科目余额查询缓存
+     */
+    private $temp = [];
+    /**
+     * 资产负债表查询缓存
+     */
+    private $bstemp = [];
+
+    /**
      * ReportBalanceService constructor.
      * @param ReportBalanceModel $balanceModel
      * @param CurrentPeriodModel $periodModel
+     * @param SubjectBalanceModel $subjectBalanceModel
      */
-    public function __construct(ReportBalanceModel $balanceModel, CurrentPeriodModel $periodModel)
+    public function __construct(CurrentPeriodModel $periodModel, SubjectBalanceModel $subjectBalanceModel,
+                                ReportBalanceModel $balanceModel)
     {
+        $this->subjectBalanceModel = $subjectBalanceModel;
         $this->balanceModel = $balanceModel;
         $this->periodModel = $periodModel;
         $this->keys = [];
@@ -111,6 +128,7 @@ class ReportBalanceService
      */
     private function getEndBalanceArray($year, $period)
     {
+        $this->temp = [];
         //货币资金
         $bs1 = $this->calculateArray($year, $period, [Subject::cashInStock, Subject::bankDeposit, Subject::otherCurrencyFunds]);
         //以公允价值计量且其变动计入当期损益的金融资产
@@ -250,12 +268,13 @@ class ReportBalanceService
 
     /**
      * @param $year 年份
-     * @param $period 会计期间 未用到
+     * @param $period 会计期间
      * @return array
      */
     private function getBeginBalanceArray($year, $period)
     {
         $result = [];
+        $this->bstemp = [];
         foreach ($this->keys as $key) {
             $result = array_add($result, $key, $this->getBalanceRecordById($year, $period, str_replace("bs", "", $key)));
         }
@@ -329,12 +348,19 @@ class ReportBalanceService
      */
     private function getBalanceRecordById($year, $period, $id)
     {
-        //period 00表示年初
-        $value = ReportBalanceModel::where(['year' => $year, 'period' => '00', 'id' => $id])->value("endValue");
-        if (!$value) {
-            $value = 0;
+        if (!$this->bstemp) {
+            $this->bstemp = $this->balanceModel->getBalanceEndArray($year, '00');
         }
-        return $value;
+        $value = 0.0;
+        try {
+            $value = $this->bstemp[$id];
+        } catch (\Exception $e) {
+        } finally {
+            if (!$value) {
+                $value = 0;
+            }
+            return $value;
+        }
     }
 
     /**
@@ -346,7 +372,7 @@ class ReportBalanceService
      */
     private function getInBalanceById($year, $period, $id)
     {
-        $value = SubjectBalanceModel::where(['year' => $year, 'month' => $period, 'subjectId' => $id])->value("debitBalance");
+        $value = $this->subjectBalanceModel->getDebitBalanceById($year, $period, $id);
         if (!$value) {
             $value = 0;
         }
@@ -362,7 +388,7 @@ class ReportBalanceService
      */
     private function getOutBalanceById($year, $period, $id)
     {
-        $value = SubjectBalanceModel::where(['year' => $year, 'month' => $period, 'subjectId' => $id])->value("creditBalance");
+        $value = $this->subjectBalanceModel->getCreditBalanceById($year, $period, $id);
         if (!$value) {
             $value = 0;
         }
@@ -378,10 +404,18 @@ class ReportBalanceService
      */
     private function getBalanceById($year, $period, $id)
     {
-        $value = SubjectBalanceModel::where(['year' => $year, 'period' => $period, 'subjectId' => $id])->value("endingBalance");
-        if (!$value) {
-            $value = 0;
+        if (!$this->temp) {
+            $this->temp = $this->subjectBalanceModel->getEndingBalanceArray($year, $period);
         }
-        return $value;
+        $value = 0.0;
+        try {
+            $value = $this->temp[$id];
+        } catch (Exception $e) {
+        } finally {
+            if (!$value) {
+                $value = 0;
+            }
+            return $value;
+        }
     }
 }

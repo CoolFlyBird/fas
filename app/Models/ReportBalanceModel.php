@@ -21,4 +21,13 @@ class ReportBalanceModel extends BaseModel
         return $result;
     }
 
+    public function getBalanceEndArray($year, $period)
+    {
+        $result = $this->query()
+            ->where(["year" => $year, "period" => $period])
+            ->get(["id", "endValue"])
+            ->pluck("endValue", "id");
+        return $result;
+    }
+
 }
