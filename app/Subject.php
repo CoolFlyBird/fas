@@ -10,271 +10,238 @@ namespace App;
 
 class Subject
 {
-    const 库存现金 = 1;
-    const 银行存款 = 2;
-    const 其他货币资金 = 3;
-    const 外埠存款 = 4;
-    const 银行本票 = 5;
-    const 银行汇票 = 6;
-    const 信用卡 = 7;
-    const 信用证保证金 = 8;
-    const 存出投资款 = 9;
-    const 交易性金融资产 = 10;
-    const 应收票据 = 11;
-    const 银行承兑汇票 = 12;
-    const 商业承兑汇票 = 13;
-    const 应收账款 = 14;
-    const 预付账款 = 15;
-    const 应收股利 = 16;
-    const 应收利息 = 17;
-    const 其他应收款 = 18;
-    const 坏账准备 = 19;
-    const 应收账款坏账准备 = 20;
-    const 预付账款坏账准备 = 21;
-    const 应收利息坏账准备 = 22;
-    const 应收股利坏账准备 = 23;
-    const 其他应收款坏账准备 = 24;
-    const 长期应收款坏账准备 = 25;
-    const 受托代销商品 = 26;
-    const 材料采购 = 27;
-    const 在途物资 = 28;
-    const 原材料 = 29;
-    const 材料成本差异 = 30;
-    const 库存商品 = 31;
-    const 发出商品 = 32;
-    const 商品进销差价 = 33;
-    const 委托加工物资 = 34;
-    const 周转材料 = 35;
-    const 消耗性生物资产 = 36;
-    const 存货跌价准备 = 37;
-    const 持有至到期投资 = 38;
-    const 持有至到期投资减值准备 = 39;
-    const 可供出售金融资产 = 40;
-    const 长期股权投资 = 41;
-    const 长期股权投资减值准备 = 42;
-    const 投资性房地产 = 43;
-    const 投资性房地产累计折旧 = 44;
-    const 投资性房地产累计摊销 = 45;
-    const 投资性房地产减值准备 = 46;
-    const 长期应收款 = 47;
-    const 未实现融资收益 = 48;
-    const 固定资产 = 49;
-    const 累计折旧_50 = 50;
-    const 固定资产减值准备 = 51;
-    const 在建工程 = 52;
-    const 建筑工程 = 53;
-    const 职工薪酬_54 = 54;
-    const 安装工程 = 55;
-    const 职工薪酬_56 = 56;
-    const 技术改造工程 = 57;
-    const 职工薪酬_58 = 58;
-    const 在安装设备 = 59;
-    const 职工薪酬_60 = 60;
-    const 工程物资 = 61;
-    const 专用材料 = 62;
-    const 专用设备 = 63;
-    const 工器具 = 64;
-    const 固定资产清理 = 65;
-    const 生产性生物资产 = 66;
-    const 生产性生物资产累计折旧 = 67;
-    const 无形资产 = 68;
-    const 累计摊销 = 69;
-    const 无形资产减值准备 = 70;
-    const 商誉 = 71;
-    const 长期待摊费用 = 72;
-    const 递延所得税资产 = 73;
-    const 待处理财产损溢 = 74;
-    const 待处理流动资产损溢 = 75;
-    const 待处理非流动资产损溢 = 76;
-    const 短期借款 = 77;
-    const 交易性金融负债 = 78;
-    const 应付票据 = 79;
-    const 应付账款 = 80;
-    const 预收账款 = 81;
-    const 应付职工薪酬 = 82;
-    const 职工工资 = 83;
-    const 奖金、津贴和补贴 = 84;
-    const 职工福利费 = 85;
-    const 社会保险费 = 86;
-    const 住房公积金 = 87;
-    const 工会经费 = 88;
-    const 职工教育经费 = 89;
-    const 非货币性福利 = 90;
-    const 辞退福利 = 91;
-    const 应交税费 = 92;
-    const 应交增值税 = 93;
-    const 进项税额 = 94;
-    const 已交税金 = 95;
-    const 减免税款 = 96;
-    const 出口抵减内销产品应纳税额 = 97;
-    const 转出未交增值税 = 98;
-    const 销项税额 = 99;
-    const 出口退税 = 100;
-    const 进项税额转出 = 101;
-    const 转出多交增值税 = 102;
-    const 未交增值税 = 103;
-    const 应交营业税 = 104;
-    const 应交消费税 = 105;
-    const 应交资源税 = 106;
-    const 应交所得税 = 107;
-    const 应交土地增值税 = 108;
-    const 应交城市维护建设税 = 109;
-    const 应交房产税 = 110;
-    const 应交土地使用税 = 111;
-    const 应交车船使用税 = 112;
-    const 应交教育费附加 = 113;
-    const 应交矿产资源补偿费 = 114;
-    const 应交排污费 = 115;
-    const 应交地方教育费附加 = 116;
-    const 应交水利建设基金 = 117;
-    const 应交个人所得税 = 118;
-    const 应交其他 = 119;
-    const 应付利息 = 120;
-    const 应付股利 = 121;
-    const 其他应付款 = 122;
-    const 代理业务负债 = 123;
-    const 受托代销商品款 = 124;
-    const 递延收益 = 125;
-    const 长期借款 = 126;
-    const 应付债券 = 127;
-    const 债券面值 = 128;
-    const 利息调整 = 129;
-    const 应计利息 = 130;
-    const 长期应付款 = 131;
-    const 未确认融资费用 = 132;
-    const 专项应付款 = 133;
-    const 预计负债 = 134;
-    const 递延所得税负债 = 135;
-    const 清算资金往来 = 136;
-    const 货币兑换 = 137;
-    const 衍生工具 = 138;
-    const 套期工具 = 139;
-    const 被套期项目 = 140;
-    const 实收资本 = 141;
-    const 资本公积 = 142;
-    const 资本溢价 = 143;
-    const 接受捐赠非现金资产准备 = 144;
-    const 外币资本折算差额 = 145;
-    const 其他资本公积 = 146;
-    const 其他权益工具 = 147;
-    const 优先股 = 148;
-    const 永续债 = 149;
-    const 其他综合收益 = 150;
-    const 权益法下在被投资单位以后将重分类进损益的其他综合收益中享有的份额 = 151;
-    const 权益法下在被投资单位以后不能重分类进损益的其他综合收益中享有的份额 = 152;
-    const 盈余公积 = 153;
-    const 法定盈余公积 = 154;
-    const 任意盈余公积 = 155;
-    const 法定公益金 = 156;
-    const 本年利润 = 157;
-    const 利润分配 = 158;
-    const 其他转入 = 159;
-    const 提取法定盈余公积 = 160;
-    const 提取法定公益金 = 161;
-    const 提取任意盈余公积 = 162;
-    const 应付利润 = 163;
-    const 转作资本的利润 = 164;
-    const 未分配利润 = 165;
-    const 库存股 = 166;
-    const 生产成本 = 167;
-    const 基本生产成本 = 168;
-    const 职工薪酬_169 = 169;
-    const 折旧 = 170;
-    const 修理费 = 171;
-    const 辅助生产成本 = 172;
-    const 职工薪酬_173 = 173;
-    const 折旧_174 = 174;
-    const 修理费_175 = 175;
-    const 制造费用 = 176;
-    const 职工薪酬_177 = 177;
-    const 折旧_178 = 178;
-    const 修理费_179 = 179;
-    const 劳务成本 = 180;
-    const 研发支出 = 181;
-    const 费用化支出 = 182;
-    const 资本化支出 = 183;
-    const 工程施工 = 184;
-    const 工程结算 = 185;
-    const 机械作业 = 186;
-    const 以前年度损益 = 187;
-    const 主营业务收入 = 188;
-    const 其他业务收入 = 189;
-    const 公允价值变动损益 = 190;
-    const 投资收益 = 191;
-    const 营业外收入 = 192;
-    const 非流动资产处置利得 = 193;
-    const 政府补助 = 194;
-    const 捐赠收益 = 195;
-    const 盘盈收益 = 196;
-    const 其他 = 197;
-    const 主营业务成本 = 198;
-    const 其他业务成本 = 199;
-    const 税金及附加 = 200;
-    const 消费税 = 201;
-    const 资源税 = 202;
-    const 土地增值税 = 203;
-    const 城市维护建设税 = 204;
-    const 房产税 = 205;
-    const 土地使用税 = 206;
-    const 车船使用税 = 207;
-    const 教育费附加 = 208;
-    const 矿产资源补偿费 = 209;
-    const 排污费 = 210;
-    const 地方教育费附加 = 211;
-    const 水利建设基金 = 212;
-    const 印花税 = 213;
-    const 销售费用 = 214;
-    const 办公用品 = 215;
-    const 房租 = 216;
-    const 物业管理费 = 217;
-    const 水电费 = 218;
-    const 交际应酬费 = 219;
-    const 市内交通费 = 220;
-    const 差旅费 = 221;
-    const 通讯费 = 222;
-    const 职工薪酬_223 = 223;
-    const 佣金 = 224;
-    const 保险金 = 225;
-    const 累计折旧_226 = 226;
-    const 商品维修费 = 227;
-    const 广告和业务宣传费 = 228;
-    const 其他_229 = 229;
-    const 管理费用 = 230;
-    const 办公用品_231 = 231;
-    const 房租_232 = 232;
-    const 物业管理费_233 = 233;
-    const 水电费_234 = 234;
-    const 业务招待费 = 235;
-    const 市内交通费_236 = 236;
-    const 差旅费_237 = 237;
-    const 邮电费 = 238;
-    const 职工薪酬_239 = 239;
-    const 保险金_240 = 240;
-    const 累计折旧_241 = 241;
-    const 开办费 = 242;
-    const 研究费用 = 243;
-    const 其他_244 = 244;
-    const 财务费用 = 245;
-    const 汇兑损益 = 246;
-    const 利息_247 = 247;
-    const 应收票据贴现利息 = 248;
-    const 利息_249 = 249;
-    const 手续费 = 250;
-    const 其他_251 = 251;
-    const 资产减值损失 = 252;
-    const 营业外支出 = 253;
-    const 存货盘亏毁损 = 254;
-    const 非流动资产处置净损失 = 255;
-    const 坏账损失 = 256;
-    const 无法收回的长期债券投资损失 = 257;
-    const 无法收回的长期股权投资损失 = 258;
-    const 自然灾害等不可抗力造成的损失 = 259;
-    const 税收滞纳金 = 260;
-    const 罚金、罚款 = 261;
-    const 捐赠支出 = 262;
-    const 其他_263 = 263;
-    const 所得税费用 = 264;
-    const 当期所得税费用 = 265;
-    const 递延所得税费用 = 266;
-    const 以前年度损益调整 = 267;
+    //库存现金
+    const cashInStock = 1;
+    //银行存款
+    const bankDeposit = 2;
+    //其他货币资金
+    const otherCurrencyFunds = 3;
+    //交易性金融资产
+    const transactionalFinancialAssets = 10;
+    //应收票据
+    const notesReceivable = 11;
+    //应收账款
+    const accountsReceivable = 14;
+    //预付账款
+    const advancePayment = 15;
+    //应收股利
+    const dividendReceivable = 16;
+    //应收利息
+    const interestReceivable = 17;
+    //其他应收款
+    const otherReceivables = 18;
+    //坏账准备
+    const badDebtPreparation = 19;
+    //应收账款坏账准备
+    const allowanceForBadDebtsInAccountsReceivable = 20;
+    //预付账款坏账准备
+    const badDebtReserveForAdvanceAccounts = 21;
+    //其他应收款坏账准备
+    const allowanceForBadDebtsInOtherReceivables = 24;
+    //材料采购
+    const materialPurchase = 27;
+    //在途物资
+    const materialsInTransit = 28;
+    //原材料
+    const rawMaterial = 29;
+    //材料成本差异
+    const materialCostDifference = 30;
+    //库存商品
+    const merchandiseInStock = 31;
+    //商品进销差价
+    const differencesBetweenPurchasingAndSellingPrice = 33;
+    //委托加工物资
+    const entrustedProcessingMaterials = 34;
+    //周转材料
+    const workingCapitalConstructionMaterials = 35;
+    //消耗性生物资产
+    const consumableBiologicalAssets = 36;
+    //存货跌价准备
+    const inventoryFallingPriceReserves = 37;
+    //持有至到期投资
+    const holdingUpToMaturityInvestment = 38;
+    //持有至到期投资减值准备
+    const preparednessForImpairmentOfInvestmentHoldingsToMaturity = 39;
+    //可供出售金融资产
+    const sellableFinancialAssets = 40;
+    //长期股权投资
+    const longTermEquityInvestment = 41;
+    //长期股权投资减值准备
+    const preparednessForImpairmentOfLongTermEquityInvestment = 42;
+    //投资性房地产
+    const investmentRealEstate = 43;
+    //投资性房地产累计折旧
+    const accumulatedDepreciationOfInvestmentRealEstate = 44;
+    //投资性房地产减值准备
+    const reserveForImpairmentOfInvestmentRealEstate = 46;
+    //长期应收款
+    const longTermReceivables = 47;
+    //未实现融资收益
+    const unrealizedFinancingGains = 48;
+    //固定资产
+    const fixedAssets = 49;
+    //累计折旧
+    const accumulatedDepreciation_50 = 50;
+    //固定资产减值准备
+    const fixedAssetsDepreciationReserves = 51;
+    //在建工程
+    const constructionInProgress = 52;
+    //职工薪酬
+    const employeeRemuneration_54 = 54;
+    //职工薪酬
+    const employeeRemuneration_56 = 56;
+    //职工薪酬
+    const employeeRemuneration_58 = 58;
+    //职工薪酬
+    const employeeRemuneration_60 = 60;
+    //工程物资
+    const engineeringMaterials = 61;
+    //固定资产清理
+    const liquidationOfFixedAssets = 65;
+    //生产性生物资产
+    const productiveBiologicalAssets = 66;
+    //生产性生物资产累计折旧
+    const accumulatedDepreciationOfProductiveBiologicalAssets = 67;
+    //无形资产
+    const intangibleAssets = 68;
+    //累计摊销
+    const accumulatedAmortization = 69;
+    //无形资产减值准备
+    const intangibleAssetsDepreciationReserves = 70;
+    //商誉
+    const goodwill = 71;
+    //长期待摊费用
+    const longTermPendingExpenses = 72;
+    //递延所得税资产
+    const deferredTaxAssets = 73;
+    //待处理财产损溢
+    const waitDealAssetsLossOrIncome = 74;
+    //待处理非流动资产损溢
+    const lossAndLossOfNonCurrentAssetsToBeProcessed = 76;
+    //短期借款
+    const shortTermLoan = 77;
+    //交易性金融负债
+    const transactionalFinancialLiabilities = 78;
+    //应付票据
+    const notesPayable = 79;
+    //应付账款
+    const accountsPayable = 80;
+    //预收账款
+    const advanceAccountReceivable = 81;
+    //应付职工薪酬
+    const payableRemuneration = 82;
+    //应交税费
+    const taxesPayable = 92;
+    //进项税额
+    const amountOfTaxesOnPurchases = 94;
+    //已交税金
+    const payingTax = 95;
+    //减免税款
+    const taxDeduction = 96;
+    //销项税额
+    const outputTax = 99;
+    //应交所得税
+    const incomeTaxPayable = 107;
+    //应付利息
+    const interestPayable = 120;
+    //应付股利
+    const dividendsPayable = 121;
+    //其他应付款
+    const otherAccountsPayable = 122;
+    //递延收益
+    const deferredIncome = 125;
+    //长期借款
+    const longTermLoan = 126;
+    //应付债券
+    const bondsPayable = 127;
+    //长期应付款
+    const longTermAccountsPayable = 131;
+    //未确认融资费用
+    const unconfirmedFinancingCosts = 132;
+    //专项应付款
+    const specialAccountsPayable = 133;
+    //预计负债
+    const projectedLiabilities = 134;
+    //递延所得税负债
+    const deferredTaxLiability = 135;
+    //衍生工具
+    const derivatives = 138;
+    //实收资本
+    const paidInCapital = 141;
+    //资本公积
+    const capitalSurplus = 142;
+    //其他权益工具
+    const otherEquityInstruments = 147;
+    //盈余公积
+    const surplusReserves = 153;
+    //本年利润
+    const profitThisYear = 157;
+    //利润分配
+    const profitDistribution = 158;
+    //库存股
+    const treasuryStock = 166;
+    //生产成本
+    const productionCosts = 167;
+    //职工薪酬
+    const employeeRemuneration_169 = 169;
+    //职工薪酬
+    const employeeRemuneration_173 = 173;
+    //制造费用
+    const manufacturingCost = 176;
+    //职工薪酬
+    const employeeRemuneration_177 = 177;
+    //研发支出
+    const rdExpenditure = 181;
+    //工程施工
+    const engineeringConstruction = 184;
+    //以前年度损益
+    const earningsAndLossesOfPreviousYears = 187;
+    //主营业务收入
+    const mainBusinessIncome = 188;
+    //其他业务收入
+    const otherBusinessIncome = 189;
+    //公允价值变动损益
+    const fairValueChangeGainsAndLosses = 190;
+    //投资收益
+    const incomeFromInvestment = 191;
+    //营业外收入
+    const outOfBusinessIncome = 192;
+    //非流动资产处置利得
+    const proceedsFromDisposalOfNonCurrentAssets = 193;
+    //政府补助
+    const governmentGrants = 194;
+    //捐赠收益
+    const donationIncome = 195;
+    //主营业务成本
+    const mainBusinessCost = 198;
+    //其他业务成本
+    const otherBusinessCosts = 199;
+    //税金及附加
+    const taxesAndSurcharges = 200;
+    //销售费用
+    const sellingExpenses = 214;
+    //职工薪酬
+    const employeeRemuneration_223 = 223;
+    //管理费用
+    const managementCost = 230;
+    //职工薪酬
+    const employeeRemuneration_239 = 239;
+    //财务费用
+    const financialCost = 245;
+    //汇兑损益
+    const exchangeGainsAndLosses = 246;
+    //利息
+    const interest_247 = 247;
+    //应收票据贴现利息
+    const discountInterestOnNotesReceivable = 248;
+    //资产减值损失
+    const assetsImpairmentLoss = 252;
+    //营业外支出
+    const outOfBusinessExpenses = 253;
+    //非流动资产处置净损失
+    const netLossOfDisposalOfNonCurrentAssets = 255;
+    //所得税费用
+    const incomeTaxExpenses = 264;
+    //当期所得税费用
+    const currentIncomeTaxExpenses = 265;
 }

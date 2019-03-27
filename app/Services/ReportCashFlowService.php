@@ -116,23 +116,23 @@ class ReportCashFlowService
     private function getCashFlowArray($year, $period)
     {
         //销售商品、提供劳务收到的现金
-        $cs1 = $this->calculateArray($year, $period, [Subject::销项税额, -Subject::应收账款坏账准备, -Subject::应收票据贴现利息])
+        $cs1 = $this->calculateArray($year, $period, [Subject::outputTax, -Subject::allowanceForBadDebtsInAccountsReceivable, -Subject::discountInterestOnNotesReceivable])
             + $this->calculateISArray($year, $period, [1])
             + $this->calculateBSArray($year, $period, [-4, -5, 36]);
         //收到的税费返还
-        $cs2 = $this->calculateArray($year, $period, [Subject::减免税款, Subject::政府补助, Subject::当期所得税费用]);
+        $cs2 = $this->calculateArray($year, $period, [Subject::taxDeduction, Subject::governmentGrants, Subject::currentIncomeTaxExpenses]);
 
         //购买商品、接受劳务支付的现金
-        $cs5 = $this->calculateArray($year, $period, [Subject::进项税额])
+        $cs5 = $this->calculateArray($year, $period, [Subject::amountOfTaxesOnPurchases])
             + $this->calculateISArray($year, $period, [2])
             + $this->calculateBSArray($year, $period, [6, 10, -34, -35]);
         //支付给职工以及为职工支付的现金
-        $cs6 = $this->calculateArray($year, $period, [Subject::职工薪酬_169, Subject::职工薪酬_173, Subject::职工薪酬_177, Subject::职工薪酬_223, Subject::职工薪酬_239, -Subject::职工薪酬_54, -Subject::职工薪酬_56, -Subject::职工薪酬_58, -Subject::职工薪酬_60])
+        $cs6 = $this->calculateArray($year, $period, [Subject::employeeRemuneration_169, Subject::employeeRemuneration_173, Subject::employeeRemuneration_177, Subject::employeeRemuneration_223, Subject::employeeRemuneration_239, -Subject::employeeRemuneration_54, -Subject::employeeRemuneration_56, -Subject::employeeRemuneration_58, -Subject::employeeRemuneration_60])
             + $this->calculateBSArray($year, $period, [-37]);
         //支付的各项税费
-        $cs7 = $this->calculateArray($year, $period, [Subject::当期所得税费用, Subject::税金及附加, Subject::已交税金, -Subject::应交所得税]);
+        $cs7 = $this->calculateArray($year, $period, [Subject::currentIncomeTaxExpenses, Subject::taxesAndSurcharges, Subject::payingTax, -Subject::incomeTaxPayable]);
         //支付其他与经营活动有关的现金
-        $cs8 = $this->calculateArray($year, $period, [-Subject::利息_247, -Subject::应付职工薪酬, -Subject::累计折旧_50, -Subject::长期待摊费用, -Subject::累计摊销])
+        $cs8 = $this->calculateArray($year, $period, [-Subject::interest_247, -Subject::payableRemuneration, -Subject::accumulatedDepreciation_50, -Subject::longTermPendingExpenses, -Subject::accumulatedAmortization])
             + $this->calculateISArray($year, $period, [3, 4, 5, 6, 14, 17])
             + $this->calculateBSArray($year, $period, [11, -41, -37, -43]);
         //经营活动现金流出小计
@@ -145,12 +145,12 @@ class ReportCashFlowService
         $cs12 = $this->calculateISArray($year, $period, [9])
             + $this->calculateBSArray($year, $period, [-7, -8]);
         //处置固定资产、无形资产和其他长期资产收回的现金净额
-        $cs13 = $this->calculateArray($year, $period, [Subject::固定资产清理])
+        $cs13 = $this->calculateArray($year, $period, [Subject::liquidationOfFixedAssets])
             + $this->calculateBSArray($year, $period, [24, 27, 29]);
         //处置子公司及其他营业单位收到的现金净额
         $cs14 = $this->calculateArray($year, $period, []);
         //收到其他与投资活动有关的现金
-        $cs15 = $this->calculateArray($year, $period, [Subject::捐赠收益]);
+        $cs15 = $this->calculateArray($year, $period, [Subject::donationIncome]);
         //收到其他与投资活动有关的现金
         $cs16 = $cs11 + $cs12 + $cs13 + $cs14 + $cs15;
         //购建固定资产、无形资产和其他长期资产支付的现金
@@ -179,7 +179,7 @@ class ReportCashFlowService
         //偿还债务支付的现金
         $cs28 = $this->calculateArray($year, $period, []);
         //分配股利、利润或偿付利息支付的现金
-        $cs29 = $this->calculateArray($year, $period, [Subject::利息_247])
+        $cs29 = $this->calculateArray($year, $period, [Subject::interest_247])
             + $this->calculateBSArray($year, $period, [-39, -40]);
         //支付其他与筹资活动有关的现金
         $cs30 = $this->calculateArray($year, $period, []);
@@ -188,7 +188,7 @@ class ReportCashFlowService
         //筹资活动产生的现金流量净额
         $cs32 = $cs27 - $cs31;
         //四、汇率变动对现金及现金等价物的影响
-        $cs33 = $this->calculateArray($year, $period, [Subject::汇兑损益]);
+        $cs33 = $this->calculateArray($year, $period, [Subject::exchangeGainsAndLosses]);
 
         //加：期初现金及现金等价物余额
         $cs35 = $this->calculateBSBeginArray($year, $period, [1]);
@@ -209,22 +209,22 @@ class ReportCashFlowService
         //净利润
         $cs37 = $this->calculateISArray($year, $period, [19]);
         //加:资产减值准备
-        $cs38 = $this->calculateArray($year, $period, [Subject::坏账准备, Subject::存货跌价准备, Subject::持有至到期投资减值准备, Subject::长期股权投资减值准备,
-            Subject::投资性房地产减值准备, Subject::固定资产减值准备, Subject::无形资产减值准备]);
+        $cs38 = $this->calculateArray($year, $period, [Subject::badDebtPreparation, Subject::inventoryFallingPriceReserves, Subject::preparednessForImpairmentOfInvestmentHoldingsToMaturity, Subject::preparednessForImpairmentOfLongTermEquityInvestment,
+            Subject::reserveForImpairmentOfInvestmentRealEstate, Subject::fixedAssetsDepreciationReserves, Subject::intangibleAssetsDepreciationReserves]);
         //固定资产折旧、油气资产折耗、生产性生物资产折旧
-        $cs39 = $this->calculateArray($year, $period, [Subject::投资性房地产累计折旧, Subject::累计折旧_50, Subject::生产性生物资产累计折旧]);
+        $cs39 = $this->calculateArray($year, $period, [Subject::accumulatedDepreciationOfInvestmentRealEstate, Subject::accumulatedDepreciation_50, Subject::accumulatedDepreciationOfProductiveBiologicalAssets]);
         //无形资产摊销
-        $cs40 = $this->calculateArray($year, $period, [Subject::累计摊销]);
+        $cs40 = $this->calculateArray($year, $period, [Subject::accumulatedAmortization]);
         //长期待摊费用摊销
-        $cs41 = $this->calculateArray($year, $period, [Subject::长期待摊费用]);
+        $cs41 = $this->calculateArray($year, $period, [Subject::longTermPendingExpenses]);
         //处置固定资产、无形资产和其他长期资产的损失（收益以“－”号填列）
-        $cs42 = $this->calculateArray($year, $period, [Subject::非流动资产处置净损失, -Subject::非流动资产处置利得]);
+        $cs42 = $this->calculateArray($year, $period, [Subject::netLossOfDisposalOfNonCurrentAssets, -Subject::proceedsFromDisposalOfNonCurrentAssets]);
         //固定资产报废损失（收益以“－”号填列）
         $cs43 = $this->calculateArray($year, $period, []);
         //公允价值变动损失（收益以“－”号填列）
         $cs44 = $this->calculateISArray($year, $period, [-8]);
         //财务费用（收益以“－”号填列）
-        $cs45 = $this->calculateArray($year, $period, [Subject::利息_247, Subject::汇兑损益]);
+        $cs45 = $this->calculateArray($year, $period, [Subject::interest_247, Subject::exchangeGainsAndLosses]);
         //投资损失（收益以“－”号填列）
         $cs46 = $this->calculateISArray($year, $period, [-9]);
         //递延所得税资产减少（增加以“－”号填列）

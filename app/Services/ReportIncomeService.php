@@ -110,43 +110,43 @@ class ReportIncomeService
     private function getIncomeArray($year, $period)
     {
         //营业收入
-        $is1 = $this->calculateArray($year, $period, [Subject::主营业务收入, Subject::其他业务收入]);
+        $is1 = $this->calculateArray($year, $period, [Subject::mainBusinessIncome, Subject::otherBusinessIncome]);
         //营业成本
-        $is2 = $this->calculateArray($year, $period, [Subject::主营业务成本, Subject::其他业务成本]);
+        $is2 = $this->calculateArray($year, $period, [Subject::mainBusinessCost, Subject::otherBusinessCosts]);
         //税金及附加
-        $is3 = $this->calculateArray($year, $period, [Subject::税金及附加]);
+        $is3 = $this->calculateArray($year, $period, [Subject::taxesAndSurcharges]);
         //销售费用
-        $is4 = $this->calculateArray($year, $period, [Subject::销售费用]);
+        $is4 = $this->calculateArray($year, $period, [Subject::sellingExpenses]);
         //管理费用
-        $is5 = $this->calculateArray($year, $period, [Subject::管理费用]);
+        $is5 = $this->calculateArray($year, $period, [Subject::managementCost]);
         //财务费用
-        $is6 = $this->calculateArray($year, $period, [Subject::财务费用]);
+        $is6 = $this->calculateArray($year, $period, [Subject::financialCost]);
         //资产减值损失
-        $is7 = $this->calculateArray($year, $period, [Subject::资产减值损失]);
+        $is7 = $this->calculateArray($year, $period, [Subject::assetsImpairmentLoss]);
         //公允价值变动收益（损失以“-”号填列）
-        $is8 = $this->calculateArray($year, $period, [Subject::公允价值变动损益]);
+        $is8 = $this->calculateArray($year, $period, [Subject::fairValueChangeGainsAndLosses]);
         //投资收益（损失以“-”号填列）
-        $is9 = $this->calculateArray($year, $period, [Subject::投资收益]);
+        $is9 = $this->calculateArray($year, $period, [Subject::incomeFromInvestment]);
         //其中：对联营企业和合营企业的投资收益
         $is10 = $this->calculateArray($year, $period, []);
 
         //营业利润（亏损以“-”号填列）
         $is11 = $is1 - $is2 - $is3 - $is4 - $is5 - $is6 - $is7 + $is8 + $is9;
         //加：营业外收入
-        $is12 = $this->calculateArray($year, $period, [Subject::营业外收入]);
+        $is12 = $this->calculateArray($year, $period, [Subject::outOfBusinessIncome]);
         //其中：非流动资产处置利得
         $is13 = $this->calculateArray($year, $period, []);
         //减：营业外支出
-        $is14 = $this->calculateArray($year, $period, [Subject::营业外支出]);
+        $is14 = $this->calculateArray($year, $period, [Subject::outOfBusinessExpenses]);
         //其中：非流动资产处置损失
         $is15 = $this->calculateArray($year, $period, []);
 
         //利润总额（亏损总额以“-”号填列）
         $is16 = $is11 + $is12 - $is14;
         //加：以前年度损益
-        $is17 = $this->calculateArray($year, $period, [Subject::以前年度损益]);
+        $is17 = $this->calculateArray($year, $period, [Subject::earningsAndLossesOfPreviousYears]);
         //减：所得税费用
-        $is18 = $this->calculateArray($year, $period, [Subject::所得税费用]);
+        $is18 = $this->calculateArray($year, $period, [Subject::incomeTaxExpenses]);
 
         //净利润（净亏损以“-”号填列）
         $is19 = $is16 - $is18;

@@ -112,89 +112,89 @@ class ReportBalanceService
     private function getEndBalanceArray($year, $period)
     {
         //货币资金
-        $bs1 = $this->calculateArray($year, $period, [Subject::库存现金, Subject::银行存款, Subject::其他货币资金]);
+        $bs1 = $this->calculateArray($year, $period, [Subject::cashInStock, Subject::bankDeposit, Subject::otherCurrencyFunds]);
         //以公允价值计量且其变动计入当期损益的金融资产
-        $bs2 = $this->calculateArray($year, $period, [Subject::交易性金融资产]);
+        $bs2 = $this->calculateArray($year, $period, [Subject::transactionalFinancialAssets]);
         //应收票据
-        $bs4 = $this->calculateArray($year, $period, [Subject::应收票据]);
+        $bs4 = $this->calculateArray($year, $period, [Subject::notesReceivable]);
         //应收账款 = 应收账款(借)（1122）+ 预收账款(借)（2203）- 坏账准备_应收账款坏账准备（123101）
-        $bs5 = $this->calculateArrayInAndEnd($year, $period, [Subject::应收账款, Subject::预收账款], [-Subject::应收账款坏账准备]);
+        $bs5 = $this->calculateArrayInAndEnd($year, $period, [Subject::accountsReceivable, Subject::advanceAccountReceivable], [-Subject::allowanceForBadDebtsInAccountsReceivable]);
         //预付款项 = 预付账款(借)（1123）+ 应付账款(借)（2202）- 坏账准备_预付账款坏账准备（123102）
-        $bs6 = $this->calculateArrayInAndEnd($year, $period, [Subject::预付账款, Subject::应付账款], [-Subject::预付账款坏账准备]);
+        $bs6 = $this->calculateArrayInAndEnd($year, $period, [Subject::advancePayment, Subject::accountsPayable], [-Subject::badDebtReserveForAdvanceAccounts]);
         //应收利息
-        $bs7 = $this->calculateArray($year, $period, [Subject::应收利息]);//
+        $bs7 = $this->calculateArray($year, $period, [Subject::interestReceivable]);//
         //应收股利
-        $bs8 = $this->calculateArray($year, $period, [Subject::应收股利]);//
+        $bs8 = $this->calculateArray($year, $period, [Subject::dividendReceivable]);//
         //其他应收款
-        $bs9 = $this->calculateArray($year, $period, [Subject::其他应收款, -Subject::其他应收款坏账准备]);//
+        $bs9 = $this->calculateArray($year, $period, [Subject::otherReceivables, -Subject::allowanceForBadDebtsInOtherReceivables]);//
         //存货
-        $bs10 = $this->calculateArray($year, $period, [Subject::材料采购, Subject::在途物资, Subject::原材料, Subject::材料成本差异,
-            Subject::库存商品, Subject::委托加工物资, Subject::周转材料, Subject::消耗性生物资产,
-            Subject::生产成本, Subject::制造费用, Subject::工程施工, -Subject::商品进销差价]);//
+        $bs10 = $this->calculateArray($year, $period, [Subject::materialPurchase, Subject::materialsInTransit, Subject::rawMaterial, Subject::materialCostDifference,
+            Subject::merchandiseInStock, Subject::entrustedProcessingMaterials, Subject::workingCapitalConstructionMaterials, Subject::consumableBiologicalAssets,
+            Subject::productionCosts, Subject::manufacturingCost, Subject::engineeringConstruction, -Subject::differencesBetweenPurchasingAndSellingPrice]);//
         //其他流动资产
-        $bs11 = $this->calculateArray($year, $period, [Subject::待处理财产损溢, Subject::衍生工具]);
+        $bs11 = $this->calculateArray($year, $period, [Subject::waitDealAssetsLossOrIncome, Subject::derivatives]);
         //流动资产合计
         $bs12 = $bs1 + $bs2 + $bs4 + $bs5 + $bs6 + $bs7 + $bs8 + $bs9 + $bs10 + $bs11;
 
         //可供出售金融资产
-        $bs13 = $this->calculateArray($year, $period, [Subject::可供出售金融资产]);
+        $bs13 = $this->calculateArray($year, $period, [Subject::sellableFinancialAssets]);
         //持有至到期投资
-        $bs14 = $this->calculateArray($year, $period, [Subject::持有至到期投资, -Subject::持有至到期投资减值准备]);
+        $bs14 = $this->calculateArray($year, $period, [Subject::holdingUpToMaturityInvestment, -Subject::preparednessForImpairmentOfInvestmentHoldingsToMaturity]);
         //长期应收款
-        $bs15 = $this->calculateArray($year, $period, [Subject::长期应收款, -Subject::未实现融资收益]);
+        $bs15 = $this->calculateArray($year, $period, [Subject::longTermReceivables, -Subject::unrealizedFinancingGains]);
         //长期股权投资
-        $bs16 = $this->calculateArray($year, $period, [Subject::长期股权投资, -Subject::长期股权投资减值准备]);
+        $bs16 = $this->calculateArray($year, $period, [Subject::longTermEquityInvestment, -Subject::preparednessForImpairmentOfLongTermEquityInvestment]);
         //投资性房地产
-        $bs17 = $this->calculateArray($year, $period, [Subject::投资性房地产]);
+        $bs17 = $this->calculateArray($year, $period, [Subject::investmentRealEstate]);
         //固定资产
-        $bs18 = $this->calculateArray($year, $period, [Subject::固定资产, -Subject::累计折旧_50, -Subject::固定资产减值准备]);
+        $bs18 = $this->calculateArray($year, $period, [Subject::fixedAssets, -Subject::accumulatedDepreciation_50, -Subject::fixedAssetsDepreciationReserves]);
         //在建工程
-        $bs19 = $this->calculateArray($year, $period, [Subject::在建工程]);
+        $bs19 = $this->calculateArray($year, $period, [Subject::constructionInProgress]);
         //工程物资
-        $bs20 = $this->calculateArray($year, $period, [Subject::工程物资]);
+        $bs20 = $this->calculateArray($year, $period, [Subject::engineeringMaterials]);
         //固定资产清理
-        $bs21 = $this->calculateArray($year, $period, [Subject::固定资产清理]);
+        $bs21 = $this->calculateArray($year, $period, [Subject::liquidationOfFixedAssets]);
         //生产性生物资产
-        $bs22 = $this->calculateArray($year, $period, [Subject::生产性生物资产, -Subject::生产性生物资产累计折旧]);
+        $bs22 = $this->calculateArray($year, $period, [Subject::productiveBiologicalAssets, -Subject::accumulatedDepreciationOfProductiveBiologicalAssets]);
         //油气资产
         $bs23 = $this->calculateArray($year, $period, []);
         //无形资产
-        $bs24 = $this->calculateArray($year, $period, [Subject::无形资产, -Subject::累计摊销]);
+        $bs24 = $this->calculateArray($year, $period, [Subject::intangibleAssets, -Subject::accumulatedAmortization]);
         //开发支出
-        $bs25 = $this->calculateArray($year, $period, [Subject::研发支出]);
+        $bs25 = $this->calculateArray($year, $period, [Subject::rdExpenditure]);
         //商誉
-        $bs26 = $this->calculateArray($year, $period, [Subject::商誉]);
+        $bs26 = $this->calculateArray($year, $period, [Subject::goodwill]);
         //长期待摊费用
-        $bs27 = $this->calculateArray($year, $period, [Subject::长期待摊费用]);
+        $bs27 = $this->calculateArray($year, $period, [Subject::longTermPendingExpenses]);
         //递延所得税资产
-        $bs28 = $this->calculateArray($year, $period, [Subject::递延所得税资产]);
+        $bs28 = $this->calculateArray($year, $period, [Subject::deferredTaxAssets]);
         //其他非流动资产
-        $bs29 = $this->calculateArray($year, $period, [Subject::待处理非流动资产损溢]);
+        $bs29 = $this->calculateArray($year, $period, [Subject::lossAndLossOfNonCurrentAssetsToBeProcessed]);
         //非流动资产合计
         $bs30 = $bs13 + $bs14 + $bs15 + $bs16 + $bs17 + $bs18 + $bs19 + $bs20 + $bs21 + $bs22 + $bs23 + $bs24 + $bs25 + $bs26 + $bs27 + $bs28 + $bs29;
         //资产总计
         $bs31 = $bs12 + $bs30;
 
         //短期借款
-        $bs32 = $this->calculateArray($year, $period, [Subject::短期借款]);
+        $bs32 = $this->calculateArray($year, $period, [Subject::shortTermLoan]);
         //以公允价值计量且其变动计入当期损益的金融负债
-        $bs33 = $this->calculateArray($year, $period, [Subject::交易性金融负债]);
+        $bs33 = $this->calculateArray($year, $period, [Subject::transactionalFinancialLiabilities]);
         //应付票据
-        $bs34 = $this->calculateArray($year, $period, [Subject::应付票据]);
+        $bs34 = $this->calculateArray($year, $period, [Subject::notesPayable]);
         //应付账款 = 预付账款(贷)（1123）+ 应付账款(贷)（2202）
-        $bs35 = $this->calculateArrayOut($year, $period, [Subject::预付账款, Subject::应付账款]);
+        $bs35 = $this->calculateArrayOut($year, $period, [Subject::advancePayment, Subject::accountsPayable]);
         //预收款项 = 应收账款(贷)（1122）+ 预收账款(贷)（2203）
-        $bs36 = $this->calculateArrayOut($year, $period, [Subject::应收账款, Subject::预收账款]);
+        $bs36 = $this->calculateArrayOut($year, $period, [Subject::accountsReceivable, Subject::advanceAccountReceivable]);
         //应付职工薪酬
-        $bs37 = $this->calculateArray($year, $period, [Subject::应付职工薪酬]);
+        $bs37 = $this->calculateArray($year, $period, [Subject::payableRemuneration]);
         //应交税费
-        $bs38 = $this->calculateArray($year, $period, [Subject::应交税费]);
+        $bs38 = $this->calculateArray($year, $period, [Subject::taxesPayable]);
         //应付利息
-        $bs39 = $this->calculateArray($year, $period, [Subject::应付利息]);
+        $bs39 = $this->calculateArray($year, $period, [Subject::interestPayable]);
         //应付股利
-        $bs40 = $this->calculateArray($year, $period, [Subject::应付股利]);
+        $bs40 = $this->calculateArray($year, $period, [Subject::dividendsPayable]);
         //其他应付款
-        $bs41 = $this->calculateArray($year, $period, [Subject::其他应付款]);
+        $bs41 = $this->calculateArray($year, $period, [Subject::otherAccountsPayable]);
         //一年内到期的非流动负债
         $bs42 = $this->calculateArray($year, $period, []);
         //其他流动负债
@@ -203,19 +203,19 @@ class ReportBalanceService
         $bs44 = $bs32 + $bs33 + $bs34 + $bs35 + $bs36 + $bs37 + $bs38 + $bs39 + $bs40 + $bs41 + $bs42 + $bs43;
 
         //长期借款
-        $bs46 = $this->calculateArray($year, $period, [Subject::长期借款]);
+        $bs46 = $this->calculateArray($year, $period, [Subject::longTermLoan]);
         //应付债券
-        $bs47 = $this->calculateArray($year, $period, [Subject::应付债券]);
+        $bs47 = $this->calculateArray($year, $period, [Subject::bondsPayable]);
         //长期应付款
-        $bs48 = $this->calculateArray($year, $period, [Subject::长期应付款, -Subject::未确认融资费用]);
+        $bs48 = $this->calculateArray($year, $period, [Subject::longTermAccountsPayable, -Subject::unconfirmedFinancingCosts]);
         //专项应付款
-        $bs49 = $this->calculateArray($year, $period, [Subject::专项应付款]);
+        $bs49 = $this->calculateArray($year, $period, [Subject::specialAccountsPayable]);
         //预计负债
-        $bs50 = $this->calculateArray($year, $period, [Subject::预计负债]);
+        $bs50 = $this->calculateArray($year, $period, [Subject::projectedLiabilities]);
         //递延收益
-        $bs51 = $this->calculateArray($year, $period, [Subject::递延收益]);
+        $bs51 = $this->calculateArray($year, $period, [Subject::deferredIncome]);
         //递延所得税负债
-        $bs52 = $this->calculateArray($year, $period, [Subject::递延所得税负债]);
+        $bs52 = $this->calculateArray($year, $period, [Subject::deferredTaxLiability]);
         //其他非流动负债
         $bs53 = $this->calculateArray($year, $period, []);
         //非流动负债合计
@@ -224,17 +224,17 @@ class ReportBalanceService
         $bs55 = $bs44 + $bs54;
 
         //实收资本
-        $bs56 = $this->calculateArray($year, $period, [Subject::实收资本]);
+        $bs56 = $this->calculateArray($year, $period, [Subject::paidInCapital]);
         //资本公积
-        $bs57 = $this->calculateArray($year, $period, [Subject::资本公积]);
+        $bs57 = $this->calculateArray($year, $period, [Subject::capitalSurplus]);
         //库存股
-        $bs58 = $this->calculateArray($year, $period, [Subject::库存股]);
+        $bs58 = $this->calculateArray($year, $period, [Subject::treasuryStock]);
         //其他综合收益
-        $bs59 = $this->calculateArray($year, $period, [Subject::其他权益工具]);
+        $bs59 = $this->calculateArray($year, $period, [Subject::otherEquityInstruments]);
         //盈余公积
-        $bs60 = $this->calculateArray($year, $period, [Subject::盈余公积]);
+        $bs60 = $this->calculateArray($year, $period, [Subject::surplusReserves]);
         //未分配利润
-        $bs61 = $this->calculateArray($year, $period, [Subject::本年利润, Subject::利润分配]);
+        $bs61 = $this->calculateArray($year, $period, [Subject::profitThisYear, Subject::profitDistribution]);
         //所有者权益
         $bs62 = $bs56 + $bs57 + $bs59 + $bs60 + $bs61 - $bs58;
         //负债和所有者权益
