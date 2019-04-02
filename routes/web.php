@@ -33,6 +33,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::put('edit', 'System\EmployeeController@editDepartment');//编辑部门
         Route::delete('{id}', 'System\EmployeeController@delDepartment');//删除部门
         Route::get('', 'System\EmployeeController@getDepartmentList');//部门列表
+        Route::get('{id}', 'System\EmployeeController@getDepartmentDetail');//部门详情
     });
     //系统设置-凭证字
     Route::group(['prefix' => 'word'], function () {

@@ -23,24 +23,19 @@ class PasswordController extends Controller
      */
     public function editPassword(Request $request)
     {
-        $params    = $request->only(['oldPassword', 'newPassword', 'confirmPassword']);
+        $params    = $request->only(['password']);
         $validator = Validator::make($params, [
-            'oldPassword'     => 'required',
-            'newPassword'     => 'required|different:oldPassword',
-            'confirmPassword' => 'required|same:newPassword',
+            'password' => 'required|min:6',
         ], [
-            'oldPassword.required'     => '原密码不能为空',
-            'newPassword.required'     => '新密码不能为空',
-            'newPassword.different'    => '新密码不能和原密码相同',
-            'confirmPassword.required' => '请输入确认密码',
-            'confirmPassword.same'     => '密码输入不一致',
+            'password.required' => '密码不能为空',
+            'password.min'      => '密码最少6位',
         ]);
 
         if ($validator->fails()) {
             return $this->fail($validator->errors()->first(), 2002);
         }
 
-        $res = $this->employeeModel->editPassword(Auth::user()->id, $params['confirmPassword']);
+        $res = $this->employeeModel->editPassword(Auth::user()->id, $params['password']);
         if ($res) {
             Auth::logout();
             return $this->success();

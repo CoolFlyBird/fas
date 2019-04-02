@@ -257,4 +257,17 @@ class EmployeeController extends Controller
 
         return $this->success($list);
     }
+
+    /**
+     * 部门详情
+     * @author huxinlu
+     * @param int $id 部门ID
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getDepartmentDetail(int $id)
+    {
+        $detail = $this->departmentModel->getDetail($id);
+
+        return $this->success($detail);
+    }
 }
