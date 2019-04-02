@@ -6,8 +6,10 @@
 
 namespace App\Services;
 
+use App\Models\CurrentPeriodModel;
 use App\Models\SubjectBalanceModel;
 use App\Models\SubjectModel;
+use App\Models\VoucherDetailModel;
 use Illuminate\Support\Facades\DB;
 
 class ReportService
@@ -29,13 +31,15 @@ class ReportService
 
     public function __construct(ReportBalanceService $balanceService, ReportIncomeService $incomeService,
                                 ReportCashFlowService $cashFlowService, SubjectBalanceModel $subjectBalanceModel,
-                                SubjectModel $subjectModel)
+                                SubjectModel $subjectModel, VoucherDetailModel $voucherDetailModel, CurrentPeriodModel $currentPeriodModel)
     {
         $this->balanceService      = $balanceService;
         $this->incomeService       = $incomeService;
         $this->cashFlowService     = $cashFlowService;
         $this->subjectBalanceModel = $subjectBalanceModel;
         $this->subjectModel        = $subjectModel;
+        $this->voucherDetailModel  = $voucherDetailModel;
+        $this->currentPeriodModel  = $currentPeriodModel;
     }
 
     /**
@@ -133,5 +137,79 @@ class ReportService
         }
 
         return $data;
+    }
+
+    /**
+     * 明细账
+     * @author huxinlu
+     * @param $params
+     * @return array
+     */
+    public function getBalanceDetailList($params)
+    {
+        if ($params['startPeriod'] == 0) {
+            $params['startPeriod'] = $this->currentPeriodModel->getCurrentPeriod();
+        }
+        if ($params['endPeriod'] == 0) {
+            $params['endPeriod'] = $this->currentPeriodModel->getCurrentPeriod();
+        }
+
+        //判断科目借贷方向
+        $direction = $this->subjectModel->getDirectionById((int)$params['subjectId']);
+        if ($direction == $this->subjectModel::DIRECTION_DEBIT) {
+            $directionCn = '借';
+        } else {
+            $directionCn = '贷';
+        }
+
+        $list = $this->voucherDetailModel->getDetailList($params);
+        $data = [];
+        foreach ($list['data'] as $k => $v) {
+            $year = date('Y', strtotime($v['date']));
+            $month = date('m', strtotime($v['date']));
+            $beginBalance = $this->subjectBalanceModel->getSubjectBeginBalance($year, $month, $v['subjectId']);
+            if (empty($beginBalance)) {
+                $beginBalance = $v['beginBalance'];
+            }
+
+            if (!isset($data[$year . '-' . $month]['balance'])) {
+                $data[$year . '-' . $month]['initialBalance'] = $beginBalance;
+            }
+            if (!isset($data[$year . '-' . $month]['debit'])) {
+                $data[$year . '-' . $month]['debit'] = '0.00';
+            }
+            if (!isset($data[$year . '-' . $month]['credit'])) {
+                $data[$year . '-' . $month]['credit'] = '0.00';
+            }
+            $data[$year . '-' . $month]['debit'] += $v['debit'];
+            $data[$year . '-' . $month]['credit'] += $v['credit'];
+
+            $data[$year . '-' . $month]['month'] = $year . '-' . $month;
+            $data[$year . '-' . $month]['data'][] = [
+                'date' => $v['date'],
+                'subject' => $v['name'],
+                'voucherNo' => $v['voucherNo'],
+                'summary' => $v['summary'],
+                'debit' => $v['debit'],
+                'credit' => $v['credit'],
+                'direction' => $directionCn,
+                'balance' => $direction == $this->subjectModel::DIRECTION_DEBIT ? $data[$year . '-' . $month]['initialBalance'] + ($data[$year . '-' . $month]['debit'] - $data[$year . '-' . $month]['credit']) : $data[$year . '-' . $month]['initialBalance'] - ($data[$year . '-' . $month]['debit'] - $data[$year . '-' . $month]['credit'])
+            ];
+        }
+
+        $res = [];
+        $i = 0;
+        foreach ($data as $k => $v) {
+            if ($i == 0) {
+                $res['initialBalance'] = $v['initialBalance'];
+            }
+            $res['data'][] = [
+                'month' => $k,
+                'data' => $v['data'],
+            ];
+            $i++;
+        }
+
+        return $res;
     }
 }

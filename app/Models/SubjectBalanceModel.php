@@ -103,4 +103,17 @@ class SubjectBalanceModel extends BaseModel
             ->get(DB::raw('sum(debitBalance) as yearDebitBalance'), DB::raw('sum(creditBalance) as yearCreditBalance'))
             ->toArray();
     }
+
+    /**
+     * 期初余额
+     * @author huxinlu
+     * @param $year int 年份
+     * @param $month int 月份
+     * @param $subjectId int 科目ID
+     * @return mixed
+     */
+    public function getSubjectBeginBalance($year, $month, $subjectId)
+    {
+        return self::where(['year' => $year, 'month' => $month, 'subjectId' => $subjectId])->value('beginBalance');
+    }
 }

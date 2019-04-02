@@ -93,4 +93,15 @@ class SubjectModel extends BaseModel
     {
         return self::where('code', $code)->value('direction');
     }
+
+    /**
+     * 根据科目ID获取科目方向
+     * @author huxinlu
+     * @param $subjectId int 科目ID
+     * @return mixed
+     */
+    public function getDirectionById($subjectId)
+    {
+        return self::where('id', $subjectId)->value('direction');
+    }
 }

@@ -100,4 +100,26 @@ class VoucherDetailModel extends BaseModel
             ->get(['detail.subjectId', 'subject', DB::raw('SUM(debit) as debitBalance'), DB::raw('SUM(credit) as creditBalance'), 'subject.direction', 'subject.balance'])
             ->toArray();
     }
+
+    /**
+     * 明细账列表
+     * @author huxinlu
+     * @param $params
+     * @return mixed
+     */
+    public function getDetailList($params)
+    {
+        return $this->from('voucher_detail as d')
+            ->leftJoin('voucher as v', 'd.voucherId', '=', 'v.id')
+            ->leftJoin('proof_word as w', 'v.proofWordId', '=', 'w.id')
+            ->leftJoin('subject as s', 'd.subjectId', '=', 's.id')
+            ->whereYear('d.date', date('Y'))
+            ->where(DB::raw('month(d.date)'), '>=', (int)$params['startPeriod'])
+            ->where(DB::raw('month(d.date)'), '<=', (int)$params['endPeriod'])
+            ->where('d.subjectId', $params['subjectId'])
+            ->orderBy('d.date', 'asc')
+            ->select(['d.date',DB::raw('CONCAT(s.code,s.name) as name'), DB::raw("CONCAT_WS('-',w.name,v.voucherNo) as voucherNo"), 'd.summary', 'd.debit', 'd.credit', 's.direction', 's.balance as beginBalance', 'd.subjectId'])
+            ->paginate($params['limit'])
+            ->toArray();
+    }
 }
