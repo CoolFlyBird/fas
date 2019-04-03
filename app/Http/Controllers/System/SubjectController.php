@@ -221,11 +221,14 @@ class SubjectController extends Controller
     /**
      * 科目搜索列表
      * @author huxinlu
+     * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function getSearchList()
+    public function getSearchList(Request $request)
     {
-        $list = $this->subjectBalanceModel->getSearchList();
+        $params = $request->only(['filter']);
+        $filter = $params['filter'] ?? '';
+        $list = $this->subjectBalanceModel->getSearchList($filter);
 
         return $this->success($list);
     }

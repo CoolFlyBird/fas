@@ -120,12 +120,17 @@ class SubjectBalanceModel extends BaseModel
     /**
      * 搜索科目列表
      * @author huxinlu
+     * @param $filter string 搜索词
      * @return mixed
      */
-    public function getSearchList()
+    public function getSearchList($filter)
     {
         return $this->from('subject_balance as sb')
             ->leftJoin('subject as s', 'sb.subjectId', '=', 's.id')
+            ->when(!empty($filter), function ($query) use ($filter) {
+                $query->orWhere('s.code', 'like', '%' . $filter . '%')
+                    ->orWhere('s.name', 'like', '%' . $filter . '%');
+            })
             ->groupBy('s.id')
             ->orderBy('s.id', 'asc')
             ->get(['s.id', 's.code', 's.name'])
