@@ -116,4 +116,19 @@ class SubjectBalanceModel extends BaseModel
     {
         return self::where(['year' => $year, 'month' => $month, 'subjectId' => $subjectId])->value('beginBalance');
     }
+
+    /**
+     * 搜索科目列表
+     * @author huxinlu
+     * @return mixed
+     */
+    public function getSearchList()
+    {
+        return $this->from('subject_balance as sb')
+            ->leftJoin('subject as s', 'sb.subjectId', '=', 's.id')
+            ->groupBy('s.id')
+            ->orderBy('s.id', 'asc')
+            ->get(['s.id', 's.code', 's.name'])
+            ->toArray();
+    }
 }

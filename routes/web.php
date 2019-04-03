@@ -7,6 +7,7 @@ Route::get('account', 'System\AccountSetController@getList');//账套列表
 //需要验证登录权限
 Route::group(['middleware' => 'login'], function () {
     Route::get('permission', 'System\PermissionController@getList');//权限列表
+    Route::get('subject/search', 'System\SubjectController@getSearchList');//科目搜索列表
 });
 
 //需要权限验证

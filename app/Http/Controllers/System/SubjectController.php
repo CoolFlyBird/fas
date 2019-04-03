@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\System;
 
 use App\Models\AuxiliaryTypeModel;
+use App\Models\SubjectBalanceModel;
 use App\Models\SubjectModel;
 use App\Services\SubjectService;
 use Illuminate\Http\Request;
@@ -11,11 +12,13 @@ use Illuminate\Support\Facades\Validator;
 
 class SubjectController extends Controller
 {
-    public function __construct(SubjectService $subjectService, SubjectModel $subjectModel, AuxiliaryTypeModel $auxiliaryTypeModel)
+    public function __construct(SubjectService $subjectService, SubjectModel $subjectModel, AuxiliaryTypeModel $auxiliaryTypeModel,
+                                SubjectBalanceModel $subjectBalanceModel)
     {
-        $this->subjectService     = $subjectService;
-        $this->subjectModel       = $subjectModel;
-        $this->auxiliaryTypeModel = $auxiliaryTypeModel;
+        $this->subjectService      = $subjectService;
+        $this->subjectModel        = $subjectModel;
+        $this->auxiliaryTypeModel  = $auxiliaryTypeModel;
+        $this->subjectBalanceModel = $subjectBalanceModel;
     }
 
     /**
@@ -212,6 +215,18 @@ class SubjectController extends Controller
     public function getAuxiliaryList()
     {
         $list = $this->auxiliaryTypeModel->getList();
+        return $this->success($list);
+    }
+
+    /**
+     * 科目搜索列表
+     * @author huxinlu
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getSearchList()
+    {
+        $list = $this->subjectBalanceModel->getSearchList();
+
         return $this->success($list);
     }
 }
