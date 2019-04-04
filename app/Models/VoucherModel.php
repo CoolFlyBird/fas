@@ -14,6 +14,16 @@ class VoucherModel extends BaseModel
     const DIRECTION_DEBIT = 1;//借
     const DIRECTION_CREDIT = 2;//贷
 
+    public function voucherDetails()
+    {
+        return $this->hasMany('App\Models\VoucherDetailModel', 'voucherId', 'id');
+    }
+
+    public function proofWord()
+    {
+        return $this->hasOne('App\Models\ProofWordModel', 'id', 'proofWordId');
+    }
+
     /**
      * 是否存在相同的凭证号
      * @author huxinlu

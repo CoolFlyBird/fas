@@ -61,7 +61,8 @@ class SubjectBalanceModel extends BaseModel
                 ['s.status', '=', 1],
                 [DB::raw('LENGTH(s.code)'), '<=', $params['length']],
                 ['sb.month', '>=', $params['startPeriod']],
-                ['sb.month', '<=', $params['endPeriod']]
+                ['sb.month', '<=', $params['endPeriod']],
+                ['sb.year', '=', date('Y')]
             ])
             ->when($params['isDisplay'] == 0, function ($query) {
                 return $query->where(function ($whereQuery) {
@@ -135,5 +136,18 @@ class SubjectBalanceModel extends BaseModel
             ->orderBy('s.id', 'asc')
             ->get(['s.id', 's.code', 's.name'])
             ->toArray();
+    }
+
+    /**
+     * 科目每月余额详情
+     * @author huxinlu
+     * @param $year int 年份
+     * @param $month int 月份
+     * @param $subjectId int 科目ID
+     * @return mixed
+     */
+    public function getSubjectMonthYearBalanceDetail($year, $month, $subjectId)
+    {
+        return self::where(['year' => $year, 'month' => $month, 'subjectId' => $subjectId])->get()->first();
     }
 }

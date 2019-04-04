@@ -5,12 +5,16 @@
  */
 namespace App\Models;
 
-
 use Illuminate\Support\Facades\DB;
 
 class VoucherDetailModel extends BaseModel
 {
     protected $table = 'voucher_detail';
+
+    public function voucher()
+    {
+        return $this->belongsTo('App\Models\VoucherModel', 'voucherId', 'id');
+    }
 
     /**
      * 摘要对应的凭证ID
@@ -120,6 +124,53 @@ class VoucherDetailModel extends BaseModel
             ->orderBy('d.date', 'asc')
             ->select(['d.date',DB::raw('CONCAT(s.code,s.name) as name'), DB::raw("CONCAT_WS('-',w.name,v.voucherNo) as voucherNo"), 'd.summary', 'd.debit', 'd.credit', 's.direction', 's.balance as beginBalance', 'd.subjectId'])
             ->paginate($params['limit'])
+            ->toArray();
+    }
+
+    /**
+     * 每月科目月份
+     * @author huxinlu
+     * @param $auxiliaryTypeId int 辅助核算类型ID
+     * @param $startPeriod int 开始期间
+     * @param $endPeriod int 结束期间
+     * @param $subjectId int 科目ID
+     * @return mixed
+     */
+    public function getMonthlySubjectDateArr($auxiliaryTypeId, $startPeriod, $endPeriod, $subjectId)
+    {
+        return self::where([
+            ['cashFlowTypeId', '=', $auxiliaryTypeId],
+            [DB::raw('month(date)'), '>=', (int)$startPeriod],
+            [DB::raw('month(date)'), '<=', (int)$endPeriod],
+            [DB::raw('year(date)'), '=', date('Y')],
+            ['subjectId', '=', $subjectId]
+        ])
+            ->groupBy('month')
+            ->select([DB::raw("date_format(date, \"%Y-%m\") as month")])
+            ->pluck('month')
+            ->toArray();
+    }
+
+    /**
+     * 科目每月辅助核算列表
+     * @author huxinlu
+     * @param $auxiliaryTypeId int 辅助核算类型ID
+     * @param $monthDate string 年月：2019-01
+     * @param $subjectId int 科目ID
+     * @return mixed
+     */
+    public function getAssistSubjectMonthlyList($auxiliaryTypeId, $monthDate, $subjectId)
+    {
+        return $this->from('voucher_detail as d')
+            ->leftJoin('voucher as v', 'd.voucherId', '=', 'v.id')
+            ->leftJoin('proof_word as w', 'v.proofWordId', '=', 'w.id')
+            ->where([
+                ['d.cashFlowTypeId', '=', $auxiliaryTypeId],
+                [DB::raw('date_format(d.date, "%Y-%m")'), '=', $monthDate],
+                ['d.subjectId', '=', $subjectId]
+            ])
+            ->orderBy('d.date', 'asc')
+            ->get([DB::raw("CONCAT_WS('-',w.name,v.voucherNo) as voucherNo"), 'd.date', 'd.summary', 'd.debit', 'd.credit'])
             ->toArray();
     }
 }

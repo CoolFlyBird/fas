@@ -5,6 +5,8 @@
  */
 namespace App\Models;
 
+use Illuminate\Support\Facades\DB;
+
 class SubjectModel extends BaseModel
 {
     protected $table = 'subject';
@@ -19,6 +21,11 @@ class SubjectModel extends BaseModel
     const STATUS_START = 1;//启用
     const DIRECTION_DEBIT = 1;//借
     const DIRECTION_CREDIT = 2;//贷
+
+    public function voucherDetail()
+    {
+        return $this->hasMany('App\Models\VoucherDetailModel', 'subjectId', 'id');
+    }
 
     /**
      * 统一级别最大编码
@@ -103,5 +110,28 @@ class SubjectModel extends BaseModel
     public function getDirectionById($subjectId)
     {
         return self::where('id', $subjectId)->value('direction');
+    }
+
+    /**
+     * 含有凭证明细的科目列表
+     * @author huxinlu
+     * @param $params
+     * @return mixed
+     */
+    public function getSubjectList($params)
+    {
+        return $this->query()
+            ->when(!empty($params['code']), function ($query) use ($params) {
+                $query->when(is_array($params['code']), function($whereQuery) use ($params) {
+                    return $whereQuery->whereIn('code', $params['code']);
+                }, function ($whereQuery) use ($params) {
+                    return $whereQuery->where('code', $params['code']);
+                });
+            })
+            ->where('status', 1)
+            ->has('voucherDetail', '>=', 1)
+            ->select('id', 'code', 'name', 'direction')
+            ->paginate($params['limit'])
+            ->toArray();
     }
 }
