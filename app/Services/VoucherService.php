@@ -389,8 +389,10 @@ class VoucherService
      */
     public function getVoucherTemplateDetail(int $id)
     {
-        $templateDetail           = $this->voucherTemplateModel->getDetail($id);
-        $templateDetail['detail'] = $this->voucherTemplateDetailModel->getList(['voucherTemplateId' => $id]);
+        $templateDetail                  = $this->voucherTemplateModel->getDetail($id);
+        $detail                          = $this->proofWordModel->getDetail((int)$templateDetail['proofWordId']);
+        $templateDetail['proofWordName'] = $detail ? $detail['name'] : '';
+        $templateDetail['detail']        = $this->voucherTemplateDetailModel->getList(['voucherTemplateId' => $id]);
 
         return $templateDetail;
     }
@@ -405,8 +407,8 @@ class VoucherService
         $list = $this->voucherTemplateModel->getList();
         $data = [];
         foreach ($list as $k => $v) {
-            $detail = $this->voucherTemplateTypeModel->getDetail((int)$v['type']);
-            $data[$k]['id'] = $v['id'];
+            $detail           = $this->voucherTemplateTypeModel->getDetail((int)$v['type']);
+            $data[$k]['id']   = $v['id'];
             $data[$k]['type'] = $detail['name'] ?? '';
             $data[$k]['name'] = $v['name'];
         }
