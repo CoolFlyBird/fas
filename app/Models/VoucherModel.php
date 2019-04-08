@@ -14,6 +14,16 @@ class VoucherModel extends BaseModel
     const DIRECTION_DEBIT = 1;//借
     const DIRECTION_CREDIT = 2;//贷
 
+    public function voucherDetails()
+    {
+        return $this->hasMany('App\Models\VoucherDetailModel', 'voucherId', 'id');
+    }
+
+    public function proofWord()
+    {
+        return $this->hasOne('App\Models\ProofWordModel', 'id', 'proofWordId');
+    }
+
     /**
      * 是否存在相同的凭证号
      * @author huxinlu
@@ -96,5 +106,17 @@ class VoucherModel extends BaseModel
     public function isExistCurrentUnchecked($period)
     {
         return self::where('status',  self::STATUS_UNCHECKED)->whereMonth('date', $period)->exists();
+    }
+
+    /**
+     * 获取最大凭证号
+     * @author huxinlu
+     * @param $date string 日期
+     * @param $proofWordId int 凭证字
+     * @return mixed
+     */
+    public function getMaxVoucherNo($date, $proofWordId)
+    {
+        return self::where(['date' => $date, 'proofWordId' => $proofWordId])->max('voucherNo');
     }
 }

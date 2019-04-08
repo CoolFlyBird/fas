@@ -6,6 +6,7 @@
 namespace App\Models;
 
 use Illuminate\Foundation\Auth\User;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
 class EmployeeModel extends User
@@ -100,7 +101,10 @@ class EmployeeModel extends User
      */
     public function getList($limit)
     {
-        return $this->query()->paginate($limit);
+        return $this->query()
+            ->leftJoin('department', 'employee.departmentId', '=', 'department.id')
+            ->select(['employee.*', DB::raw('if(employee.departmentId = 0, "", department.name) as departmentName')])
+            ->paginate($limit);
     }
 
     /**

@@ -7,6 +7,9 @@ Route::get('account', 'System\AccountSetController@getList');//账套列表
 //需要验证登录权限
 Route::group(['middleware' => 'login'], function () {
     Route::get('permission', 'System\PermissionController@getList');//权限列表
+    Route::get('subject/search', 'System\SubjectController@getSearchList');//科目搜索列表
+    Route::get('auxiliary', 'System\AssistController@getAuxiliaryList');//辅助核算列表
+    Route::get('voucher/subject', 'System\SubjectController@getVoucherSubjectList');//会计科目列表
 });
 
 //需要权限验证
@@ -33,6 +36,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::put('edit', 'System\EmployeeController@editDepartment');//编辑部门
         Route::delete('{id}', 'System\EmployeeController@delDepartment');//删除部门
         Route::get('', 'System\EmployeeController@getDepartmentList');//部门列表
+        Route::get('{id}', 'System\EmployeeController@getDepartmentDetail');//部门详情
     });
     //系统设置-凭证字
     Route::group(['prefix' => 'word'], function () {
@@ -82,6 +86,8 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('{id}', 'System\SubjectController@getDetail');//科目详情
         Route::put('{id}/start', 'System\SubjectController@start');//启用科目
     });
+    //辅助核算类型列表
+    Route::get('auxiliary', 'System\SubjectController@getAuxiliaryList');
     //财务处理-期初余额录入
     Route::group(['prefix' => 'balance'], function () {
         Route::get('{type?}', 'Finance\BalanceController@getList');//期初余额列表
@@ -129,5 +135,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('detail', 'Report\DetailController@getBalanceDetailList');//明细账
         Route::get('assist', 'Report\AssistController@getAssistSubjectList');//核算项目明细账
     });
+    //结转损益
+    Route::post('profit', 'Finance\ProfitController@calculateProfit');
 });
 

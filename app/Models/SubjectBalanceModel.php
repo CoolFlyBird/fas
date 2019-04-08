@@ -3,7 +3,6 @@
  * Created by PhpStorm.
  * Author: huxinlu
  */
-
 namespace App\Models;
 
 use Illuminate\Support\Facades\DB;
@@ -62,7 +61,8 @@ class SubjectBalanceModel extends BaseModel
                 ['s.status', '=', 1],
                 [DB::raw('LENGTH(s.code)'), '<=', $params['length']],
                 ['sb.month', '>=', $params['startPeriod']],
-                ['sb.month', '<=', $params['endPeriod']]
+                ['sb.month', '<=', $params['endPeriod']],
+                ['sb.year', '=', date('Y')]
             ])
             ->when($params['isDisplay'] == 0, function ($query) {
                 return $query->where(function ($whereQuery) {
@@ -106,30 +106,48 @@ class SubjectBalanceModel extends BaseModel
     }
 
     /**
-     * 期末余额数组
+     * 期初余额
      * @author huxinlu
      * @param $year int 年份
      * @param $month int 月份
+     * @param $subjectId int 科目ID
      * @return mixed
      */
-    public function getEndingBalanceArray($year, $month)
+    public function getSubjectBeginBalance($year, $month, $subjectId)
     {
-        return self::where(['year' => $year, 'month' => $month])
-            ->get(["subjectId", "endingBalance"])
-            ->pluck("endingBalance", "subjectId");
+        return self::where(['year' => $year, 'month' => $month, 'subjectId' => $subjectId])->value('beginBalance');
     }
 
-    public function getDebitBalanceById($year, $month, $id)
+    /**
+     * 搜索科目列表
+     * @author huxinlu
+     * @param $filter string 搜索词
+     * @return mixed
+     */
+    public function getSearchList($filter)
     {
-        return self::where(['year' => $year, 'month' => $month, 'subjectId' => $id])
-            ->value("debitBalance");
+        return $this->from('subject_balance as sb')
+            ->leftJoin('subject as s', 'sb.subjectId', '=', 's.id')
+            ->when(!empty($filter), function ($query) use ($filter) {
+                $query->orWhere('s.code', 'like', '%' . $filter . '%')
+                    ->orWhere('s.name', 'like', '%' . $filter . '%');
+            })
+            ->groupBy('s.id')
+            ->orderBy('s.id', 'asc')
+            ->get(['s.id', 's.code', 's.name'])
+            ->toArray();
     }
 
-    public function getCreditBalanceById($year, $month, $id)
+    /**
+     * 科目每月余额详情
+     * @author huxinlu
+     * @param $year int 年份
+     * @param $month int 月份
+     * @param $subjectId int 科目ID
+     * @return mixed
+     */
+    public function getSubjectMonthYearBalanceDetail($year, $month, $subjectId)
     {
-        return self::where(['year' => $year, 'month' => $month, 'subjectId' => $id])
-            ->value("creditBalance");
+        return self::where(['year' => $year, 'month' => $month, 'subjectId' => $subjectId])->get()->first();
     }
-
-
 }

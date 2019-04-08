@@ -20,6 +20,11 @@ class SubjectModel extends BaseModel
     const DIRECTION_DEBIT = 1;//借
     const DIRECTION_CREDIT = 2;//贷
 
+    public function voucherDetail()
+    {
+        return $this->hasMany('App\Models\VoucherDetailModel', 'subjectId', 'id');
+    }
+
     /**
      * 统一级别最大编码
      * @author huxinlu
@@ -92,5 +97,49 @@ class SubjectModel extends BaseModel
     public function getDirectionByCode($code)
     {
         return self::where('code', $code)->value('direction');
+    }
+
+    /**
+     * 根据科目ID获取科目方向
+     * @author huxinlu
+     * @param $subjectId int 科目ID
+     * @return mixed
+     */
+    public function getDirectionById($subjectId)
+    {
+        return self::where('id', $subjectId)->value('direction');
+    }
+
+    /**
+     * 含有凭证明细的科目列表
+     * @author huxinlu
+     * @param $params
+     * @return mixed
+     */
+    public function getSubjectList($params)
+    {
+        return $this->query()
+            ->when(!empty($params['code']), function ($query) use ($params) {
+                $query->when(is_array($params['code']), function($whereQuery) use ($params) {
+                    return $whereQuery->whereIn('code', $params['code']);
+                }, function ($whereQuery) use ($params) {
+                    return $whereQuery->where('code', $params['code']);
+                });
+            })
+            ->where('status', 1)
+            ->has('voucherDetail', '>=', 1)
+            ->select('id', 'code', 'name', 'direction')
+            ->paginate($params['limit'])
+            ->toArray();
+    }
+
+    /**
+     * 会计科目
+     * @author huxinlu
+     * @return \Illuminate\Database\Eloquent\Collection|static[]
+     */
+    public function getVoucherSubjectList()
+    {
+        return $this->query()->limit(2)->get(['id', 'code', 'name', 'auxiliaryTypeId']);
     }
 }

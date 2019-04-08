@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\System;
 
+use App\Models\AuxiliaryTypeModel;
+use App\Models\SubjectBalanceModel;
 use App\Models\SubjectModel;
 use App\Services\SubjectService;
 use Illuminate\Http\Request;
@@ -10,10 +12,13 @@ use Illuminate\Support\Facades\Validator;
 
 class SubjectController extends Controller
 {
-    public function __construct(SubjectService $subjectService, SubjectModel $subjectModel)
+    public function __construct(SubjectService $subjectService, SubjectModel $subjectModel, AuxiliaryTypeModel $auxiliaryTypeModel,
+                                SubjectBalanceModel $subjectBalanceModel)
     {
-        $this->subjectService = $subjectService;
-        $this->subjectModel   = $subjectModel;
+        $this->subjectService      = $subjectService;
+        $this->subjectModel        = $subjectModel;
+        $this->auxiliaryTypeModel  = $auxiliaryTypeModel;
+        $this->subjectBalanceModel = $subjectBalanceModel;
     }
 
     /**
@@ -129,7 +134,7 @@ class SubjectController extends Controller
      */
     public function getList(Request $request)
     {
-        $params = $request->only(['type', 'limit']);
+        $params    = $request->only(['type', 'limit']);
         $validator = Validator::make($params, [
             'type' => 'required|between:1,6'
         ], [
@@ -146,7 +151,7 @@ class SubjectController extends Controller
             return $this->fail($validator->errors()->first(), 2002);
         }
 
-        $type = $params['type'] ?? 0;
+        $type  = $params['type'] ?? 0;
         $limit = $params['limit'] ?? 20;
 
         $list = $this->subjectService->getList($type, $limit);
@@ -200,5 +205,43 @@ class SubjectController extends Controller
         $res = $this->subjectService->start($id);
 
         return $res['res'] ? $this->success() : $this->fail($res['msg']);
+    }
+
+    /**
+     * 辅助核算列表
+     * @author huxinlu
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getAuxiliaryList()
+    {
+        $list = $this->auxiliaryTypeModel->getList();
+        return $this->success($list);
+    }
+
+    /**
+     * 科目搜索列表
+     * @author huxinlu
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getSearchList(Request $request)
+    {
+        $params = $request->only(['filter']);
+        $filter = $params['filter'] ?? '';
+        $list = $this->subjectBalanceModel->getSearchList($filter);
+
+        return $this->success($list);
+    }
+
+    /**
+     * 会计科目列表
+     * @author huxinlu
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getVoucherSubjectList()
+    {
+        $list = $this->subjectModel->getVoucherSubjectList();
+
+        return $this->success($list);
     }
 }

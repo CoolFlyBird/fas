@@ -158,11 +158,13 @@ class EmployeeController extends Controller
     /**
      * 职员列表
      * @author huxinlu
+     * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function getEmployeeList(Request $request)
     {
-        $limit = $request->all('limit');
+        $params = $request->only(['page', 'limit']);
+        $limit = $params['limit'] ?? 20;
         $list = $this->employeeModel->getList((int)$limit);
 
         return $this->success(['data' => $list->items(), 'totalCount' => $list->total()]);
@@ -256,5 +258,18 @@ class EmployeeController extends Controller
         $list = $this->departmentModel->getList();
 
         return $this->success($list);
+    }
+
+    /**
+     * 部门详情
+     * @author huxinlu
+     * @param int $id 部门ID
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getDepartmentDetail(int $id)
+    {
+        $detail = $this->departmentModel->getDetail($id);
+
+        return $this->success($detail);
     }
 }

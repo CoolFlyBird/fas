@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\System;
 
+use App\Models\AuxiliaryTypeModel;
 use App\Models\ClientModel;
 use App\Models\ProjectModel;
 use App\Models\StockModel;
@@ -14,13 +15,14 @@ use Illuminate\Support\Facades\Validator;
 class AssistController extends Controller
 {
     public function __construct(ClientModel $clientModel, ProjectModel $projectModel, StockModel $stockModel,
-                                SubjectModel $subjectModel, SupplierModel $supplierModel)
+                                SubjectModel $subjectModel, SupplierModel $supplierModel, AuxiliaryTypeModel $auxiliaryTypeModel)
     {
-        $this->clientModel   = $clientModel;
-        $this->projectModel  = $projectModel;
-        $this->stockModel    = $stockModel;
-        $this->subjectModel  = $subjectModel;
-        $this->supplierModel = $supplierModel;
+        $this->clientModel        = $clientModel;
+        $this->projectModel       = $projectModel;
+        $this->stockModel         = $stockModel;
+        $this->subjectModel       = $subjectModel;
+        $this->supplierModel      = $supplierModel;
+        $this->auxiliaryTypeModel = $auxiliaryTypeModel;
     }
 
     /**
@@ -503,5 +505,16 @@ class AssistController extends Controller
         $detail = $this->stockModel->getDetail($id);
 
         return $this->success($detail);
+    }
+
+    /**
+     * 辅助核算列表
+     * @author huxinlu
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getAuxiliaryList()
+    {
+        $list = $this->auxiliaryTypeModel->getList();
+        return $this->success($list);
     }
 }
