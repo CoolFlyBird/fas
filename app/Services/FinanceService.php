@@ -160,6 +160,12 @@ class FinanceService
         if ($date != $params['date']) {
             return ['res' => false, 'msg' => '凭证日期不正确'];
         }
+
+        //判断是否已经结转过
+        $isExistData = $this->voucherDetailModel->isExistCurrentProfit($date);
+        if ($isExistData) {
+            return ['res' => false, 'msg' => '不能重复结转'];
+        }
         /**
          * 1、成本(5开头)，损益(6开头)借贷余额不等于0的数据转到本年利润
          * 2、就是说voucher表添加了一条数据，voucher_detail表会把1中的数据都放在刚添加的voucher下，然后再计算本年利润加入到voucher_detail表

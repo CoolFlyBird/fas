@@ -213,4 +213,15 @@ class VoucherDetailModel extends BaseModel
             ->first()
             ->toArray();
     }
+
+    /**
+     * 是否存在当前期本年利润数据
+     * @author huxinlu
+     * @param $date string 日期
+     * @return mixed
+     */
+    public function isExistCurrentProfit($date)
+    {
+        return self::where(['date' => $date, 'subjectId' => 157])->exists();
+    }
 }
