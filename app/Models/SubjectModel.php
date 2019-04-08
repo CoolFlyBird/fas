@@ -5,8 +5,6 @@
  */
 namespace App\Models;
 
-use Illuminate\Support\Facades\DB;
-
 class SubjectModel extends BaseModel
 {
     protected $table = 'subject';
@@ -133,5 +131,15 @@ class SubjectModel extends BaseModel
             ->select('id', 'code', 'name', 'direction')
             ->paginate($params['limit'])
             ->toArray();
+    }
+
+    /**
+     * 会计科目
+     * @author huxinlu
+     * @return \Illuminate\Database\Eloquent\Collection|static[]
+     */
+    public function getVoucherSubjectList()
+    {
+        return $this->query()->limit(2)->get(['id', 'code', 'name', 'auxiliaryTypeId']);
     }
 }

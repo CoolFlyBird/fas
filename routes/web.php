@@ -9,6 +9,7 @@ Route::group(['middleware' => 'login'], function () {
     Route::get('permission', 'System\PermissionController@getList');//权限列表
     Route::get('subject/search', 'System\SubjectController@getSearchList');//科目搜索列表
     Route::get('auxiliary', 'System\AssistController@getAuxiliaryList');//辅助核算列表
+    Route::get('voucher/subject', 'System\SubjectController@getVoucherSubjectList');//会计科目列表
 });
 
 //需要权限验证
@@ -137,5 +138,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('detail', 'Report\DetailController@getBalanceDetailList');//明细账
         Route::get('assist', 'Report\AssistController@getAssistSubjectList');//核算项目明细账
     });
+    //结转损益
+    Route::post('profit', 'Finance\ProfitController@calculateProfit');
 });
 

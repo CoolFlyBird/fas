@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\DB;
 class VoucherDetailModel extends BaseModel
 {
     protected $table = 'voucher_detail';
+    public $timestamps = false;
 
     public function voucher()
     {
@@ -171,6 +172,45 @@ class VoucherDetailModel extends BaseModel
             ])
             ->orderBy('d.date', 'asc')
             ->get([DB::raw("CONCAT_WS('-',w.name,v.voucherNo) as voucherNo"), 'd.date', 'd.summary', 'd.debit', 'd.credit'])
+            ->toArray();
+    }
+
+    /**
+     * 成本和损益列表
+     * @author huxinlu
+     * @param $year int 年份
+     * @param $month int 月份
+     * @return mixed
+     */
+    public function getProfitList($year, $month)
+    {
+        return self::whereYear('date', $year)
+            ->whereMonth('date', $month)
+            ->where(function ($query) {
+                $query->where('subjectId', 'like', '5%')
+                    ->orWhere('subjectId', 'like', '6%');
+            })
+            ->get()
+            ->toArray();
+    }
+
+    /**
+     * 当前期间借贷方总金额
+     * @author huxinlu
+     * @param $year int 年份
+     * @param $month int 月份
+     * @return mixed
+     */
+    public function getCurrentAllMoney($year, $month)
+    {
+        return self::whereYear('date', $year)
+            ->whereMonth('date', $month)
+            ->where(function ($query) {
+                $query->where('subjectId', 'like', '5%')
+                    ->orWhere('subjectId', 'like', '6%');
+            })
+            ->get([DB::raw('sum(debit) as allDebit'), DB::raw('sum(credit) as allCredit')])
+            ->first()
             ->toArray();
     }
 }

@@ -232,4 +232,16 @@ class SubjectController extends Controller
 
         return $this->success($list);
     }
+
+    /**
+     * 会计科目列表
+     * @author huxinlu
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getVoucherSubjectList()
+    {
+        $list = $this->subjectModel->getVoucherSubjectList();
+
+        return $this->success($list);
+    }
 }

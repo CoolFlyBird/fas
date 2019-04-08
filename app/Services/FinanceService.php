@@ -1,8 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * Author: ${user}
- */
 namespace App\Services;
 
 use App\Models\CurrentPeriodModel;
@@ -70,13 +66,13 @@ class FinanceService
 
 
                 //年度发生额
-                $yearData = $this->subjectBalanceModel->getYearBalance($year);
+                $yearData                      = $this->subjectBalanceModel->getYearBalance($year);
                 $data[$k]['yearDebitBalance']  = $v['debitBalance'] + $yearData['yearDebitBalance'];
                 $data[$k]['yearCreditBalance'] = $v['creditBalance'] + $yearData['yearCreditBalance'];
 
                 //会计期间
-                $data[$k]['year']          = $year;
-                $data[$k]['month']         = $month;
+                $data[$k]['year']  = $year;
+                $data[$k]['month'] = $month;
             }
 
             //本期科目结账数据
@@ -142,6 +138,93 @@ class FinanceService
             DB::rollBack();
 
             return ['res' => false, 'msg' => '反结账失败，系统内部错误'];
+        }
+    }
+
+    /**
+     * 结转损益
+     * @author huxinlu
+     * @param $params
+     * @return array
+     */
+    public function calculateProfit($params)
+    {
+        //年
+        $year = $this->currentPeriodModel->getCurrentYear();
+
+        //月
+        $month = $this->currentPeriodModel->getCurrentPeriod();
+
+        //凭证日期默认是当前期间的最后一天
+        $date = date('Y-m-d', strtotime($year . '-' . $month . " +1 month -1 day"));
+        if ($date != $params['date']) {
+            return ['res' => false, 'msg' => '凭证日期不正确'];
+        }
+        /**
+         * 1、成本(5开头)，损益(6开头)借贷余额不等于0的数据转到本年利润
+         * 2、就是说voucher表添加了一条数据，voucher_detail表会把1中的数据都放在刚添加的voucher下，然后再计算本年利润加入到voucher_detail表
+         */
+        $list = $this->voucherDetailModel->getProfitList($year, $month);
+        if (empty($list)) {
+            return ['res' => false, 'msg' => '没有需要结转的科目'];
+        }
+        DB::beginTransaction();
+        try {
+            //获取当前期间最大编码
+            $maxVoucherNo = $this->voucherModel->getMaxVoucherNo($params['date'], (int)$params['proofWordId']);
+
+            //该期间内总金额
+            $money = $this->voucherDetailModel->getCurrentAllMoney($year, $month);
+
+            //凭证数据
+            $voucherData = [
+                'proofWordId' => $params['proofWordId'],
+                'voucherNo'   => $maxVoucherNo ? $maxVoucherNo + 1 : 1,
+                'date'        => $date,
+                'allDebit'    => $money['allDebit'],
+                'allCredit'   => $money['allCredit']
+            ];
+
+            //凭证ID
+            $voucherId = $this->voucherModel->insertGetId($voucherData);
+
+            //凭证详情数据
+            $voucherDetailData = [];
+            foreach ($list as $v) {
+                $voucherDetailData[] = [
+                    'voucherId'      => $voucherId,
+                    'summary'        => $v['summary'],
+                    'subjectId'      => $v['subjectId'],
+                    'cashFlowTypeId' => $v['cashFlowTypeId'],
+                    'subject'        => $v['subject'],
+                    'debit'          => $v['debit'],
+                    'credit'         => $v['credit'],
+                    'date'           => $date
+                ];
+            }
+
+            $this->voucherDetailModel->addAll($voucherDetailData);
+
+            //本年利润数据
+            $profitData = [
+                'voucherId' => $voucherId,
+                'summary'   => $params['summary'],
+                'subjectId' => 157,
+                'subject'   => '4103 本年利润',
+                'debit'     => $money['allDebit'],
+                'credit'    => $money['allCredit'],
+                'date'      => $date
+            ];
+
+            $this->voucherDetailModel->add($profitData);
+
+            DB::commit();
+            return ['res' => true, 'mag' => '成功'];
+        } catch (\Exception $e) {
+            logger($e);
+            DB::rollBack();
+
+            return ['res' => false, 'msg' => '结转失败'];
         }
     }
 }

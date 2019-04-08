@@ -107,4 +107,16 @@ class VoucherModel extends BaseModel
     {
         return self::where('status',  self::STATUS_UNCHECKED)->whereMonth('date', $period)->exists();
     }
+
+    /**
+     * 获取最大凭证号
+     * @author huxinlu
+     * @param $date string 日期
+     * @param $proofWordId int 凭证字
+     * @return mixed
+     */
+    public function getMaxVoucherNo($date, $proofWordId)
+    {
+        return self::where(['date' => $date, 'proofWordId' => $proofWordId])->max('voucherNo');
+    }
 }
