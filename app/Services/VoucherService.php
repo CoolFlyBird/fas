@@ -42,7 +42,7 @@ class VoucherService
         $this->proofWordModel             = $proofWordModel;
         $this->voucherTemplateTypeModel   = $voucherTemplateTypeModel;
         $this->clientModel                = $clientModel;
-        $this->subjectModel               = $subjectModel;
+        $this->supplierModel              = $supplierModel;
         $this->employeeModel              = $employeeModel;
         $this->projectModel               = $projectModel;
         $this->departmentModel            = $departmentModel;
@@ -469,7 +469,7 @@ class VoucherService
                 break;
             //供应商
             case $this->subjectModel::AUXILIARY_SUPPLIER:
-                $model = $this->subjectModel;
+                $model = $this->supplierModel;
                 break;
             //职员
             case $this->subjectModel::AUXILIARY_EMPLOYEE:
