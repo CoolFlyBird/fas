@@ -60,6 +60,8 @@ class VoucherController extends Controller
             'detail.*.credit.required'         => '贷方金额不能为空',
             'detail.*.credit.numeric'          => '贷方金额只能是数字',
         ]);
+
+        return $this->success($params);
         $validator->sometimes('detail.*.cashFlowTypeId', 'required|exists:cash_flow_type,id', function ($input) {
             foreach ($input['detail'] as $v) {
                 if (strlen($v['code']) == 4 && $v['cashFlowTypeId'] == 0) {
@@ -73,7 +75,7 @@ class VoucherController extends Controller
         }
 
         $res = $this->voucherService->create($params);
-        return $res['res'] ? $this->success(['id' => $res['id']]) : $this->fail($res['msg']);
+        return $res['res'] ? $this->success() : $this->fail($res['msg']);
     }
 
     /**

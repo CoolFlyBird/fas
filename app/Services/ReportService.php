@@ -50,7 +50,7 @@ class ReportService
      */
     public function calculateMonth($year, $period)
     {
-        $currentYear = (int)$this->currentPeriodModel->getCurrentYear();
+        $currentYear   = (int)$this->currentPeriodModel->getCurrentYear();
         $currentPeriod = (int)$this->currentPeriodModel->getCurrentPeriod();
         if ($currentYear === (int)$year && $currentPeriod === (int)$period) {//如果不是计算本期，则不计算
             if (((int)$period) === 12) {//12月份 计算年度和月度
@@ -63,7 +63,8 @@ class ReportService
                 $result5 = $this->incomeService->calculateYearIncome();
                 $result6 = $this->cashFlowService->calculateYearCashFlow();
                 if ($result1 && $result2 && $result3
-                    && $result4 && $result5 && $result6) {
+                    && $result4 && $result5 && $result6
+                ) {
                     DB::commit();
                     return true;
                 } else {
@@ -95,7 +96,7 @@ class ReportService
      */
     public function revokeMonth($year, $period)
     {
-        $currentYear = (int)$this->currentPeriodModel->getCurrentYear();
+        $currentYear   = (int)$this->currentPeriodModel->getCurrentYear();
         $currentPeriod = (int)$this->currentPeriodModel->getCurrentPeriod();
         if ($currentYear === (int)$year && $currentPeriod === (int)$period) {//如果不是计算本期，则不反结账
             if (((int)$period) === 1) {//1月份 撤销年度和月度
@@ -108,7 +109,8 @@ class ReportService
                 $result5 = $this->incomeService->revokeYearIncome();
                 $result6 = $this->cashFlowService->revokeYearCashFlow();
                 if ($result1 && $result2 && $result3
-                    && $result4 && $result5 && $result6) {
+                    && $result4 && $result5 && $result6
+                ) {
                     DB::commit();
                     return true;
                 } else {
@@ -226,6 +228,8 @@ class ReportService
 
             if (!isset($data[$year . '-' . $month]['balance'])) {
                 $data[$year . '-' . $month]['initialBalance'] = $beginBalance;
+                $data[$year . '-' . $month]['date']           = $year . '-' . $month . '01';
+                $data[$year . '-' . $month]['direction']      = $directionCn;
             }
             if (!isset($data[$year . '-' . $month]['debit'])) {
                 $data[$year . '-' . $month]['debit'] = '0.00';
@@ -285,7 +289,7 @@ class ReportService
                 $params['code'] = explode(',', $params['code']);
             } elseif (strpos($params['code'], '-') !== false) {
                 $codeArr = explode('-', $params['code']);
-                $code = [];
+                $code    = [];
                 for ($i = (int)$codeArr[0]; $i <= $codeArr[1]; $i++) {
                     $code[] = $i;
                 }
@@ -310,7 +314,7 @@ class ReportService
 
             //该科目所有的月份
             $monthDateArr = $this->voucherDetailModel->getMonthlySubjectDateArr((int)$params['auxiliaryTypeId'], (int)$params['startPeriod'], (int)$params['endPeriod'], $v['id']);
-            $arr = [];
+            $arr          = [];
             foreach ($monthDateArr as $monthDate) {
                 //科目每月期初余额
                 $beginBalance = $this->subjectBalanceModel->getSubjectBeginBalance(date('Y', strtotime($monthDate)), date('m', strtotime($monthDate)), $v['id']);
@@ -320,8 +324,8 @@ class ReportService
                 $record = $this->voucherDetailModel->getAssistSubjectMonthlyList((int)$params['auxiliaryTypeId'], $monthDate, $v['id']);
 
                 $monthData = [];
-                $balance = $beginBalance;
-                $debit = $credit = 0.00;
+                $balance   = $beginBalance;
+                $debit     = $credit = 0.00;
                 foreach ($record as $key => $value) {
                     if ($v['direction'] == $this->subjectModel::DIRECTION_DEBIT) {
                         $balance = $balance + $value['debit'] - $value['credit'];
@@ -329,42 +333,42 @@ class ReportService
                         $balance = $balance + $value['credit'] - $value['debit'];
                     }
 
-                    $monthData[$key]['date'] = $value['date'];
+                    $monthData[$key]['date']      = $value['date'];
                     $monthData[$key]['voucherNo'] = $value['voucherNo'];
-                    $monthData[$key]['summary'] = $value['summary'];
-                    $monthData[$key]['debit'] = $value['debit'];
-                    $monthData[$key]['credit'] = $value['credit'];
+                    $monthData[$key]['summary']   = $value['summary'];
+                    $monthData[$key]['debit']     = $value['debit'];
+                    $monthData[$key]['credit']    = $value['credit'];
                     $monthData[$key]['direction'] = $balance == 0.00 ? '平' : $directionCn;
-                    $monthData[$key]['balance'] = $balance;
+                    $monthData[$key]['balance']   = $balance;
 
                     $debit += $value['debit'];
                     $credit += $value['credit'];
                 }
 
                 //当月的第一天
-                $firstDay['date'] = $monthDate . '-01';
+                $firstDay['date']      = $monthDate . '-01';
                 $firstDay['voucherNo'] = '';
-                $firstDay['balance'] = $beginBalance;
+                $firstDay['balance']   = $beginBalance;
                 $firstDay['direction'] = $beginBalance == 0.00 ? '平' : $directionCn;
-                $firstDay['summary'] = '期初余额';
+                $firstDay['summary']   = '期初余额';
                 if ($v['direction'] == $this->subjectModel::DIRECTION_DEBIT) {
-                    $firstDay['debit'] = $beginBalance;
+                    $firstDay['debit']  = $beginBalance;
                     $firstDay['credit'] = 0.00;
                 } else {
                     $firstDay['credit'] = $beginBalance;
-                    $firstDay['debit'] = 0.00;
+                    $firstDay['debit']  = 0.00;
                 }
 
                 array_unshift($monthData, $firstDay);
 
                 //当月的最后一天
-                $lastDay['date'] = date('Y-m-d', strtotime("$monthDate +1 month -1 day"));
+                $lastDay['date']      = date('Y-m-d', strtotime("$monthDate +1 month -1 day"));
                 $lastDay['voucherNo'] = '';
-                $lastDay['summary'] = '本期合计';
-                $lastDay['debit'] = $debit;
-                $lastDay['credit'] = $credit;
+                $lastDay['summary']   = '本期合计';
+                $lastDay['debit']     = $debit;
+                $lastDay['credit']    = $credit;
                 $lastDay['direction'] = $debit - $credit == 0.00 ? '平' : $directionCn;
-                $lastDay['balance'] = $v['direction'] == $this->subjectModel::DIRECTION_DEBIT ? $debit - $credit : $credit - $debit;
+                $lastDay['balance']   = $v['direction'] == $this->subjectModel::DIRECTION_DEBIT ? $debit - $credit : $credit - $debit;
 
                 array_push($monthData, $lastDay);
 
@@ -375,17 +379,17 @@ class ReportService
             $res = array_reduce($arr, 'array_merge', []);
 
             //该科目最后一个月
-            $lastMonth = $monthDateArr[count($monthDateArr) - 1];
+            $lastMonth     = $monthDateArr[count($monthDateArr) - 1];
             $balanceDetail = $this->subjectBalanceModel->getSubjectMonthYearBalanceDetail(date('Y', strtotime($lastMonth)), date('m', strtotime($lastMonth)), $v['id']);
 
             //本年累计
-            $year['date'] = date('Y-m-d', strtotime("$lastMonth +1 month -1 day"));
+            $year['date']      = date('Y-m-d', strtotime("$lastMonth +1 month -1 day"));
             $year['voucherNo'] = '';
-            $year['summary'] = '本年累计';
-            $year['debit'] = $balanceDetail ? $balanceDetail['yearDebitBalance'] : 0.00;
-            $year['credit'] = $balanceDetail ? $balanceDetail['yearCreditBalance'] : 0.00;
+            $year['summary']   = '本年累计';
+            $year['debit']     = $balanceDetail ? $balanceDetail['yearDebitBalance'] : 0.00;
+            $year['credit']    = $balanceDetail ? $balanceDetail['yearCreditBalance'] : 0.00;
             $year['direction'] = $year['debit'] - $year['credit'] == 0.00 ? '平' : $directionCn;
-            $year['balance'] = $v['direction'] == $this->subjectModel::DIRECTION_DEBIT ? $year['debit'] - $year['credit'] : $year['debit'] - $year['credit'];
+            $year['balance']   = $v['direction'] == $this->subjectModel::DIRECTION_DEBIT ? $year['debit'] - $year['credit'] : $year['debit'] - $year['credit'];
 
             array_push($res, $year);
 
