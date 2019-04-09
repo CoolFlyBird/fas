@@ -31,4 +31,15 @@ class ProjectModel extends BaseModel
     {
         return $this->query()->max('code');
     }
+
+    /**
+     * 项目名称
+     * @author huxinlu
+     * @param $id int 项目ID
+     * @return mixed
+     */
+    public function getName($id)
+    {
+        return self::where('id', $id)->value('name');
+    }
 }

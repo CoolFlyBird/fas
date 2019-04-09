@@ -19,6 +19,13 @@ class SubjectModel extends BaseModel
     const STATUS_START = 1;//启用
     const DIRECTION_DEBIT = 1;//借
     const DIRECTION_CREDIT = 2;//贷
+    const AUXILIARY_CLIENT = 1;//辅助核算-客户
+    const AUXILIARY_SUPPLIER = 2;//辅助核算-供应商
+    const AUXILIARY_EMPLOYEE = 3;//辅助核算-职员
+    const AUXILIARY_PROJECT = 4;//辅助核算-项目
+    const AUXILIARY_DEPARTMENT = 5;//辅助核算-部门
+    const AUXILIARY_STOCK = 6;//辅助核算-存货
+    const AUXILIARY_CASH = 7;//辅助核算-现金流量核算
 
     public function voucherDetail()
     {

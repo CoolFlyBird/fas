@@ -30,4 +30,15 @@ class DepartmentModel extends BaseModel
     {
         return $this->query()->max('code');
     }
+
+    /**
+     * 部门名称
+     * @author huxinlu
+     * @param $id int 部门ID
+     * @return mixed
+     */
+    public function getName($id)
+    {
+        return self::where('id', $id)->value('name');
+    }
 }

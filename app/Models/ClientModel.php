@@ -30,4 +30,15 @@ class ClientModel extends BaseModel
     {
         return $this->query()->max('code');
     }
+
+    /**
+     * 客户名称
+     * @author huxinlu
+     * @param $id int 客户ID
+     * @return mixed
+     */
+    public function getName($id)
+    {
+        return self::where('id', $id)->value('name');
+    }
 }

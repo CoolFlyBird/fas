@@ -6,9 +6,15 @@
 namespace App\Services;
 
 use App\Models\CashFlowTypeModel;
+use App\Models\ClientModel;
 use App\Models\CurrentPeriodModel;
+use App\Models\DepartmentModel;
+use App\Models\EmployeeModel;
+use App\Models\ProjectModel;
 use App\Models\ProofWordModel;
+use App\Models\StockModel;
 use App\Models\SubjectModel;
+use App\Models\SupplierModel;
 use App\Models\VoucherDetailModel;
 use App\Models\VoucherModel;
 use App\Models\VoucherTemplateDetailModel;
@@ -21,8 +27,10 @@ class VoucherService
 {
     public function __construct(SubjectModel $subjectModel, VoucherModel $voucherModel, VoucherDetailModel $voucherDetailModel,
                                 VoucherTemplateModel $voucherTemplateModel, VoucherTemplateDetailModel $voucherTemplateDetailModel,
-                                CashFlowTypeModel $cashFlowTypeModel, CurrentPeriodModel $currentPeriodModel,
-                                ProofWordModel $proofWordModel, VoucherTemplateTypeModel $voucherTemplateTypeModel)
+                                CashFlowTypeModel $cashFlowTypeModel, CurrentPeriodModel $currentPeriodModel, ClientModel $clientModel,
+                                ProofWordModel $proofWordModel, VoucherTemplateTypeModel $voucherTemplateTypeModel, SupplierModel $supplierModel,
+                                EmployeeModel $employeeModel, ProjectModel $projectModel, DepartmentModel $departmentModel,
+                                StockModel $stockModel, CashFlowTypeModel $cashFlowTypeModel)
     {
         $this->subjectModel               = $subjectModel;
         $this->voucherModel               = $voucherModel;
@@ -33,6 +41,13 @@ class VoucherService
         $this->currentPeriodModel         = $currentPeriodModel;
         $this->proofWordModel             = $proofWordModel;
         $this->voucherTemplateTypeModel   = $voucherTemplateTypeModel;
+        $this->clientModel                = $clientModel;
+        $this->subjectModel               = $subjectModel;
+        $this->employeeModel              = $employeeModel;
+        $this->projectModel               = $projectModel;
+        $this->departmentModel            = $departmentModel;
+        $this->stockModel                 = $stockModel;
+        $this->cashFlowTypeModel          = $cashFlowTypeModel;
     }
 
     /**
@@ -70,6 +85,8 @@ class VoucherService
             if (!$isExistAssist) {
                 return ['res' => false, 'msg' => '辅助核算类型不正确'];
             }
+
+            $params['detail'][$k]['subject'] = $this->getSubject($v['subjectId'], $v['auxiliaryTypeId'], $v['auxiliaryId']);
         }
 
         DB::beginTransaction();
@@ -119,6 +136,8 @@ class VoucherService
             if (!$isExistAssist) {
                 return ['res' => false, 'msg' => '辅助核算类型不正确'];
             }
+
+            $params['detail'][$k]['subject'] = $this->getSubject($v['subjectId'], $v['auxiliaryTypeId'], $v['auxiliaryId']);
         }
 
         DB::beginTransaction();
@@ -381,6 +400,7 @@ class VoucherService
                 $templateDetailData[$k]['subjectId']         = $v['subjectId'];
                 $templateDetailData[$k]['auxiliaryTypeId']   = $v['auxiliaryTypeId'];
                 $templateDetailData[$k]['auxiliaryId']       = $v['auxiliaryId'];
+                $templateDetailData[$k]['subject']           = $this->getSubject($v['subjectId'], $v['auxiliaryTypeId'], $v['auxiliaryId']);
                 $templateDetailData[$k]['debit']             = $v['debit'];
                 $templateDetailData[$k]['credit']            = $v['credit'];
             }
@@ -430,5 +450,68 @@ class VoucherService
         }
 
         return $data;
+    }
+
+    /**
+     * 会计科目名称（科目编码+科目名称+辅助核算名称）
+     * @author huxinlu
+     * @param $subjectId int 科目ID
+     * @param $auxiliaryTypeId int 辅助核算类型ID
+     * @param $auxiliaryId int 辅助核算ID
+     * @return string
+     */
+    private function getSubject($subjectId, $auxiliaryTypeId, $auxiliaryId)
+    {
+        switch ($auxiliaryTypeId) {
+            //客户
+            case $this->subjectModel::AUXILIARY_CLIENT:
+                $model = $this->clientModel;
+                break;
+            //供应商
+            case $this->subjectModel::AUXILIARY_SUPPLIER:
+                $model = $this->subjectModel;
+                break;
+            //职员
+            case $this->subjectModel::AUXILIARY_EMPLOYEE:
+                $model = $this->employeeModel;
+                break;
+            //项目
+            case $this->subjectModel::AUXILIARY_PROJECT:
+                $model = $this->projectModel;
+                break;
+            //部门
+            case $this->subjectModel::AUXILIARY_DEPARTMENT:
+                $model = $this->departmentModel;
+                break;
+            //存货
+            case $this->subjectModel::AUXILIARY_STOCK:
+                $model = $this->stockModel;
+                break;
+            //现金流量核算
+            case $this->subjectModel::AUXILIARY_CASH:
+                $model = $this->cashFlowTypeModel;
+                break;
+            default:
+                $model = null;
+                break;
+        }
+
+        if ($model) {
+            $auxiliaryName = $model->getName($auxiliaryId);
+            $auxiliaryName = $auxiliaryName ?? '';
+        } else {
+            $auxiliaryName = '';
+        }
+
+        //科目详情
+        $subjectDetail = $this->subjectModel->getDetail($subjectId);
+        if ($subjectDetail) {
+            $code = $subjectDetail['code'];
+            $name = $subjectDetail['name'];
+        } else {
+            $code = $name = '';
+        }
+
+        return $code . ' ' . $name . ' ' . $auxiliaryName;
     }
 }

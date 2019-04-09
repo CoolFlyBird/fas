@@ -30,4 +30,15 @@ class SupplierModel extends BaseModel
     {
         return $this->query()->max('code');
     }
+
+    /**
+     * 供应商名称
+     * @author huxinlu
+     * @param $id int 供应商ID
+     * @return mixed
+     */
+    public function getName($id)
+    {
+        return self::where('id', $id)->value('name');
+    }
 }

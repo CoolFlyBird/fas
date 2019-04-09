@@ -257,15 +257,13 @@ class ReportService
         $minMonth = $this->subjectBalanceModel->getSubjectMinMonth(date('Y'), (int)$params['startPeriod'], (int)$params['endPeriod'], (int)$params['subjectId']);
         $date     = date('Y-' . $minMonth . '-01');
 
-        //本年累计
-        $yearBalance = $direction == $this->subjectModel::DIRECTION_DEBIT ? $subjectBalance['yearDebitBalance'] : $subjectBalance['yearCreditBalance'];
-
         $res = [];
         $i   = 0;
         foreach ($data as $k => $v) {
             if ($i == 0) {
                 $res['initialBalance'] = $initialBalance;
-                $res['yearBalance']    = $yearBalance;
+                $res['yearDebitBalance']    = $subjectBalance['yearDebitBalance'];
+                $res['yearCreditBalance']    = $subjectBalance['yearCreditBalance'];
                 $res['date']           = $date;
                 $res['direction']      = $balance == 0.00 ? '平' : $directionCn;
             }

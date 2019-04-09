@@ -31,4 +31,15 @@ class StockModel extends BaseModel
         $params['code'] = str_pad($this->getMaxCode() + 1, 3, '0', STR_PAD_LEFT);
         return $this->add($params);
     }
+
+    /**
+     * 存货名称
+     * @author huxinlu
+     * @param $id int 存货ID
+     * @return mixed
+     */
+    public function getName($id)
+    {
+        return self::where('id', $id)->value('name');
+    }
 }

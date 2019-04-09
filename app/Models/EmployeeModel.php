@@ -130,4 +130,15 @@ class EmployeeModel extends User
     {
         return $this->query()->get(['id', 'code', 'username']);
     }
+
+    /**
+     * 职员名称
+     * @author huxinlu
+     * @param $id int 职员ID
+     * @return mixed
+     */
+    public function getName($id)
+    {
+        return self::where('id', $id)->value('username');
+    }
 }
