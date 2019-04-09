@@ -198,14 +198,15 @@ class FinanceService
             $voucherDetailData = [];
             foreach ($list as $v) {
                 $voucherDetailData[] = [
-                    'voucherId'      => $voucherId,
-                    'summary'        => $v['summary'],
-                    'subjectId'      => $v['subjectId'],
-                    'cashFlowTypeId' => $v['cashFlowTypeId'],
-                    'subject'        => $v['subject'],
-                    'debit'          => $v['debit'],
-                    'credit'         => $v['credit'],
-                    'date'           => $date
+                    'voucherId'       => $voucherId,
+                    'summary'         => $v['summary'],
+                    'subjectId'       => $v['subjectId'],
+                    'auxiliaryTypeId' => $v['auxiliaryTypeId'],
+                    'auxiliaryId'     => $v['auxiliaryId'],
+                    'subject'         => $v['subject'],
+                    'debit'           => $v['debit'],
+                    'credit'          => $v['credit'],
+                    'date'            => $date
                 ];
             }
 

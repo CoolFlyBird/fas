@@ -140,7 +140,7 @@ class VoucherDetailModel extends BaseModel
     public function getMonthlySubjectDateArr($auxiliaryTypeId, $startPeriod, $endPeriod, $subjectId)
     {
         return self::where([
-            ['cashFlowTypeId', '=', $auxiliaryTypeId],
+            ['auxiliaryTypeId', '=', $auxiliaryTypeId],
             [DB::raw('month(date)'), '>=', (int)$startPeriod],
             [DB::raw('month(date)'), '<=', (int)$endPeriod],
             [DB::raw('year(date)'), '=', date('Y')],
@@ -166,7 +166,7 @@ class VoucherDetailModel extends BaseModel
             ->leftJoin('voucher as v', 'd.voucherId', '=', 'v.id')
             ->leftJoin('proof_word as w', 'v.proofWordId', '=', 'w.id')
             ->where([
-                ['d.cashFlowTypeId', '=', $auxiliaryTypeId],
+                ['d.auxiliaryTypeId', '=', $auxiliaryTypeId],
                 [DB::raw('date_format(d.date, "%Y-%m")'), '=', $monthDate],
                 ['d.subjectId', '=', $subjectId]
             ])

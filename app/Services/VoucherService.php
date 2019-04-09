@@ -113,6 +113,14 @@ class VoucherService
             return ['res' => false, 'msg' => '凭证号重复'];
         }
 
+        foreach ($params['detail'] as $k => $v) {
+            //判断科目是否有辅助核算
+            $isExistAssist = $this->subjectModel->isExistAssist($v['subjectId'], $v['auxiliaryTypeId']);
+            if (!$isExistAssist) {
+                return ['res' => false, 'msg' => '辅助核算类型不正确'];
+            }
+        }
+
         DB::beginTransaction();
         try {
             $detailArr = collect($params['detail']);
@@ -165,22 +173,16 @@ class VoucherService
             $subjectDetail = $this->subjectModel->getDetail($v['subjectId']);
             //科目-中文显示
             $subject = $subjectDetail['code'] . ' ' . $subjectDetail['name'];
-            if (strlen($v['code']) == 4) {
-                //辅助核算类型详情
-                $typeDetail = $this->cashFlowTypeModel->getDetail($v['cashFlowTypeId']);
-                $subject .= ' ' . $typeDetail['name'];
-            } else {
-                $v['cashFlowTypeId'] = 0;
-            }
 
-            $data[$k]['voucherId']      = $voucherId;
-            $data[$k]['summary']        = $v['summary'];
-            $data[$k]['subjectId']      = $v['subjectId'];
-            $data[$k]['cashFlowTypeId'] = $v['cashFlowTypeId'];
-            $data[$k]['subject']        = $subject;
-            $data[$k]['debit']          = $v['debit'];
-            $data[$k]['credit']         = $v['credit'];
-            $data[$k]['date']           = $date;
+            $data[$k]['voucherId']       = $voucherId;
+            $data[$k]['summary']         = $v['summary'];
+            $data[$k]['subjectId']       = $v['subjectId'];
+            $data[$k]['auxiliaryTypeId'] = $v['auxiliaryTypeId'];
+            $data[$k]['auxiliaryId']     = $v['auxiliaryId'];
+            $data[$k]['subject']         = $subject;
+            $data[$k]['debit']           = $v['debit'];
+            $data[$k]['credit']          = $v['credit'];
+            $data[$k]['date']            = $date;
         }
 
         return $data;
@@ -228,12 +230,13 @@ class VoucherService
             $data[$v['id']]['auditor']   = $v['auditor'];
             $data[$v['id']]['reviewer']  = $v['reviewer'];
             $data[$v['id']]['detail'][]  = [
-                'summary'        => $v['summary'],
-                'subjectId'      => $v['subjectId'],
-                'cashFlowTypeId' => $v['cashFlowTypeId'],
-                'subject'        => $v['subject'],
-                'debit'          => $v['debit'],
-                'credit'         => $v['credit'],
+                'summary'         => $v['summary'],
+                'subjectId'       => $v['subjectId'],
+                'auxiliaryTypeId' => $v['auxiliaryTypeId'],
+                'auxiliaryId'     => $v['auxiliaryId'],
+                'subject'         => $v['subject'],
+                'debit'           => $v['debit'],
+                'credit'          => $v['credit'],
             ];
 
         }
