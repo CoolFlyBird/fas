@@ -63,6 +63,15 @@ class VoucherService
         if ($allDebit != $allCredit) {
             return ['res' => false, 'msg' => '借贷金额不相等，请重新添加'];
         }
+
+        foreach ($params['detail'] as $k => $v) {
+            //判断科目是否有辅助核算
+            $isExistAssist = $this->subjectModel->isExistAssist($v['subjectId'], $v['cashFlowTypeId']);
+            if (!$isExistAssist) {
+                return ['res' => false, 'msg' => '辅助核算类型不正确'];
+            }
+        }
+
         DB::beginTransaction();
         try {
 

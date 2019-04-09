@@ -29,6 +29,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::delete('{id}', 'System\EmployeeController@delEmployee');//删除职员
         Route::get('', 'System\EmployeeController@getEmployeeList');//职员列表
         Route::put('password', 'System\PasswordController@editPassword');//修改密码
+        Route::get('list', 'System\EmployeeController@getAllEmployeeList');//所有职员列表
     });
     //系统设置-部门（系统设置-辅助核算-部门）
     Route::group(['prefix' => 'department'], function () {

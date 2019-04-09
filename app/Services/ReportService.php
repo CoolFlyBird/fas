@@ -228,7 +228,7 @@ class ReportService
 
             if (!isset($data[$year . '-' . $month]['balance'])) {
                 $data[$year . '-' . $month]['initialBalance'] = $beginBalance;
-                $data[$year . '-' . $month]['date']           = $year . '-' . $month . '01';
+                $data[$year . '-' . $month]['date']           = $year . '-' . $month . '-01';
                 $data[$year . '-' . $month]['direction']      = $directionCn;
             }
             if (!isset($data[$year . '-' . $month]['debit'])) {
@@ -258,6 +258,8 @@ class ReportService
         foreach ($data as $k => $v) {
             if ($i == 0) {
                 $res['initialBalance'] = $v['initialBalance'];
+                $res['date']           = $v['date'];
+                $res['direction']      = $v['direction'];
             }
             $res['data'][] = [
                 'month' => $k,

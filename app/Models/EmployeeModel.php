@@ -120,4 +120,14 @@ class EmployeeModel extends User
         $query->password = Hash::make($password);
         return $query->save();
     }
+
+    /**
+     * 所有职员列表
+     * @author huxinlu
+     * @return \Illuminate\Database\Eloquent\Collection|static[]
+     */
+    public function getAllEmployeeList()
+    {
+        return $this->query()->get(['id', 'code', 'username']);
+    }
 }

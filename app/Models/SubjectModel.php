@@ -142,4 +142,16 @@ class SubjectModel extends BaseModel
     {
         return $this->query()->limit(2)->get(['id', 'code', 'name', 'auxiliaryTypeId']);
     }
+
+    /**
+     * 是否存在辅助核算
+     * @author huxinlu
+     * @param $subjectId int 科目ID
+     * @param $cashFlowTypeId int 辅助核算类型ID
+     * @return mixed
+     */
+    public function isExistAssist($subjectId, $cashFlowTypeId)
+    {
+        return self::where(['id' => $subjectId, 'auxiliaryTypeId' => $cashFlowTypeId])->exists();
+    }
 }

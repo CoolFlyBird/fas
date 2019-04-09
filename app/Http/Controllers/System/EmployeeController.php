@@ -272,4 +272,16 @@ class EmployeeController extends Controller
 
         return $this->success($detail);
     }
+
+    /**
+     * 所有职员列表
+     * @author huxinlu
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getAllEmployeeList()
+    {
+        $list = $this->employeeModel->getAllEmployeeList();
+
+        return $this->success($list);
+    }
 }

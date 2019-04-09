@@ -54,21 +54,11 @@ class VoucherController extends Controller
             'detail.*.code.required'           => '科目编码不能为空',
             'detail.*.code.exists'             => '该科目不存在',
             'detail.*.cashFlowTypeId.required' => '辅助核算类型ID不能为空',
-            'detail.*.cashFlowTypeId.exists'   => '该辅助核算类型不存在',
             'detail.*.debit.required'          => '借方金额不能为空',
             'detail.*.debit.numeric'           => '借方金额只能是数字',
             'detail.*.credit.required'         => '贷方金额不能为空',
             'detail.*.credit.numeric'          => '贷方金额只能是数字',
         ]);
-
-        return $this->success($params);
-        $validator->sometimes('detail.*.cashFlowTypeId', 'required|exists:cash_flow_type,id', function ($input) {
-            foreach ($input['detail'] as $v) {
-                if (strlen($v['code']) == 4 && $v['cashFlowTypeId'] == 0) {
-                    return true;
-                }
-            }
-        });
 
         if ($validator->fails()) {
             return $this->fail($validator->errors()->first(), 2002);
