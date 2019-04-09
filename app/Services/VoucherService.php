@@ -30,7 +30,7 @@ class VoucherService
                                 CashFlowTypeModel $cashFlowTypeModel, CurrentPeriodModel $currentPeriodModel, ClientModel $clientModel,
                                 ProofWordModel $proofWordModel, VoucherTemplateTypeModel $voucherTemplateTypeModel, SupplierModel $supplierModel,
                                 EmployeeModel $employeeModel, ProjectModel $projectModel, DepartmentModel $departmentModel,
-                                StockModel $stockModel, CashFlowTypeModel $cashFlowTypeModel)
+                                StockModel $stockModel)
     {
         $this->subjectModel               = $subjectModel;
         $this->voucherModel               = $voucherModel;
@@ -47,7 +47,6 @@ class VoucherService
         $this->projectModel               = $projectModel;
         $this->departmentModel            = $departmentModel;
         $this->stockModel                 = $stockModel;
-        $this->cashFlowTypeModel          = $cashFlowTypeModel;
     }
 
     /**
