@@ -150,4 +150,42 @@ class SubjectBalanceModel extends BaseModel
     {
         return self::where(['year' => $year, 'month' => $month, 'subjectId' => $subjectId])->get()->first();
     }
+
+    /**
+     * 科目期初余额
+     * @author huxinlu
+     * @param $year int 年份
+     * @param $startMonth int 起始月份
+     * @param $endMonth int 结束月份
+     * @param $subjectId int 科目ID
+     * @return mixed
+     */
+    public function getSubjectInitialBalance($year, $startMonth, $endMonth, $subjectId)
+    {
+        return self::where(['year' => $year, 'subjectId' => $subjectId])
+            ->where('month', '>=', $startMonth)
+            ->where('month', '<=', $endMonth)
+            ->orderBy('month', 'asc')
+            ->limit(1)
+            ->value('beginBalance');
+    }
+
+    /**
+     * 科目最小月份
+     * @author huxinlu
+     * @param $year int 年份
+     * @param $startMonth int 起始月份
+     * @param $endMonth int 结束月份
+     * @param $subjectId int 科目ID
+     * @return mixed
+     */
+    public function getSubjectMinMonth($year, $startMonth, $endMonth, $subjectId)
+    {
+        return self::where(['year' => $year, 'subjectId' => $subjectId])
+            ->where('month', '>=', $startMonth)
+            ->where('month', '<=', $endMonth)
+            ->orderBy('month', 'asc')
+            ->limit(1)
+            ->value('month');
+    }
 }

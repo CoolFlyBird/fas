@@ -154,4 +154,15 @@ class SubjectModel extends BaseModel
     {
         return self::where(['id' => $subjectId, 'auxiliaryTypeId' => $auxiliaryTypeId])->exists();
     }
+
+    /**
+     * 科目期初余额
+     * @author huxinlu
+     * @param $subjectId int 科目ID
+     * @return mixed
+     */
+    public function getInitialBalance($subjectId)
+    {
+        return self::where('id', $subjectId)->value('balance');
+    }
 }

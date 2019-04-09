@@ -216,29 +216,26 @@ class ReportService
             $directionCn = '贷';
         }
 
+        //期初余额
+        $balance = $this->subjectBalanceModel->getSubjectInitialBalance(date('Y'), (int)$params['startPeriod'], (int)$params['endPeriod'], (int)$params['subjectId']);
+        if (!empty($balance)) {
+            $balance = $this->subjectModel->getInitialBalance((int)$params['subjectId']);
+            $balance = $balance ?? 0.00;
+        }
+
+        $initialBalance = $balance;
+
+        //列表
         $list = $this->voucherDetailModel->getDetailList($params);
         $data = [];
         foreach ($list['data'] as $k => $v) {
-            $year         = date('Y', strtotime($v['date']));
+            $year         = date('Y');
             $month        = date('m', strtotime($v['date']));
-            $beginBalance = $this->subjectBalanceModel->getSubjectBeginBalance($year, $month, $v['subjectId']);
-            if (empty($beginBalance)) {
-                $beginBalance = $v['beginBalance'];
+            if ($direction == $this->subjectModel::DIRECTION_DEBIT) {
+                $balance = $balance + $v['debit'] - $v['credit'];
+            } else {
+                $balance = $balance + $v['credit'] - $v['debit'];
             }
-
-            if (!isset($data[$year . '-' . $month]['balance'])) {
-                $data[$year . '-' . $month]['initialBalance'] = $beginBalance;
-                $data[$year . '-' . $month]['date']           = $year . '-' . $month . '-01';
-                $data[$year . '-' . $month]['direction']      = $directionCn;
-            }
-            if (!isset($data[$year . '-' . $month]['debit'])) {
-                $data[$year . '-' . $month]['debit'] = '0.00';
-            }
-            if (!isset($data[$year . '-' . $month]['credit'])) {
-                $data[$year . '-' . $month]['credit'] = '0.00';
-            }
-            $data[$year . '-' . $month]['debit'] += $v['debit'];
-            $data[$year . '-' . $month]['credit'] += $v['credit'];
 
             $data[$year . '-' . $month]['month']  = $year . '-' . $month;
             $data[$year . '-' . $month]['data'][] = [
@@ -248,18 +245,22 @@ class ReportService
                 'summary'   => $v['summary'],
                 'debit'     => $v['debit'],
                 'credit'    => $v['credit'],
-                'direction' => $directionCn,
-                'balance'   => $direction == $this->subjectModel::DIRECTION_DEBIT ? $data[$year . '-' . $month]['initialBalance'] + ($data[$year . '-' . $month]['debit'] - $data[$year . '-' . $month]['credit']) : $data[$year . '-' . $month]['initialBalance'] - ($data[$year . '-' . $month]['debit'] - $data[$year . '-' . $month]['credit'])
+                'direction' => $balance == 0.00 ? '平' : $directionCn,
+                'balance'   => $balance
             ];
         }
+
+        //最小月份
+        $minMonth = $this->subjectBalanceModel->getSubjectMinMonth(date('Y'), (int)$params['startPeriod'], (int)$params['endPeriod'], (int)$params['subjectId']);
+        $date = date('Y-' . $minMonth . '-01');
 
         $res = [];
         $i   = 0;
         foreach ($data as $k => $v) {
             if ($i == 0) {
-                $res['initialBalance'] = $v['initialBalance'];
-                $res['date']           = $v['date'];
-                $res['direction']      = $v['direction'];
+                $res['initialBalance'] = $initialBalance;
+                $res['date']           = $date;
+                $res['direction']      = $balance == 0.00 ? '平' : $directionCn;
             }
             $res['data'][] = [
                 'month' => $k,
