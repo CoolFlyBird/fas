@@ -66,7 +66,7 @@ class VoucherService
 
         foreach ($params['detail'] as $k => $v) {
             //判断科目是否有辅助核算
-            $isExistAssist = $this->subjectModel->isExistAssist($v['subjectId'], $v['cashFlowTypeId']);
+            $isExistAssist = $this->subjectModel->isExistAssist($v['subjectId'], $v['auxiliaryTypeId']);
             if (!$isExistAssist) {
                 return ['res' => false, 'msg' => '辅助核算类型不正确'];
             }
@@ -366,14 +366,18 @@ class VoucherService
 
             $templateDetailData = [];
             foreach ($params['detail'] as $k => $v) {
-                if (strlen($v['code']) != 4) {
-                    $v['cashFlowTypeId'] = 0;
+                //判断科目是否有辅助核算
+                $isExistAssist = $this->subjectModel->isExistAssist($v['subjectId'], $v['auxiliaryTypeId']);
+                if (!$isExistAssist) {
+                    DB::rollBack();
+                    return ['res' => false, 'msg' => '辅助核算类型不正确'];
                 }
 
                 $templateDetailData[$k]['voucherTemplateId'] = $templateId;
                 $templateDetailData[$k]['summary']           = $v['summary'];
                 $templateDetailData[$k]['subjectId']         = $v['subjectId'];
-                $templateDetailData[$k]['cashFlowTypeId']    = $v['cashFlowTypeId'];
+                $templateDetailData[$k]['auxiliaryTypeId']   = $v['auxiliaryTypeId'];
+                $templateDetailData[$k]['auxiliaryId']       = $v['auxiliaryId'];
                 $templateDetailData[$k]['debit']             = $v['debit'];
                 $templateDetailData[$k]['credit']            = $v['credit'];
             }

@@ -39,25 +39,26 @@ class VoucherController extends Controller
             'detail.*.debit'     => 'required|numeric',
             'detail.*.credit'    => 'required|numeric',
         ], [
-            'proofWordId.required'             => '凭证类别不能为空',
-            'proofWordId.exists'               => '凭证类别不存在',
-            'voucherNo.required'               => '凭证号不能为空',
-            'voucherNo.integer'                => '凭证号只能是整数',
-            'billAmount.required'              => '单据数量不能为空',
-            'billAmount.integer'               => '单据数量只能是整数',
-            'date.required'                    => '凭证日期不能为空',
-            'date.date_format'                 => '凭证日期格式不正确，正确格式为：' . date('Y-m-d'),
-            'detail.*.summary.required'        => '摘要不能为空',
-            'detail.*.summary.max'             => '摘要不能超过100个字符',
-            'detail.*.subjectId.required'      => '科目ID不能为空',
-            'detail.*.subjectId.exists'        => '该科目不存在',
-            'detail.*.code.required'           => '科目编码不能为空',
-            'detail.*.code.exists'             => '该科目不存在',
-            'detail.*.cashFlowTypeId.required' => '辅助核算类型ID不能为空',
-            'detail.*.debit.required'          => '借方金额不能为空',
-            'detail.*.debit.numeric'           => '借方金额只能是数字',
-            'detail.*.credit.required'         => '贷方金额不能为空',
-            'detail.*.credit.numeric'          => '贷方金额只能是数字',
+            'proofWordId.required'              => '凭证类别不能为空',
+            'proofWordId.exists'                => '凭证类别不存在',
+            'voucherNo.required'                => '凭证号不能为空',
+            'voucherNo.integer'                 => '凭证号只能是整数',
+            'billAmount.required'               => '单据数量不能为空',
+            'billAmount.integer'                => '单据数量只能是整数',
+            'date.required'                     => '凭证日期不能为空',
+            'date.date_format'                  => '凭证日期格式不正确，正确格式为：' . date('Y-m-d'),
+            'detail.*.summary.required'         => '摘要不能为空',
+            'detail.*.summary.max'              => '摘要不能超过100个字符',
+            'detail.*.subjectId.required'       => '科目ID不能为空',
+            'detail.*.subjectId.exists'         => '该科目不存在',
+            'detail.*.code.required'            => '科目编码不能为空',
+            'detail.*.code.exists'              => '该科目不存在',
+            'detail.*.auxiliaryTypeId.required' => '辅助核算类型ID不能为空',
+            'detail.*.auxiliaryId.required'     => '辅助核算ID不能为空',
+            'detail.*.debit.required'           => '借方金额不能为空',
+            'detail.*.debit.numeric'            => '借方金额只能是数字',
+            'detail.*.credit.required'          => '贷方金额不能为空',
+            'detail.*.credit.numeric'           => '贷方金额只能是数字',
         ]);
 
         if ($validator->fails()) {
@@ -193,20 +194,13 @@ class VoucherController extends Controller
             'detail.*.subjectId.exists'        => '该科目不存在',
             'detail.*.code.required'           => '科目编码不能为空',
             'detail.*.code.exists'             => '该科目不存在',
-            'detail.*.cashFlowTypeId.required' => '辅助核算类型ID不能为空',
-            'detail.*.cashFlowTypeId.exists'   => '该辅助核算类型不存在',
+            'detail.*.auxiliaryTypeId.required' => '辅助核算类型ID不能为空',
+            'detail.*.auxiliaryId.required'     => '辅助核算ID不能为空',
             'detail.*.debit.required'          => '借方金额不能为空',
             'detail.*.debit.numeric'           => '借方金额只能是数字',
             'detail.*.credit.required'         => '贷方金额不能为空',
             'detail.*.credit.numeric'          => '贷方金额只能是数字',
         ]);
-        $validator->sometimes('detail.*.cashFlowTypeId', 'required|exists:cash_flow_type,id', function ($input) {
-            foreach ($input['detail'] as $v) {
-                if (strlen($v['code']) == 4 && $v['cashFlowTypeId'] == 0) {
-                    return true;
-                }
-            }
-        });
 
         if ($validator->fails()) {
             return $this->fail($validator->errors()->first(), 2002);

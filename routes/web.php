@@ -87,8 +87,11 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('{id}', 'System\SubjectController@getDetail');//科目详情
         Route::put('{id}/start', 'System\SubjectController@start');//启用科目
     });
-    //辅助核算类型列表
-    Route::get('auxiliary', 'System\SubjectController@getAuxiliaryList');
+
+    Route::group(['prefix' => 'auxiliary'], function () {
+        Route::get('', 'System\SubjectController@getAuxiliaryList');//辅助核算类型列表
+        Route::get('cash', 'System\SubjectController@getCashFlowTypeList');//现金流量核算类型列表
+    });
     //财务处理-期初余额录入
     Route::group(['prefix' => 'balance'], function () {
         Route::get('{type?}', 'Finance\BalanceController@getList');//期初余额列表

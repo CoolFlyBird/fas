@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\System;
 
 use App\Models\AuxiliaryTypeModel;
+use App\Models\CashFlowTypeModel;
 use App\Models\SubjectBalanceModel;
 use App\Models\SubjectModel;
 use App\Services\SubjectService;
@@ -13,12 +14,13 @@ use Illuminate\Support\Facades\Validator;
 class SubjectController extends Controller
 {
     public function __construct(SubjectService $subjectService, SubjectModel $subjectModel, AuxiliaryTypeModel $auxiliaryTypeModel,
-                                SubjectBalanceModel $subjectBalanceModel)
+                                SubjectBalanceModel $subjectBalanceModel, CashFlowTypeModel $cashFlowTypeModel)
     {
         $this->subjectService      = $subjectService;
         $this->subjectModel        = $subjectModel;
         $this->auxiliaryTypeModel  = $auxiliaryTypeModel;
         $this->subjectBalanceModel = $subjectBalanceModel;
+        $this->cashFlowTypeModel   = $cashFlowTypeModel;
     }
 
     /**
@@ -228,7 +230,7 @@ class SubjectController extends Controller
     {
         $params = $request->only(['filter']);
         $filter = $params['filter'] ?? '';
-        $list = $this->subjectBalanceModel->getSearchList($filter);
+        $list   = $this->subjectBalanceModel->getSearchList($filter);
 
         return $this->success($list);
     }
@@ -241,6 +243,18 @@ class SubjectController extends Controller
     public function getVoucherSubjectList()
     {
         $list = $this->subjectModel->getVoucherSubjectList();
+
+        return $this->success($list);
+    }
+
+    /**
+     * 现金流量核算类型列表
+     * @author huxinlu
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getCashFlowTypeList()
+    {
+        $list = $this->cashFlowTypeModel->getList();
 
         return $this->success($list);
     }
