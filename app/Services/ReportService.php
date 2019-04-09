@@ -216,21 +216,24 @@ class ReportService
             $directionCn = '贷';
         }
 
-        //期初余额
-        $balance = $this->subjectBalanceModel->getSubjectInitialBalance(date('Y'), (int)$params['startPeriod'], (int)$params['endPeriod'], (int)$params['subjectId']);
-        if (!empty($balance)) {
+        //科目余额
+        $subjectBalance = $this->subjectBalanceModel->getSubjectBalance(date('Y'), (int)$params['startPeriod'], (int)$params['endPeriod'], (int)$params['subjectId']);
+        if (empty($subjectBalance)) {
             $balance = $this->subjectModel->getInitialBalance((int)$params['subjectId']);
             $balance = $balance ?? 0.00;
+        } else {
+            $balance = $subjectBalance['beginBalance'];
         }
 
+        //期初余额
         $initialBalance = $balance;
 
         //列表
         $list = $this->voucherDetailModel->getDetailList($params);
         $data = [];
         foreach ($list['data'] as $k => $v) {
-            $year         = date('Y');
-            $month        = date('m', strtotime($v['date']));
+            $year  = date('Y');
+            $month = date('m', strtotime($v['date']));
             if ($direction == $this->subjectModel::DIRECTION_DEBIT) {
                 $balance = $balance + $v['debit'] - $v['credit'];
             } else {
@@ -252,13 +255,17 @@ class ReportService
 
         //最小月份
         $minMonth = $this->subjectBalanceModel->getSubjectMinMonth(date('Y'), (int)$params['startPeriod'], (int)$params['endPeriod'], (int)$params['subjectId']);
-        $date = date('Y-' . $minMonth . '-01');
+        $date     = date('Y-' . $minMonth . '-01');
+
+        //本年累计
+        $yearBalance = $direction == $this->subjectModel::DIRECTION_DEBIT ? $subjectBalance['yearDebitBalance'] : $subjectBalance['yearCreditBalance'];
 
         $res = [];
         $i   = 0;
         foreach ($data as $k => $v) {
             if ($i == 0) {
                 $res['initialBalance'] = $initialBalance;
+                $res['yearBalance']    = $yearBalance;
                 $res['date']           = $date;
                 $res['direction']      = $balance == 0.00 ? '平' : $directionCn;
             }

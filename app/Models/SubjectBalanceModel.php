@@ -152,7 +152,7 @@ class SubjectBalanceModel extends BaseModel
     }
 
     /**
-     * 科目期初余额
+     * 科目余额
      * @author huxinlu
      * @param $year int 年份
      * @param $startMonth int 起始月份
@@ -160,14 +160,14 @@ class SubjectBalanceModel extends BaseModel
      * @param $subjectId int 科目ID
      * @return mixed
      */
-    public function getSubjectInitialBalance($year, $startMonth, $endMonth, $subjectId)
+    public function getSubjectBalance($year, $startMonth, $endMonth, $subjectId)
     {
         return self::where(['year' => $year, 'subjectId' => $subjectId])
             ->where('month', '>=', $startMonth)
             ->where('month', '<=', $endMonth)
             ->orderBy('month', 'asc')
-            ->limit(1)
-            ->value('beginBalance');
+            ->get(['beginBalance', 'yearDebitBalance', 'yearCreditBalance'])
+            ->first();
     }
 
     /**
