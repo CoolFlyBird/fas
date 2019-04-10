@@ -147,7 +147,7 @@ class SubjectModel extends BaseModel
      */
     public function getVoucherSubjectList()
     {
-        return $this->query()->limit(2)->get(['id', 'code', 'name', 'auxiliaryTypeId']);
+        return $this->query()->get(['id', 'code', 'name', 'auxiliaryTypeId']);
     }
 
     /**

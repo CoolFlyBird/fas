@@ -84,8 +84,6 @@ class VoucherService
             if (!$isExistAssist) {
                 return ['res' => false, 'msg' => '辅助核算类型不正确'];
             }
-
-            $params['detail'][$k]['subject'] = $this->getSubject($v['subjectId'], $v['auxiliaryTypeId'], $v['auxiliaryId']);
         }
 
         DB::beginTransaction();
@@ -103,8 +101,15 @@ class VoucherService
             ];
             $voucherId   = $this->voucherModel->insertGetId($voucherData);
 
+            //凭证详情数据
+            $data = $this->getVoucherDetailData($voucherId, $params['date'], $params['detail']);
+            if (empty($data)) {
+                DB::rollBack();
+                return ['res' => false, 'msg' => '凭证详情不能为空'];
+            }
+
             //凭证详情
-            $this->voucherDetailModel->addAll($this->getVoucherDetailData($voucherId, $params['date'], $params['detail']));
+            $this->voucherDetailModel->addAll($data);
 
             DB::commit();
             return ['res' => true, 'msg' => '成功'];
@@ -135,8 +140,6 @@ class VoucherService
             if (!$isExistAssist) {
                 return ['res' => false, 'msg' => '辅助核算类型不正确'];
             }
-
-            $params['detail'][$k]['subject'] = $this->getSubject($v['subjectId'], $v['auxiliaryTypeId'], $v['auxiliaryId']);
         }
 
         DB::beginTransaction();
@@ -163,8 +166,11 @@ class VoucherService
             //删除之前的凭证详情
             $this->voucherDetailModel->delAll(['voucherId' => $params['id']]);
 
+            //凭证详情数据
+            $data = $this->getVoucherDetailData((int)$params['id'], $params['date'], $params['detail']);
+
             //凭证详情
-            $this->voucherDetailModel->addAll($this->getVoucherDetailData((int)$params['id'], $params['date'], $params['detail']));
+            $this->voucherDetailModel->addAll($data);
 
             DB::commit();
             return true;
@@ -187,17 +193,12 @@ class VoucherService
     {
         $data = [];
         foreach ($params as $k => $v) {
-            //科目详情
-            $subjectDetail = $this->subjectModel->getDetail($v['subjectId']);
-            //科目-中文显示
-            $subject = $subjectDetail['code'] . ' ' . $subjectDetail['name'];
-
             $data[$k]['voucherId']       = $voucherId;
             $data[$k]['summary']         = $v['summary'];
             $data[$k]['subjectId']       = $v['subjectId'];
             $data[$k]['auxiliaryTypeId'] = $v['auxiliaryTypeId'];
             $data[$k]['auxiliaryId']     = $v['auxiliaryId'];
-            $data[$k]['subject']         = $subject;
+            $data[$k]['subject']         = $this->getSubject($v['subjectId'], $v['auxiliaryTypeId'], $v['auxiliaryId']);;
             $data[$k]['debit']           = $v['debit'];
             $data[$k]['credit']          = $v['credit'];
             $data[$k]['date']            = $date;

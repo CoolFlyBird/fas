@@ -70,16 +70,18 @@ class VoucherManageController extends Controller
     {
         $params    = $request->only(['id', 'proofWordId', 'voucherNo', 'billAmount', 'date', 'detail']);
         $validator = Validator::make($params, [
-            'id'                 => 'required|exists:voucher',
-            'proofWordId'        => 'required|exists:proof_word,id',
-            'voucherNo'          => 'required|integer',
-            'billAmount'         => 'required|integer',
-            'date'               => 'required|date_format:Y-m-d',
-            'detail.*.summary'   => 'required|max:100',
-            'detail.*.subjectId' => 'required|exists:subject,id',
-            'detail.*.code'      => 'required|exists:subject,code',
-            'detail.*.debit'     => 'required|numeric',
-            'detail.*.credit'    => 'required|numeric',
+            'id'                       => 'required|exists:voucher',
+            'proofWordId'              => 'required|exists:proof_word,id',
+            'voucherNo'                => 'required|integer',
+            'billAmount'               => 'required|integer',
+            'date'                     => 'required|date_format:Y-m-d',
+            'detail.*.summary'         => 'required|max:100',
+            'detail.*.subjectId'       => 'required|exists:subject,id',
+            'detail.*.auxiliaryTypeId' => 'required',
+            'detail.*.auxiliaryId'     => 'required',
+            'detail.*.code'            => 'required|exists:subject,code',
+            'detail.*.debit'           => 'required|numeric',
+            'detail.*.credit'          => 'required|numeric',
         ], [
             'id.required'                       => '凭证ID不能为空',
             'id.exists'                         => '该凭证不存在',
@@ -189,7 +191,7 @@ class VoucherManageController extends Controller
      */
     public function delVoucher(Request $request)
     {
-        $params = $request->only(['id']);
+        $params    = $request->only(['id']);
         $validator = Validator::make($params, [
             'id' => 'required',
         ], [
