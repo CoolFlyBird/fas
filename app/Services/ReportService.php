@@ -169,16 +169,24 @@ class ReportService
             $data[$k]['code'] = $v['code'];
             $data[$k]['name'] = $v['name'];
 
+            //该科目期初余额
+            $beginBalance = $this->subjectBalanceModel->getSubjectMinMonthBeginBalance((int)$params['startPeriod'], (int)$params['endPeriod'], $v['subjectId']);
+            $beginBalance = $beginBalance ?? 0.00;
+
+            //该科目期末余额
+            $endingBalance = $this->subjectBalanceModel->getSubjectMaxMonthEndingBalance((int)$params['startPeriod'], (int)$params['endPeriod'], $v['subjectId']);
+            $endingBalance = $endingBalance ?? 0.00;
+
             //判断科目属于借还是贷
             $direction = $this->subjectModel->getDirectionByCode($v['code']);
             if ($direction == $this->subjectModel::DIRECTION_DEBIT) {
-                $data[$k]['debitBeginBalance']  = $v['beginBalance'];
-                $data[$k]['debitEndingBalance'] = $v['endingBalance'];
+                $data[$k]['debitBeginBalance']  = $beginBalance;
+                $data[$k]['debitEndingBalance'] = $endingBalance;
                 $data[$k]['creditBeginBalance'] = $data[$k]['creditEndingBalance'] = 0.00;
             } else {
                 $data[$k]['debitBeginBalance']   = $data[$k]['debitEndingBalance'] = 0.00;
-                $data[$k]['creditBeginBalance']  = $v['beginBalance'];
-                $data[$k]['creditEndingBalance'] = $v['endingBalance'];
+                $data[$k]['creditBeginBalance']  = $beginBalance;
+                $data[$k]['creditEndingBalance'] = $endingBalance;
             }
 
             //本期发生额

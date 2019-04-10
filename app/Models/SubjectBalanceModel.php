@@ -60,8 +60,8 @@ class SubjectBalanceModel extends BaseModel
             ->where([
                 ['s.status', '=', 1],
                 [DB::raw('LENGTH(s.code)'), '<=', $params['length']],
-                ['sb.month', '>=', $params['startPeriod']],
-                ['sb.month', '<=', $params['endPeriod']],
+                ['sb.month', '>=', (int)$params['startPeriod']],
+                ['sb.month', '<=', (int)$params['endPeriod']],
                 ['sb.year', '=', date('Y')]
             ])
             ->when($params['isDisplay'] == 0, function ($query) {
@@ -76,7 +76,8 @@ class SubjectBalanceModel extends BaseModel
                         ->orWhere('s.name', 'like', '%' . $params['filter'] . '%');
                 });
             })
-            ->select(['beginBalance', 'endingBalance', 'debitBalance', 'creditBalance', 'code', 'name', 'parentSubjectCode', 'yearDebitBalance', 'yearCreditBalance'])
+            ->select(['s.id as subjectId', 'code', 'name', 'parentSubjectCode', DB::raw('sum(debitBalance) as debitBalance'), DB::raw('sum(creditBalance) as creditBalance'), DB::raw('sum(yearDebitBalance) as yearDebitBalance'), DB::raw('sum(yearCreditBalance) as yearCreditBalance')])
+            ->groupBy('code')
             ->orderBy(DB::raw('RPAD(code,10,0)'), 'asc')
             ->paginate($params['limit'])
             ->toArray();
@@ -187,5 +188,41 @@ class SubjectBalanceModel extends BaseModel
             ->orderBy('month', 'asc')
             ->limit(1)
             ->value('month');
+    }
+
+    /**
+     * 科目最小月份的期初余额
+     * @author huxinlu
+     * @param $startMonth int 起始月份
+     * @param $endMonth int 结束月份
+     * @param $subjectId int 科目ID
+     * @return mixed
+     */
+    public function getSubjectMinMonthBeginBalance($startMonth, $endMonth, $subjectId)
+    {
+        return self::where(['year' => date('Y'), 'subjectId' => $subjectId])
+            ->where('month', '>=', $startMonth)
+            ->where('month', '<=', $endMonth)
+            ->orderBy('month', 'asc')
+            ->limit(1)
+            ->value('beginBalance');
+    }
+
+    /**
+     * 科目最大月份的期初余额
+     * @author huxinlu
+     * @param $startMonth int 起始月份
+     * @param $endMonth int 结束月份
+     * @param $subjectId int 科目ID
+     * @return mixed
+     */
+    public function getSubjectMaxMonthEndingBalance($startMonth, $endMonth, $subjectId)
+    {
+        return self::where(['year' => date('Y'), 'subjectId' => $subjectId])
+            ->where('month', '>=', $startMonth)
+            ->where('month', '<=', $endMonth)
+            ->orderBy('month', 'desc')
+            ->limit(1)
+            ->value('endingBalance');
     }
 }
