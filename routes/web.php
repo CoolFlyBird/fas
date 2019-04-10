@@ -95,7 +95,7 @@ Route::group(['middleware' => 'auth'], function () {
     });
     //财务处理-期初余额录入
     Route::group(['prefix' => 'balance'], function () {
-        Route::get('{type?}', 'Finance\BalanceController@getList');//期初余额列表
+        Route::get('', 'Finance\BalanceController@getList');//期初余额列表
         Route::put('', 'Finance\BalanceController@editInitialBalance');//编辑期初余额
         Route::put('amount', 'Finance\BalanceController@editAmount');//编辑计量单位
         Route::get('calculate', 'Finance\BalanceController@calculate');//试算平衡

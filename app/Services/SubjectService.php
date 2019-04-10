@@ -117,6 +117,7 @@ class SubjectService
         foreach ($data as $k => $v) {
             $detail                        = $this->auxiliaryTypeModel->getDetail($v['auxiliaryTypeId']);
             $data[$k]['auxiliaryTypeName'] = $detail['name'] ?? '';
+            $data[$k]['directionCn'] = $v['direction'] == $this->subjectModel::DIRECTION_DEBIT ? '借' : '贷';
         }
 
         return ['data' => $data];
