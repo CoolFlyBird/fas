@@ -322,7 +322,7 @@ class VoucherService
                     $wordDetail = $this->proofWordModel->getDetail((int)$detail['proofWordId']);
                     $error .= $detail['date'] . '-' . $wordDetail['name'] . ',';
                 } else {
-                    $this->voucherModel->editStatusPass($id, Auth::user()->username);
+                    $this->voucherModel->editStatusReview($id, Auth::user()->username);
                 }
             }
 
