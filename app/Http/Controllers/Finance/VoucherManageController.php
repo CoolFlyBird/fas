@@ -180,4 +180,27 @@ class VoucherManageController extends Controller
 
         return $this->success($list);
     }
+
+    /**
+     * 删除凭证
+     * @author huxinlu
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function delVoucher(Request $request)
+    {
+        $params = $request->only(['id']);
+        $validator = Validator::make($params, [
+            'id' => 'required',
+        ], [
+            'id.required' => '凭证ID不能为空',
+        ]);
+        if ($validator->fails()) {
+            return $this->fail($validator->errors()->first(), 2002);
+        }
+
+        $res = $this->voucherService->delVoucher($params['id']);
+
+        return $res['res'] ? $this->success() : $this->fail($res['msg']);
+    }
 }

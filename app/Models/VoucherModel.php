@@ -119,4 +119,26 @@ class VoucherModel extends BaseModel
     {
         return self::where(['date' => $date, 'proofWordId' => $proofWordId])->max('voucherNo');
     }
+
+    /**
+     * 是否存在已审核的凭证
+     * @author huxinlu
+     * @param $idArr array 凭证ID数组
+     * @return mixed
+     */
+    public function isExistAudit($idArr)
+    {
+        return self::whereIn('id', $idArr)->where('status', self::STATUS_PASS)->exists();
+    }
+
+    /**
+     * 删除凭证
+     * @author huxinlu
+     * @param $idArr array 凭证ID数组
+     * @return mixed
+     */
+    public function delVoucher($idArr)
+    {
+        return self::whereIn('id', $idArr)->delete();
+    }
 }

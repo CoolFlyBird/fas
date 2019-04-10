@@ -513,4 +513,38 @@ class VoucherService
 
         return $code . ' ' . $name . ' ' . $auxiliaryName;
     }
+
+    /**
+     * 删除凭证
+     * @author huxinlu
+     * @param $id string 凭证ID，多个用英文逗号隔开
+     * @return array
+     */
+    public function delVoucher($id)
+    {
+        $idArr = explode(',', $id);
+
+        //判断是否存在已经审核的数据
+        $isExistAudit = $this->voucherModel->isExistAudit($idArr);
+        if ($isExistAudit) {
+            return ['res' => false, 'msg' => '存在已审核的数据，不能删除'];
+        }
+
+        DB::beginTransaction();
+        try {
+            //删除凭证
+            $this->voucherModel->delVoucher($idArr);
+
+            //删除凭证详情
+            $this->voucherDetailModel->delVoucherDetail($idArr);
+
+            DB::commit();
+            return ['res' => true, 'msg' => '成功'];
+        } catch (\Exception $e) {
+            logger($e);
+            DB::rollBack();
+
+            return ['res' => false, 'msg' => '删除凭证失败'];
+        }
+    }
 }

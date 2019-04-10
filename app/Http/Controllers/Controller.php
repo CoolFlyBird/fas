@@ -23,9 +23,9 @@ class Controller extends BaseController
             $data = (object)[];
         }
         return response()->json([
-            'code'    => 1000,
-            'message' => config('errorcode.code')[1000],
-            'data'    => $data,
+            'code' => 1000,
+            'msg'  => config('errorcode.code')[1000],
+            'data' => $data,
         ])->setEncodingOptions(JSON_UNESCAPED_UNICODE);
     }
 
@@ -39,13 +39,13 @@ class Controller extends BaseController
     public function fail($msg = '', $code = 3001)
     {
         if (empty($msg)) {
-            $msg = config('errorcode.code')[(int) $code];
+            $msg = config('errorcode.code')[(int)$code];
         }
 
         return response()->json([
-            'code'    => $code,
-            'message' => $msg,
-            'data'    => (object)[],
+            'code' => $code,
+            'msg'  => $msg,
+            'data' => (object)[],
         ])->setEncodingOptions(JSON_UNESCAPED_UNICODE);
     }
 }

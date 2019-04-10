@@ -147,6 +147,7 @@ class VoucherDetailModel extends BaseModel
             ['subjectId', '=', $subjectId]
         ])
             ->groupBy('month')
+            ->orderBy('month', 'asc')
             ->select([DB::raw("date_format(date, \"%Y-%m\") as month")])
             ->pluck('month')
             ->toArray();
@@ -223,5 +224,16 @@ class VoucherDetailModel extends BaseModel
     public function isExistCurrentProfit($date)
     {
         return self::where(['date' => $date, 'subjectId' => 157])->exists();
+    }
+
+    /**
+     * 删除凭证详情
+     * @author huxinlu
+     * @param $idArr array 凭证ID数组
+     * @return mixed
+     */
+    public function delVoucherDetail($idArr)
+    {
+        return self::whereIn('voucherId', $idArr)->delete();
     }
 }

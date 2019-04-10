@@ -88,6 +88,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::put('{id}/start', 'System\SubjectController@start');//启用科目
     });
 
+    //辅助核算
     Route::group(['prefix' => 'auxiliary'], function () {
         Route::get('', 'System\SubjectController@getAuxiliaryList');//辅助核算类型列表
         Route::get('cash', 'System\SubjectController@getCashFlowTypeList');//现金流量核算类型列表
@@ -124,6 +125,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('', 'Finance\VoucherManageController@getVoucherList');//凭证列表
         Route::post('audit', 'Finance\VoucherManageController@audit');//审核凭证
         Route::post('review', 'Finance\VoucherManageController@review');//反审核凭证
+        Route::delete('', 'Finance\VoucherManageController@delVoucher');//删除凭证
     });
     //财务处理-期末结账
     Route::group(['prefix' => 'final'], function () {
