@@ -54,6 +54,6 @@ class CurrentPeriodModel extends BaseModel
      */
     public function getCurrentDate()
     {
-        return $this->query()->get([DB::raw('CONCAT_WS("-", year, period) as date')])->first();
+        return $this->query()->first();
     }
 }
