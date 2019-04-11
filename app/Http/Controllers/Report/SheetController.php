@@ -6,10 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Models\ReportBalanceModel;
 use App\Models\ReportCashFlowModel;
 use App\Models\ReportIncomeModel;
-use App\Models\SubjectBalanceModel;
 use App\Services\ReportService;
-use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class SheetController extends Controller
 {
