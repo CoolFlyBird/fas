@@ -19,9 +19,6 @@ class Controller extends BaseController
      */
     public function success($data = null)
     {
-        if ($data === null) {
-            $data = (object)[];
-        }
         return response()->json([
             'code' => 1000,
             'msg'  => config('errorcode.code')[1000],
@@ -45,7 +42,7 @@ class Controller extends BaseController
         return response()->json([
             'code' => $code,
             'msg'  => $msg,
-            'data' => (object)[],
+            'data' => null,
         ])->setEncodingOptions(JSON_UNESCAPED_UNICODE);
     }
 }
