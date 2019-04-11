@@ -6,15 +6,17 @@
 namespace App\Http\Controllers\System;
 
 use App\Models\AccountSetModel;
+use App\Models\CurrentPeriodModel;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 
 class AccountSetController extends Controller
 {
-    public function __construct(AccountSetModel $accountSetModel)
+    public function __construct(AccountSetModel $accountSetModel, CurrentPeriodModel $currentPeriodModel)
     {
-        $this->accountSetModel = $accountSetModel;
+        $this->accountSetModel    = $accountSetModel;
+        $this->currentPeriodModel = $currentPeriodModel;
     }
 
     /**
@@ -154,5 +156,17 @@ class AccountSetController extends Controller
         $res = $this->accountSetModel->del($id);
 
         return $res ? $this->success() : $this->fail();
+    }
+
+    /**
+     * 当前期间
+     * @author huxinlu
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getCurrentPeriod()
+    {
+        $detail = $this->currentPeriodModel->getCurrentDate();
+
+        return $this->success($detail);
     }
 }

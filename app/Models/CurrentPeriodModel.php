@@ -6,6 +6,8 @@
 
 namespace App\Models;
 
+use Illuminate\Support\Facades\DB;
+
 class CurrentPeriodModel extends BaseModel
 {
     protected $table = 'current_period';
@@ -43,5 +45,15 @@ class CurrentPeriodModel extends BaseModel
     public function editCurrent($year, $month, $nextYear, $nextMonth)
     {
         return self::where(['year' => $year, 'period' => $month])->update(['year' => $nextYear, 'period' => $nextMonth]);
+    }
+
+    /**
+     * 当前期间
+     * @author huxinlu
+     * @return mixed
+     */
+    public function getCurrentDate()
+    {
+        return $this->query()->get([DB::raw('CONCAT_WS("-", year, period) as date')])->first();
     }
 }

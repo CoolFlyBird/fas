@@ -10,6 +10,7 @@ Route::group(['middleware' => 'login'], function () {
     Route::get('subject/search', 'System\SubjectController@getSearchList');//科目搜索列表
     Route::get('auxiliary', 'System\AssistController@getAuxiliaryList');//辅助核算列表
     Route::get('voucher/subject', 'System\SubjectController@getVoucherSubjectList');//会计科目列表
+    Route::get('period', 'System\AccountSetController@getCurrentPeriod');//当前期间
 });
 
 //需要权限验证
