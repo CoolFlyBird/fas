@@ -101,8 +101,11 @@ class SubjectBalanceModel extends BaseModel
      */
     public function getYearBalance($year)
     {
+
         return self::where('year', $year)
-            ->get(DB::raw('sum(debitBalance) as yearDebitBalance'), DB::raw('sum(creditBalance) as yearCreditBalance'))
+            ->get([DB::raw('sum(debitBalance) as yearDebitBalance'), DB::raw('sum(creditBalance) as yearCreditBalance')])
+//            ->get(DB::raw('sum(debitBalance) as yearDebitBalance'), DB::raw('sum(creditBalance) as yearCreditBalance'))
+            ->first()
             ->toArray();
     }
 
@@ -224,5 +227,31 @@ class SubjectBalanceModel extends BaseModel
             ->orderBy('month', 'desc')
             ->limit(1)
             ->value('endingBalance');
+    }
+
+    /**
+     * 期末余额数组
+     * @author huxinlu
+     * @param $year int 年份
+     * @param $month int 月份
+     * @return mixed
+     */
+    public function getEndingBalanceArray($year, $month)
+    {
+        return self::where(['year' => $year, 'month' => $month])
+            ->get(["subjectId", "endingBalance"])
+            ->pluck("endingBalance", "subjectId");
+    }
+
+    public function getDebitBalanceById($year, $month, $id)
+    {
+        return self::where(['year' => $year, 'month' => $month, 'subjectId' => $id])
+            ->value("debitBalance");
+    }
+
+    public function getCreditBalanceById($year, $month, $id)
+    {
+        return self::where(['year' => $year, 'month' => $month, 'subjectId' => $id])
+            ->value("creditBalance");
     }
 }

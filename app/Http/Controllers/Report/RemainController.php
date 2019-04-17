@@ -29,8 +29,8 @@ class RemainController extends Controller
             'filter'      => 'max:15',
             'grade'       => 'between:1,4',
             'isDisplay'   => 'in:0,1',
-            'startPeriod' => 'integer|min:1|max:' . date('m'),
-            'endPeriod'   => 'integer|min:1|max:' . date('m'),
+//            'startPeriod' => 'integer|min:1|max:' . date('m'),
+//            'endPeriod'   => 'integer|min:1|max:' . date('m'),
         ], [
             'page.required'       => '偏移量不能为空',
             'page.integer'        => '偏移量只能是整数',
@@ -43,10 +43,10 @@ class RemainController extends Controller
             'isDisplay.in'        => '是否包含余额和本期发生额均为0的科目类型不正确',
             'startPeriod.integer' => '会计开始期间只能是整数',
             'startPeriod.min'     => '会计开始期间最小是1',
-            'startPeriod.max'     => '会计开始期间最大是' . date('m'),
+//            'startPeriod.max'     => '会计开始期间最大是' . date('m'),
             'endPeriod.integer'   => '会计结束期间只能是整数',
             'endPeriod.min'       => '会计结束期间最小是1',
-            'endPeriod.max'       => '会计结束期间最大是' . date('m'),
+//            'endPeriod.max'       => '会计结束期间最大是' . date('m'),
         ]);
 
         if ($validator->fails()) {

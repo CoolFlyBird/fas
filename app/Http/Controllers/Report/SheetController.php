@@ -73,7 +73,7 @@ class SheetController extends Controller
         $year = $params['year'] ?? 2000;
         $period = $params['period'] ?? 1;
 
-        $result = $this->reportBalanceModel->loadResult($year, $period);
+        $result = $this->reportBalanceModel->loadResult($year, (int)$period);
         if ($result) {
             return $this->success($result);
         } else {
@@ -106,7 +106,7 @@ class SheetController extends Controller
         }
         $year = $params['year'] ?? 2000;
         $period = $params['period'] ?? 1;
-        $result = $this->reportIncomeModel->loadResult($year, $period);
+        $result = $this->reportIncomeModel->loadResult($year, (int)$period);
         if ($result) {
             return $this->success($result);
         } else {
@@ -139,7 +139,7 @@ class SheetController extends Controller
         }
         $year = $params['year'] ?? 2000;
         $period = $params['period'] ?? 1;
-        $result = $this->reportCashFlowModel->loadResult($year, $period);
+        $result = $this->reportCashFlowModel->loadResult($year, (int)$period);
         if ($result) {
             return $this->success($result);
         } else {

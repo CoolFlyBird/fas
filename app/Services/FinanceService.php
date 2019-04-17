@@ -77,18 +77,21 @@ class FinanceService
 
             //本期科目结账数据
             $this->subjectBalanceModel->addAll($data);
-
-            //当前所在期间修改
-            $next = date("Y-m", strtotime("+1 month", strtotime($year . '-' . $month)));
-            $this->currentPeriodModel->editCurrent($year, $month, date('Y', strtotime($next)), date('m', strtotime($next)));
+//
+//            //当前所在期间修改
+//            $next = date("Y-m", strtotime("+1 month", strtotime($year . '-' . $month)));
+//            $this->currentPeriodModel->editCurrent($year, $month, date('Y', strtotime($next)), date('m', strtotime($next)));
 
             //计算报表
-            $calculate = $this->reportService->calculateMonth();
+            $calculate = $this->reportService->calculateMonth($year, $month);
             if (!$calculate) {
                 DB::rollBack();
                 return ['res' => false, 'msg' => '结账失败，报表计算有误'];
             }
 
+            //当前所在期间修改
+            $next = date("Y-m", strtotime("+1 month", strtotime($year . '-' . $month)));
+            $this->currentPeriodModel->editCurrent($year, $month, date('Y', strtotime($next)), date('m', strtotime($next)));
             DB::commit();
             return ['res' => true, 'msg' => '成功'];
         } catch (\Exception $e) {
@@ -125,7 +128,7 @@ class FinanceService
             $this->currentPeriodModel->editCurrent($year, $month, $lastMonthYear, $lastMonth);
 
             //计算报表
-            $calculate = $this->reportService->revokeMonth();
+            $calculate = $this->reportService->revokeMonth($lastMonthYear, $lastMonth);
             if (!$calculate) {
                 DB::rollBack();
                 return ['res' => false, 'msg' => '反结账失败，报表计算有误'];
