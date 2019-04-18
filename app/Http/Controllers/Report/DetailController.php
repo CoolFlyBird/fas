@@ -51,6 +51,9 @@ class DetailController extends Controller
         }
 
         $list = $this->reportService->getBalanceDetailList($params);
+        if(empty($list)){
+            $list = null;
+        }
         return $this->success($list);
     }
 }

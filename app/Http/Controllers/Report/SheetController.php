@@ -26,27 +26,6 @@ class SheetController extends Controller
         $this->service = $service;
     }
 
-    public function test()
-    {
-        $result = $this->service->calculateMonth(2019, 4);
-        if ($result) {
-            return $this->success($result);
-        } else {
-            return $this->fail($result);
-        }
-    }
-
-    public function test1()
-    {
-        $result = $this->service->revokeMonth(2019, 4);
-        if ($result) {
-            return $this->success($result);
-        } else {
-            return $this->fail($result);
-        }
-    }
-
-
     /**
      * 资产负债表 查询
      * @param Request $request
