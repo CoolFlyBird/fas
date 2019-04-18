@@ -102,7 +102,7 @@ class BalanceController extends Controller
 
         $params['amount'] = $params['amount'] ?? 0.00;
 
-        $res     = $this->subjectService->editAmount((int)$params['id'], (float)$params['initialBalance']);
+        $res     = $this->subjectService->editAmount((int)$params['id'], (float)$params['amount']);
 
         return $res['res'] ? $this->success() : $this->fail($res['msg']);
     }
