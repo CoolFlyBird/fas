@@ -3,6 +3,7 @@
  * Created by PhpStorm.
  * Author: huxinlu
  */
+
 namespace App\Models;
 
 use Illuminate\Support\Facades\DB;
@@ -19,7 +20,7 @@ class SubjectBalanceModel extends BaseModel
     public function isExistData()
     {
         $count = $this->query()->count('id');
-        return $count > 0 ? false : true;
+        return $count > 0 ? true : false;
     }
 
     /**
