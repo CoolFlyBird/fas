@@ -32,7 +32,7 @@ class EmployeeController extends Controller
             'sex'          => 'in:1,2',
             'nation'       => 'max:15',
             'birthDate'    => 'date',
-            'rid'          => 'exists:role,id',
+//            'rid'          => 'exists:role,id',
             'education'    => 'between:1,8',
             'entryDate'    => 'required|date_format:Y-m-d',
             'duty'         => 'max:20',
@@ -48,7 +48,7 @@ class EmployeeController extends Controller
             'sex.in'                => '性别类型不正确',
             'nation.max'            => '民族不能超过15个字符',
             'birthDate.date'        => '出生日期格式不正确，正确格式为2019-01-01',
-            'rid.exists'            => '该角色不存在',
+//            'rid.exists'            => '该角色不存在',
             'education.between'     => '文化程度类型不正确',
             'entryDate.required'    => '入职日期不能为空',
             'entryDate.date_format' => '入职日期格式不正确，正确格式为2019-01-01',
@@ -84,7 +84,7 @@ class EmployeeController extends Controller
             'sex'           => 'in:1,2',
             'nation'        => 'max:15',
             'birthDate'     => 'date',
-            'rid'           => 'exists:role,id',
+//            'rid'           => 'exists:role,id',
             'education'     => 'between:1,8',
             'entryDate'     => 'date_format:Y-m-d',
             'status'        => 'in:1,2',
@@ -103,7 +103,7 @@ class EmployeeController extends Controller
             'sex.in'                    => '性别类型不正确',
             'nation.max'                => '民族不能超过15个字符',
             'birthDate.date'            => '出生日期格式不正确，正确格式为2019-01-01',
-            'rid.exists'                => '该角色不存在',
+//            'rid.exists'                => '该角色不存在',
             'education.between'         => '文化程度类型不正确',
             'entryDate.date_format'     => '入职日期格式不正确，正确格式为2019-01-01',
             'status.in'                 => '职员状态不能超过15个字符',
@@ -121,7 +121,7 @@ class EmployeeController extends Controller
         }
 
         //在职员工不能禁用
-        if (isset($params['status']) && isset($params['isDisable']) && $params['status'] == $employeeModel::STATUS_ON && $params['isDisable'] == $employeeModel::DISABLED) {
+        if (isset($params['status']) && isset($params['isDisable']) && $params['status'] == $this->employeeModel::STATUS_ON && $params['isDisable'] == $this->employeeModel::DISABLED) {
             return $this->fail('在职员工不能禁用', 2002);
         }
         $res = $this->employeeModel->edit($params);

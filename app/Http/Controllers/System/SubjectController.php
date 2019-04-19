@@ -51,7 +51,7 @@ class SubjectController extends Controller
             'type.between'             => '科目类型不正确',
             'direction.required'       => '余额方向不能为空',
             'direction.in'             => '余额方向类型不正确',
-            'auxiliaryTypeId.exists'   => '该辅助核算类型不存在',
+//            'auxiliaryTypeId.exists'   => '该辅助核算类型不存在',
             'amount.numeric'           => '计量单位只能是数值',
         ]);
 
@@ -80,7 +80,7 @@ class SubjectController extends Controller
             'name'            => 'required|max:45',
             'classes'         => 'required|max:20',
             'direction'       => 'required|in:1,2',
-            'auxiliaryTypeId' => 'exists:auxiliary_type,id',
+//            'auxiliaryTypeId' => 'exists:auxiliary_type,id',
             'amount'          => 'numeric'
         ], [
             'id.required'            => '科目ID不能为空',
@@ -91,7 +91,7 @@ class SubjectController extends Controller
             'classes.max'            => '科目类别不能超过20个字符',
             'direction.required'     => '余额方向不能为空',
             'direction.in'           => '余额方向类型不正确',
-            'auxiliaryTypeId.exists' => '该辅助核算类型不存在',
+//            'auxiliaryTypeId.exists' => '该辅助核算类型不存在',
             'amount.numeric'         => '计量单位只能是数值',
         ]);
 
