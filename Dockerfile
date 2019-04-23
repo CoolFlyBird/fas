@@ -1,6 +1,9 @@
 FROM phusion/baseimage
-MAINTAINER unual  "chengqiwenmail@gmail.com"
+MAINTAINER Matthew Rayner <hello@rayner.io>
 ENV REFRESHED_AT 2019-03-12
+
+# based on dgraziotin/lamp
+# MAINTAINER Daniel Graziotin <daniel@ineed.coffee>
 
 ENV DOCKER_USER_ID 501
 ENV DOCKER_USER_GID 20
@@ -75,6 +78,7 @@ RUN a2enmod rewrite
 
 # Configure /app folder with sample app
 RUN mkdir -p /app && rm -fr /var/www/html && ln -s /app /var/www/html
+# ADD app/ /app
 ADD . /app
 
 #Environment variables to configure php
