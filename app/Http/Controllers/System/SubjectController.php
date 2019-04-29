@@ -16,11 +16,21 @@ class SubjectController extends Controller
     public function __construct(SubjectService $subjectService, SubjectModel $subjectModel, AuxiliaryTypeModel $auxiliaryTypeModel,
                                 SubjectBalanceModel $subjectBalanceModel, CashFlowTypeModel $cashFlowTypeModel)
     {
-        $this->subjectService      = $subjectService;
-        $this->subjectModel        = $subjectModel;
-        $this->auxiliaryTypeModel  = $auxiliaryTypeModel;
+        $this->subjectService = $subjectService;
+        $this->subjectModel = $subjectModel;
+        $this->auxiliaryTypeModel = $auxiliaryTypeModel;
         $this->subjectBalanceModel = $subjectBalanceModel;
-        $this->cashFlowTypeModel   = $cashFlowTypeModel;
+        $this->cashFlowTypeModel = $cashFlowTypeModel;
+    }
+
+
+    public function test()
+    {
+//        $subjectModel->exists = true;
+//        $res = [];
+//        $res = $this->subjectModel->save(["id" => 268, "code" => 6902, "name" => "测试啊", "parentSubjectCode" => "", "classes" => "测试啊", "type" => 6, "direction" => 1, "auxiliaryTypeId" => 0]);
+//        print_r($res);
+        return "res";
     }
 
     /**
@@ -31,28 +41,28 @@ class SubjectController extends Controller
      */
     public function create(Request $request)
     {
-        $params    = $request->only(['name', 'parentSubjectCode', 'classes', 'type', 'direction', 'auxiliaryTypeId', 'amount']);
+        $params = $request->only(['name', 'parentSubjectCode', 'classes', 'type', 'direction', 'auxiliaryTypeId', 'amount']);
         $validator = Validator::make($params, [
-            'name'              => 'required|max:45|unique:subject',
+            'name' => 'required|max:45|unique:subject',
             'parentSubjectCode' => 'exists:subject,code',
-            'classes'           => 'required|max:20',
-            'type'              => 'required|between:1,6',
-            'direction'         => 'required|in:1,2',
-            'auxiliaryTypeId'   => 'exists:auxiliary_type,id',
-            'amount'            => 'numeric'
+            'classes' => 'required|max:20',
+            'type' => 'required|between:1,6',
+            'direction' => 'required|in:1,2',
+            'auxiliaryTypeId' => 'exists:auxiliary_type,id',
+            'amount' => 'numeric'
         ], [
-            'name.required'            => '科目名称不能为空',
-            'name.max'                 => '科目名称不能超过45个字符',
-            'name.unique'              => '科目名称不能重复',
+            'name.required' => '科目名称不能为空',
+            'name.max' => '科目名称不能超过45个字符',
+            'name.unique' => '科目名称不能重复',
             'parentSubjectCode.exists' => '上级科目不存在',
-            'classes.required'         => '科目类别不能为空',
-            'classes.max'              => '科目类别不能超过20个字符',
-            'type.required'            => '科目类型不能为空',
-            'type.between'             => '科目类型不正确',
-            'direction.required'       => '余额方向不能为空',
-            'direction.in'             => '余额方向类型不正确',
+            'classes.required' => '科目类别不能为空',
+            'classes.max' => '科目类别不能超过20个字符',
+            'type.required' => '科目类型不能为空',
+            'type.between' => '科目类型不正确',
+            'direction.required' => '余额方向不能为空',
+            'direction.in' => '余额方向类型不正确',
 //            'auxiliaryTypeId.exists'   => '该辅助核算类型不存在',
-            'amount.numeric'           => '计量单位只能是数值',
+            'amount.numeric' => '计量单位只能是数值',
         ]);
 
         if ($validator->fails()) {
@@ -74,25 +84,25 @@ class SubjectController extends Controller
      */
     public function edit(Request $request)
     {
-        $params    = $request->only(['id', 'name', 'classes', 'direction', 'auxiliaryTypeId', 'amount']);
+        $params = $request->only(['id', 'name', 'classes', 'direction', 'auxiliaryTypeId', 'amount']);
         $validator = Validator::make($params, [
-            'id'              => 'required|exists:subject',
-            'name'            => 'required|max:45',
-            'classes'         => 'required|max:20',
-            'direction'       => 'required|in:1,2',
+            'id' => 'required|exists:subject',
+            'name' => 'required|max:45',
+            'classes' => 'required|max:20',
+            'direction' => 'required|in:1,2',
 //            'auxiliaryTypeId' => 'exists:auxiliary_type,id',
-            'amount'          => 'numeric'
+            'amount' => 'numeric'
         ], [
-            'id.required'            => '科目ID不能为空',
-            'id.exists'              => '该科目不存在',
-            'name.required'          => '科目名称不能为空',
-            'name.max'               => '科目名称不能超过45个字符',
-            'classes.required'       => '科目类别不能为空',
-            'classes.max'            => '科目类别不能超过20个字符',
-            'direction.required'     => '余额方向不能为空',
-            'direction.in'           => '余额方向类型不正确',
+            'id.required' => '科目ID不能为空',
+            'id.exists' => '该科目不存在',
+            'name.required' => '科目名称不能为空',
+            'name.max' => '科目名称不能超过45个字符',
+            'classes.required' => '科目类别不能为空',
+            'classes.max' => '科目类别不能超过20个字符',
+            'direction.required' => '余额方向不能为空',
+            'direction.in' => '余额方向类型不正确',
 //            'auxiliaryTypeId.exists' => '该辅助核算类型不存在',
-            'amount.numeric'         => '计量单位只能是数值',
+            'amount.numeric' => '计量单位只能是数值',
         ]);
 
         if ($validator->fails()) {
@@ -116,7 +126,7 @@ class SubjectController extends Controller
             'id' => 'required|exists:subject',
         ], [
             'id.required' => '科目ID不能为空',
-            'id.exists'   => '该科目不存在',
+            'id.exists' => '该科目不存在',
         ]);
 
         if ($validator->fails()) {
@@ -136,14 +146,14 @@ class SubjectController extends Controller
      */
     public function getList(Request $request)
     {
-        $params    = $request->only(['type', 'limit']);
+        $params = $request->only(['type', 'limit']);
         $validator = Validator::make($params, [
             'type' => 'required|between:1,6'
         ], [
             'type.required' => '科目类型不能为空不能为空',
-            'type.between'  => '该科目类型不存在',
+            'type.between' => '该科目类型不存在',
             'limit.integer' => '每页显示数只能是整数',
-            'limit.min'     => '每页显示数最小是1',
+            'limit.min' => '每页显示数最小是1',
         ]);
         $validator->sometimes('limit', 'integer|min:1', function ($input) {
             return isset($input->limit);
@@ -153,7 +163,7 @@ class SubjectController extends Controller
             return $this->fail($validator->errors()->first(), 2002);
         }
 
-        $type  = $params['type'] ?? 0;
+        $type = $params['type'] ?? 0;
         $limit = $params['limit'] ?? 20;
 
         $list = $this->subjectService->getList($type, $limit);
@@ -173,7 +183,7 @@ class SubjectController extends Controller
             'id' => 'required|exists:subject',
         ], [
             'id.required' => '科目ID不能为空',
-            'id.exists'   => '该科目不存在',
+            'id.exists' => '该科目不存在',
         ]);
 
         if ($validator->fails()) {
@@ -197,7 +207,7 @@ class SubjectController extends Controller
             'id' => 'required|exists:subject',
         ], [
             'id.required' => '科目ID不能为空',
-            'id.exists'   => '该科目不存在',
+            'id.exists' => '该科目不存在',
         ]);
 
         if ($validator->fails()) {
@@ -230,7 +240,7 @@ class SubjectController extends Controller
     {
         $params = $request->only(['filter']);
         $filter = $params['filter'] ?? '';
-        $list   = $this->subjectBalanceModel->getSearchList($filter);
+        $list = $this->subjectBalanceModel->getSearchList($filter);
 
         return $this->success($list);
     }

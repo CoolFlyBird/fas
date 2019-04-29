@@ -63,7 +63,10 @@ RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
 # Configure /app folder with sample app
 RUN mkdir -p /app && rm -fr /var/www/html && ln -s /app /var/www/html
 RUN git clone https://github.com/unual/fas.git app
-RUN echo "APP_NAME=Laravel \n APP_ENV=local \n APP_KEY=base64:2EFFwLK71Z9hNrU5soStzZw3hYr6dsq3jAiH9LX6D+4= \n APP_DEBUG=true \n APP_URL=http://localhost \n LOG_CHANNEL=stack \n DB_CONNECTION=mysql \n DB_HOST=106.14.116.192 \n DB_PORT=3306 \n DB_DATABASE=fas \n DB_USERNAME=fas \n DB_PASSWORD=mypassword \n BROADCAST_DRIVER=log \n CACHE_DRIVER=file \n QUEUE_CONNECTION=sync \n SESSION_DRIVER=file \n SESSION_LIFETIME=120 \n REDIS_HOST=127.0.0.1 \n REDIS_PASSWORD=null \n REDIS_PORT=6379 \n MAIL_DRIVER=smtp \n MAIL_HOST=smtp.mailtrap.io \n MAIL_PORT=2525 \n MAIL_USERNAME=null \n MAIL_PASSWORD=null \n MAIL_ENCRYPTION=null \n PUSHER_APP_ID= \n PUSHER_APP_KEY= \n PUSHER_APP_SECRET= \n PUSHER_APP_CLUSTER=mt1 \n MIX_PUSHER_APP_KEY=\"${PUSHER_APP_KEY}\" \n MIX_PUSHER_APP_CLUSTER=\"${PUSHER_APP_CLUSTER}\"" >> app/.env
+RUN chown -R www-data:www-data app/storage
+RUN chown -R www-data:www-data app/bootstrap
+#RUN echo "APP_NAME=Laravel \n APP_ENV=local \n APP_KEY=base64:2EFFwLK71Z9hNrU5soStzZw3hYr6dsq3jAiH9LX6D+4= \n APP_DEBUG=true \n APP_URL=http://localhost \n LOG_CHANNEL=stack \n DB_CONNECTION=mysql \n DB_HOST=106.14.116.192 \n DB_PORT=3306 \n DB_DATABASE=fas \n DB_USERNAME=fas \n DB_PASSWORD=mypassword \n BROADCAST_DRIVER=log \n CACHE_DRIVER=file \n QUEUE_CONNECTION=sync \n SESSION_DRIVER=file \n SESSION_LIFETIME=120 \n REDIS_HOST=127.0.0.1 \n REDIS_PASSWORD=null \n REDIS_PORT=6379 \n MAIL_DRIVER=smtp \n MAIL_HOST=smtp.mailtrap.io \n MAIL_PORT=2525 \n MAIL_USERNAME=null \n MAIL_PASSWORD=null \n MAIL_ENCRYPTION=null \n PUSHER_APP_ID= \n PUSHER_APP_KEY= \n PUSHER_APP_SECRET= \n PUSHER_APP_CLUSTER=mt1 \n MIX_PUSHER_APP_KEY=\"${PUSHER_APP_KEY}\" \n MIX_PUSHER_APP_CLUSTER=\"${PUSHER_APP_CLUSTER}\"" >> app/.env
+ADD .env /app/.env
 #ADD app/ /app
 
 EXPOSE 80
