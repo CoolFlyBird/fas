@@ -3,6 +3,7 @@
  * Created by PhpStorm.
  * Author: huxinlu
  */
+
 namespace App\Http\Controllers\System;
 
 use App\Models\AccountSetModel;
@@ -15,8 +16,17 @@ class AccountSetController extends Controller
 {
     public function __construct(AccountSetModel $accountSetModel, CurrentPeriodModel $currentPeriodModel)
     {
-        $this->accountSetModel    = $accountSetModel;
+        $this->accountSetModel = $accountSetModel;
         $this->currentPeriodModel = $currentPeriodModel;
+    }
+
+    public function test()
+    {
+        $runtimePath = __DIR__;
+        $filePath = __DIR__ . '/test.pptx';
+
+        $res = shell_exec('libreoffice --headless --invisible --convert-to pdf ' . $filePath . ' --outdir ' . $runtimePath);
+        print_r($res);
     }
 
     /**
@@ -32,25 +42,25 @@ class AccountSetController extends Controller
      */
     public function create(Request $request)
     {
-        $params    = $request->only(['name', 'companyName', 'standardMoneyType', 'institution', 'date']);
+        $params = $request->only(['name', 'companyName', 'standardMoneyType', 'institution', 'date']);
         $validator = Validator::make($params, [
-            'name'              => 'required|unique:account_set|max:20',
-            'companyName'       => 'required|max:30',
+            'name' => 'required|unique:account_set|max:20',
+            'companyName' => 'required|max:30',
             'standardMoneyType' => 'required|in:1,2',
-            'institution'       => 'required|in:1,2',
-            'date'              => 'required|date_format:Y-m',
+            'institution' => 'required|in:1,2',
+            'date' => 'required|date_format:Y-m',
         ], [
-            'name.require'              => '账套名称不能为空',
-            'name.unique'               => '账套名称不能重复',
-            'name.max'                  => '账套名称不能超过20个字符',
-            'companyName.require'       => '企业名称不能为空',
-            'companyName.max'           => '企业名称不能超过30个字符',
+            'name.require' => '账套名称不能为空',
+            'name.unique' => '账套名称不能重复',
+            'name.max' => '账套名称不能超过20个字符',
+            'companyName.require' => '企业名称不能为空',
+            'companyName.max' => '企业名称不能超过30个字符',
             'standardMoneyType.require' => '本位币不能为空',
-            'standardMoneyType.in'      => '本位币类型不正确',
-            'institution.require'       => '会计制度不能为空',
-            'institution.in'            => '会计制度类型不正确',
-            'date.require'              => '启用时间不能为空',
-            'date.date_format'          => '启用时间格式不正确，正确格式为' . date('Y-m'),
+            'standardMoneyType.in' => '本位币类型不正确',
+            'institution.require' => '会计制度不能为空',
+            'institution.in' => '会计制度类型不正确',
+            'date.require' => '启用时间不能为空',
+            'date.date_format' => '启用时间格式不正确，正确格式为' . date('Y-m'),
         ]);
 
         if ($validator->fails()) {
@@ -74,19 +84,19 @@ class AccountSetController extends Controller
      */
     public function edit(Request $request)
     {
-        $params    = $request->only(['id', 'name', 'companyName']);
+        $params = $request->only(['id', 'name', 'companyName']);
         $validator = Validator::make($params, [
-            'id'          => 'required|integer',
-            'name'        => 'required|max:20',
+            'id' => 'required|integer',
+            'name' => 'required|max:20',
             'companyName' => 'required|max:30',
         ], [
-            'id.require'          => '账套ID不能为空',
-            'id.integer'          => '账套ID只能是整数',
-            'name.require'        => '账套名称不能为空',
-            'name.unique'         => '账套名称不能重复',
-            'name.max'            => '账套名称不能超过20个字符',
+            'id.require' => '账套ID不能为空',
+            'id.integer' => '账套ID只能是整数',
+            'name.require' => '账套名称不能为空',
+            'name.unique' => '账套名称不能重复',
+            'name.max' => '账套名称不能超过20个字符',
             'companyName.require' => '企业名称不能为空',
-            'companyName.max'     => '企业名称不能超过30个字符',
+            'companyName.max' => '企业名称不能超过30个字符',
         ]);
 
         if ($validator->fails()) {

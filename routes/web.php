@@ -4,6 +4,8 @@ Route::post('login', 'Auth\LoginController@login')->name('login');
 //不需要验证
 Route::get('account', 'System\AccountSetController@getList');//账套列表
 
+Route::get('test', 'System\AccountSetController@test');
+
 //需要验证登录权限
 Route::group(['middleware' => 'login'], function () {
     Route::get('permission', 'System\PermissionController@getList');//权限列表
