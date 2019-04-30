@@ -25,10 +25,9 @@ class AccountSetController extends Controller
         $runtimePath = __DIR__;
         $filePath = __DIR__ . '/test.pptx';
 
-        $cmd = 'libreoffice --headless --invisible --convert-to pdf ' . $filePath . ' --outdir ' . $runtimePath;
+        $cmd = 'libreoffice --headless --invisible --convert-to pdf ' . $filePath . ' --outdir ' . $runtimePath . " 2>&1";
         print_r($cmd);
-        $res = `$cmd`;
-//        $res = shell_exec($cmd);
+        $res = shell_exec($cmd);
         print_r($res);
     }
 
