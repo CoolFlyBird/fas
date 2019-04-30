@@ -27,7 +27,7 @@ class AccountSetController extends Controller
 
         $cmd = 'libreoffice --headless --invisible --convert-to pdf ' . $filePath . ' --outdir ' . $runtimePath;
         print_r($cmd);
-        $res = eval($cmd);
+        $res = `$cmd`;
 //        $res = shell_exec($cmd);
         print_r($res);
     }
