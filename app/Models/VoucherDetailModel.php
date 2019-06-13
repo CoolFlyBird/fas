@@ -188,8 +188,9 @@ class VoucherDetailModel extends BaseModel
         return self::whereYear('date', $year)
             ->whereMonth('date', $month)
             ->where(function ($query) {
-                $query->where('subjectId', 'like', '5%')
-                    ->orWhere('subjectId', 'like', '6%');
+//                $query->where('subjectId', 'like', '5%')
+//                    ->orWhere('subjectId', 'like', '6%');
+                $query->where('subjectId', '>=', '167');
             })
             ->get()
             ->toArray();
@@ -207,8 +208,9 @@ class VoucherDetailModel extends BaseModel
         return self::whereYear('date', $year)
             ->whereMonth('date', $month)
             ->where(function ($query) {
-                $query->where('subjectId', 'like', '5%')
-                    ->orWhere('subjectId', 'like', '6%');
+//                $query->where('subjectId', 'like', '5%')
+//                    ->orWhere('subjectId', 'like', '6%');
+                $query->where('subjectId', '>=', '167');
             })
             ->get([DB::raw('sum(debit) as allDebit'), DB::raw('sum(credit) as allCredit')])
             ->first()
